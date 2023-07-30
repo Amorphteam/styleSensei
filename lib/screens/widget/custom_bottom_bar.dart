@@ -11,30 +11,35 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
   int selectedItem = 0;
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      onDestinationSelected: (int index) {
+    return BottomNavigationBar(
+      onTap: (int index) {
         setState(() {
           selectedItem = index;
         });
       },
-      selectedIndex: selectedItem,
-      destinations: const <NavigationDestination>[
-        NavigationDestination(
-          selectedIcon: Icon(Icons.home_rounded),
+      currentIndex: selectedItem,
+      showSelectedLabels: false, // Hide selected label
+      showUnselectedLabels: false, // Hide unselected labels
+      type: BottomNavigationBarType.fixed, // Set the type to fixed
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
+          activeIcon: Icon(Icons.home_rounded),
           label: 'Home',
         ),
-        NavigationDestination(
-          selectedIcon: Icon(Icons.search_rounded),
+        BottomNavigationBarItem(
           icon: Icon(Icons.search_outlined),
+          activeIcon: Icon(Icons.search_rounded),
           label: 'Search',
         ),
-        NavigationDestination(
-          selectedIcon: Icon(Icons.bookmark),
+        BottomNavigationBarItem(
           icon: Icon(Icons.bookmark_border),
+          activeIcon: Icon(Icons.bookmark),
           label: 'Bookmark',
         ),
       ],
     );
+
+
   }
 }

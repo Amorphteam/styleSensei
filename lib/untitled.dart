@@ -88,8 +88,8 @@ class ImageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      'https://picsum.photos/$width/$height?random=$index',
+    return Image.asset(
+      'assets/images/$index.png',
       width: width.toDouble(),
       height: height.toDouble(),
       fit: BoxFit.cover,

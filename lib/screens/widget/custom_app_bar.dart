@@ -8,8 +8,8 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 40, left: 20, right: 20),
-      height: 66,
+      margin: EdgeInsets.only(top: 10, left: 20, right: 20),
+      height: 56,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -17,7 +17,7 @@ class CustomAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Text('Hi Sara', style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w600),),
+            Text('Hi Sara', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),),
             Text('Here are our suggestions for you', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w200),),
           ],),
           SvgPicture.asset(assetName)

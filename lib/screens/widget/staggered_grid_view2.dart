@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:style_sensei/untitled.dart';
 
-class StaggeredGridView extends StatefulWidget {
-  const StaggeredGridView({super.key});
+class StaggeredGridView2 extends StatefulWidget {
+  const StaggeredGridView2({super.key});
 
   @override
-  State<StaggeredGridView> createState() => _StaggeredGridViewState();
+  State<StaggeredGridView2> createState() => _StaggeredGridViewState();
 }
 
-class _StaggeredGridViewState extends State<StaggeredGridView> {
+class _StaggeredGridViewState extends State<StaggeredGridView2> {
   // Define the total number of images you want to load
-  static const int totalImages = 6;
+  static const int totalImages = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +24,10 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
         crossAxisSpacing: 2,
         repeatPattern: QuiltedGridRepeatPattern.same,
         pattern: [
+          QuiltedGridTile(4, 3),
+          QuiltedGridTile(4, 3),
           QuiltedGridTile(8, 6),
-          QuiltedGridTile(4, 3),
-          QuiltedGridTile(4, 3),
-          QuiltedGridTile(3, 2),
-          QuiltedGridTile(3, 2),
-          QuiltedGridTile(3, 2),
+          QuiltedGridTile(3, 6),
         ],
       ),
       physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
