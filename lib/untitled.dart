@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'screens/widget/image_card.dart';
+
 const _defaultColor = Color(0xFF34568B);
 
 class AppScaffold extends StatelessWidget {
@@ -74,7 +76,7 @@ class Tile extends StatelessWidget {
   }
 }
 
-class ImageTile extends StatelessWidget {
+class ImageTile extends StatefulWidget {
   const ImageTile({
     Key? key,
     required this.index,
@@ -87,12 +89,88 @@ class ImageTile extends StatelessWidget {
   final int height;
 
   @override
+  _ImageTileState createState() => _ImageTileState();
+}
+
+class _ImageTileState extends State<ImageTile> {
+  bool isLongPressing = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/$index.png',
-      width: width.toDouble(),
-      height: height.toDouble(),
-      fit: BoxFit.cover,
+    return GestureDetector(
+      onLongPress: () {
+        setState(() {
+          isLongPressing = true;
+        });
+        _showLongPressDialog(context, widget.index);
+      },
+      onTap: () {
+        if (!isLongPressing) {
+          // Handle normal tap here
+          _showNormalPressDialog(context, widget.index);
+        }
+        setState(() {
+          isLongPressing = false;
+        });
+      },
+      child: Image.asset(
+        'assets/images/${widget.index}.png',
+        width: widget.width.toDouble(),
+        height: widget.height.toDouble(),
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  // Function to show a dialog for long press (you can customize this as needed)
+  void _showLongPressDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogTheme: DialogTheme(
+              shape: RoundedRectangleBorder( // Set the shape with radius 0
+                borderRadius: BorderRadius.circular(0.0),
+              ),
+            ),
+          ),
+          child: FractionallySizedBox(
+            widthFactor: 1.2,
+            child: AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              content: SingleChildScrollView( // Use SingleChildScrollView to allow the AlertDialog to wrap its height
+                child: ImageCard(
+                  imagePath: 'assets/images/$index.png',
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+  // Function to show a dialog for normal press (you can customize this as needed)
+  void _showNormalPressDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Special message'),
+          content: Text('You tapped image at index $index, So after some hardwork I will show you that, dont worry MEHDI BAHADORI'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
