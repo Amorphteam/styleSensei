@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:style_sensei/screens/widget/custom_app_bar.dart';
-import 'package:style_sensei/screens/widget/custom_bottom_bar.dart';
-import 'package:style_sensei/screens/widget/staggered_grid_view.dart';
-import 'package:style_sensei/screens/widget/staggered_grid_view2.dart';
-import 'package:style_sensei/screens/widget/tab_bar.dart';
+import 'package:style_sensei/widget/custom_bottom_bar.dart';
+import '../widget/staggered_grid_view.dart';
+import '../widget/staggered_grid_view2.dart';
+import '../widget/tab_bar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

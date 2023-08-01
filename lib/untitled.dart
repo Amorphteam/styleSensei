@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'screens/widget/image_card.dart';
+import 'package:style_sensei/screens/detail.dart';
+import 'package:style_sensei/widget/image_card.dart';
 
 const _defaultColor = Color(0xFF34568B);
 
@@ -155,22 +155,12 @@ class _ImageTileState extends State<ImageTile> {
 
   // Function to show a dialog for normal press (you can customize this as needed)
   void _showNormalPressDialog(BuildContext context, int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Special message'),
-          content: Text('You tapped image at index $index, So after some hardwork I will show you that, dont worry MEHDI BAHADORI'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
+    // Navigate to the Detail Screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Detail(index: index),
+      ),
     );
   }
 }
@@ -215,3 +205,10 @@ class _InteractiveTileState extends State<InteractiveTile> {
     );
   }
 }
+
+List<String> imageUrls = [
+  'assets/images/s1.png',
+  'assets/images/s2.png',
+  'assets/images/s3.png',
+  'assets/images/s4.png',
+];
