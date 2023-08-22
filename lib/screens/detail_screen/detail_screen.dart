@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:style_sensei/widget/staggered_grid_view.dart';
-import 'package:style_sensei/widget/staggered_grid_view_detail.dart';
-import '../untitled.dart';
-import '../widget/tab_bar.dart';
+import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
+import '../../utils/untitled.dart';
+import '../home_tab/widgets/tab_bar_widget.dart';
 
 class Detail extends StatefulWidget {
   final int index;

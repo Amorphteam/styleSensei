@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:style_sensei/screens/home.dart';
+import 'package:style_sensei/screens/home_tab/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 void main() {
   runApp(const MyApp());

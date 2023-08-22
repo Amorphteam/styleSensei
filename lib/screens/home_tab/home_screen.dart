@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:style_sensei/widget/custom_bottom_bar.dart';
-import '../widget/staggered_grid_view.dart';
-import '../widget/staggered_grid_view2.dart';
-import '../widget/tab_bar.dart';
+import 'package:style_sensei/screens/main/widgets/bottom_bar_widget.dart';
+import 'widgets/staggered_grid_view_widget.dart';
+import 'widgets/staggered_grid_view2_widget.dart';
+import 'widgets/tab_bar_widget.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: BottomBarScreen(),
     );
     // return Scaffold(
     //   body: ListView(

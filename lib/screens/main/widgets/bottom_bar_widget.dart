@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CustomBottomBar extends StatefulWidget {
-  const CustomBottomBar({super.key});
+class BottomBarScreen extends StatefulWidget {
+  const BottomBarScreen({super.key});
 
   @override
-  State<CustomBottomBar> createState() => _CustomBottomBarState();
+  State<BottomBarScreen> createState() => _BottomBarScreenState();
 }
 
-class _CustomBottomBarState extends State<CustomBottomBar> {
+class _BottomBarScreenState extends State<BottomBarScreen> {
   int currentPageIndex = 0;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;

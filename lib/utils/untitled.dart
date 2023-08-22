@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:style_sensei/screens/detail.dart';
-import 'package:style_sensei/widget/image_card.dart';
+import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
+import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 
 const _defaultColor = Color(0xFF34568B);
 

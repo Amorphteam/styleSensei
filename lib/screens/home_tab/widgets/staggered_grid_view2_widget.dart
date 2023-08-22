@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:style_sensei/untitled.dart';
+import 'package:style_sensei/utils/untitled.dart';
 
 class StaggeredGridView2 extends StatefulWidget {
   const StaggeredGridView2({super.key});
