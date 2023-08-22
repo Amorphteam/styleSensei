@@ -4,13 +4,15 @@ part of 'home_cubit.dart';
 abstract class HomeState {}
 
 class HomeInitial extends HomeState {}
-class HomeLoading extends HomeState {}
-class HomeError extends HomeState {
-  final Exception error;
+class HomeLoadingState extends HomeState {}
+class HomeErrorState extends HomeState {
+  final String error;
 
-  HomeError(this.error);
+  HomeErrorState(this.error);
 }
 
-class CollectionListLoaded extends HomeState {
+class CollectionListLoadedState extends HomeState {
+  final CollectionModel collectionModel;
 
+  CollectionListLoadedState(this.collectionModel);
 }

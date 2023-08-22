@@ -2,18 +2,18 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:style_sensei/models/Collections.dart';
 import 'package:style_sensei/utils/untitled.dart';
 
 class StaggeredGridView extends StatefulWidget {
-  const StaggeredGridView({super.key});
-
+  final List<Collections> collections;
+  const StaggeredGridView({Key? key, required this.collections})
+      : super(key: key);
   @override
   State<StaggeredGridView> createState() => _StaggeredGridViewState();
 }
 
 class _StaggeredGridViewState extends State<StaggeredGridView> {
-  // Define the total number of images you want to load
-  static const int totalImages = 6;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,9 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
       childrenDelegate: SliverChildBuilderDelegate(
             (context, index) {
           // Check if the index is within the totalImages range
-          if (index < totalImages) {
+          if (index < widget.collections.length) {
             return ImageTile(
+              collections: widget.collections,
               index: index,
               width: 2000,
               height: 2000,
@@ -48,7 +49,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
           }
         },
         // Set the childCount to the totalImages
-        childCount: totalImages,
+        childCount: widget.collections.length,
       ),
     );
   }

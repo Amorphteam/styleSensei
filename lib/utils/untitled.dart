@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 
+import '../models/Collections.dart';
+
 const _defaultColor = Color(0xFF34568B);
 
 class AppScaffold extends StatelessWidget {
@@ -79,11 +81,12 @@ class Tile extends StatelessWidget {
 class ImageTile extends StatefulWidget {
   const ImageTile({
     Key? key,
+    required this.collections,
     required this.index,
     required this.width,
     required this.height,
   }) : super(key: key);
-
+  final List<Collections> collections;
   final int index;
   final int width;
   final int height;
@@ -107,14 +110,14 @@ class _ImageTileState extends State<ImageTile> {
       onTap: () {
         if (!isLongPressing) {
           // Handle normal tap here
-          _showNormalPressDialog(context, widget.index);
+          _showNormalPressDialog(context, widget.collections[widget.index].id);
         }
         setState(() {
           isLongPressing = false;
         });
       },
-      child: Image.asset(
-        'assets/images/${widget.index}.png',
+      child: Image.network(
+        widget.collections[widget.index].image,
         width: widget.width.toDouble(),
         height: widget.height.toDouble(),
         fit: BoxFit.cover,
@@ -205,10 +208,3 @@ class _InteractiveTileState extends State<InteractiveTile> {
     );
   }
 }
-
-List<String> imageUrls = [
-  'assets/images/s1.png',
-  'assets/images/s2.png',
-  'assets/images/s3.png',
-  'assets/images/s4.png',
-];

@@ -36,11 +36,11 @@ class _StaggeredGridViewState extends State<StaggeredGridView2> {
             (context, index) {
           // Check if the index is within the totalImages range
           if (index < totalImages) {
-            return ImageTile(
-              index: index,
-              width: 2000,
-              height: 2000,
-            );
+            // return ImageTile(
+            //   index: index,
+            //   width: 2000,
+            //   height: 2000,
+            // );
           } else {
             return null; // Return null for indexes beyond the limit to avoid rendering empty spaces
           }
