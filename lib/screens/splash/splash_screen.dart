@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
 
 import '../home_tab/cubit/home_cubit.dart';
@@ -15,9 +16,11 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final List<Widget> splashPages = [
-    SplashPageWithPattern(Colors.white, "assets/images/splash0.png", "Never stop looking for Inspiration"),
-    SplashPage(Colors.white, "assets/images/splash1.png", "Getting to know you", "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect Outfits for various occasions, daily wear, or special work presentations.", false),
+    SplashPageWithPattern(Colors.white, "assets/images/splash0.png", "Never stop looking for "),
+    SplashPage(Colors.white, "assets/images/splash1.png", "Getting to know you", "This journey is all about YOU. in this Process we will determineyour fashion goals by learning about you.", false),
     SplashPage(Colors.white, "assets/images/splash2.png", "Discover your personal style", "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect Outfits for various occasions, daily wear, or special work presentations.", true),
+    LoadingPage(Colors.white, "assets/images/loading.png", "We are tailoring your space to YOUR style"),
+
   ];
 
   double pageIndex = 0;
@@ -107,9 +110,26 @@ class SplashPage extends StatelessWidget {
                 SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40),
-                  child: Text(
-                    des,
-                    style: Theme.of(context).textTheme.titleMedium,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: des.substring(0, des.indexOf("YOU")),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        TextSpan(
+                          text: "YOU",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                        TextSpan(
+                          text: des.substring(des.indexOf("YOU") + 3),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 80),
@@ -184,10 +204,34 @@ class SplashPageWithPattern extends StatelessWidget {
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40), // Adjust the padding as needed
-                child: Text(
-                 title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: title,
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'I',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'nspiration',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+
               ),
               Expanded(
                 child: Image.asset(
@@ -198,6 +242,75 @@ class SplashPageWithPattern extends StatelessWidget {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+class LoadingPage extends StatelessWidget {
+  final Color backgroundColor;
+  final String imagePath;
+  final String title;
+
+  LoadingPage(this.backgroundColor, this.imagePath, this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          color: backgroundColor,
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset('assets/json/loading.json'),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: title.substring(0, title.indexOf("YOUR")),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            TextSpan(
+                              text: "YOUR",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                            TextSpan(
+                              text: title.substring(title.indexOf("YOUR") + 4),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Image.asset(imagePath),
+              ),
+              SizedBox(width: 30),
+            ],
+          ),
+        ),
+          Positioned(
+            bottom: 20,
+            left: 40,
+            child: GestureDetector(
+              onTap: () {
+
+              },
+              child: SvgPicture.asset("assets/images/arrow_left.svg"),
+            ),
+          ),
       ],
     );
   }

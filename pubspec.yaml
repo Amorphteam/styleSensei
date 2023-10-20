@@ -41,6 +41,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.2
   http: ^1.1.0
   dots_indicator: ^3.0.0
+  lottie: ^2.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -74,6 +75,7 @@ flutter:
   assets:
       - assets/images/
       - assets/logo/
+      - assets/json/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
