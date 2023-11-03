@@ -19,8 +19,19 @@ class Items {
   Items.fromJson(dynamic json) {
     _categoryId = json['category_id'];
     _category = json['category'] != null ? Category.fromJson(json['category']) : null;
-    _products = json['products'];
+    if (json['products'] != null) {
+      if (json['products'] is List) {
+        _products = (json['products'] as List).map((item) => Products.fromJson(item)).toList();
+      } else {
+        // Handle the case where 'products' is not a List<Products>.
+        // You can set it to an empty list or handle it as appropriate for your use case.
+        _products = [];
+      }
+    } else {
+      _products = null;
+    }
   }
+
   String? _categoryId;
   Category? _category;
   List<Products>? _products;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:style_sensei/models/Items.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
@@ -53,8 +54,8 @@ class _DetailState extends State<Detail> {
         body: BlocBuilder<DetailCubit, DetailState>(
           builder: (context, state) {
             if (state is ProductListLoadedState) {
-              var collection = state.productModel.collection!.items?[0].products?.length;
-              return Text(collection.toString());
+              var collection = state.productModel.collection!.items;
+              return buildWidget(collection!);
             } else if (state is DetailLoadingState) {
               return Center(child: CircularProgressIndicator());
             } else if (state is DetailErrorState) {
@@ -100,4 +101,47 @@ class _DetailState extends State<Detail> {
       ],
     );
   }
+
+  Widget buildWidget(List<Items> items) {
+    return Container(
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(items[index].category!.name ?? 'Default Name'),
+              ),
+              Container(
+                height: 260,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+          if (items[index].products != null)
+            ...items[index].products!.map((productItem) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Image.network(productItem.pictures!), // Replace with your image URL or asset path
+                            ),
+                            Text(productItem.name!),
+                            Text(productItem.id.toString()),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    ]
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );  }
 }

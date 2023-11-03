@@ -25,7 +25,6 @@ class CollectionRepository {
     final response = await http.get(Uri.parse(apiUrl+pathUrl));
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);
-      print('aaa ${jsonMap}');
       return ProductsModel.fromJson(jsonMap);
     } else {
       throw Exception('Failed to fetch data');
