@@ -13,18 +13,18 @@ class Detail extends StatefulWidget {
 
   Detail({required this.index});
 
-
-
   @override
   State<Detail> createState() => _DetailState();
 }
 
 class _DetailState extends State<Detail> {
+   String mainImageCollectionUrl = '';
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      BlocProvider.of<DetailCubit>(context).fetchData(CollectionRepository(), widget.index);
+      BlocProvider.of<DetailCubit>(context)
+          .fetchData(CollectionRepository(), widget.index);
     });
   }
 
@@ -35,18 +35,27 @@ class _DetailState extends State<Detail> {
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              expandedHeight: 400.0,
+              expandedHeight: 600.0,
               // Set the initial height of the AppBar
               floating: false,
               // Set to true if you want it to be always visible when scrolling
               pinned: true,
               // Set to true if you want it to remain visible at the top when scrolling
+
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.asset(
-                  // Replace this with your large image asset
-                  'assets/images/1.png',
-                  fit: BoxFit.cover,
-                ),
+                background: BlocBuilder<DetailCubit, DetailState>(
+              builder: (context, state) {
+                if (state is ProductListLoadedState) {
+                  return Image.network(
+                    state.productModel.collection!.image!,
+                    fit: BoxFit.cover,
+                  );
+                } else {
+                  // Return a placeholder or empty container if the image URL is not available.
+                  return Container();
+                }
+              },
+              ),
               ),
             ),
           ];
@@ -55,6 +64,8 @@ class _DetailState extends State<Detail> {
           builder: (context, state) {
             if (state is ProductListLoadedState) {
               var collection = state.productModel.collection!.items;
+                mainImageCollectionUrl = state.productModel.collection!.image!;
+
               return buildWidget(collection!);
             } else if (state is DetailLoadingState) {
               return Center(child: CircularProgressIndicator());
@@ -65,7 +76,7 @@ class _DetailState extends State<Detail> {
             }
           },
         ),
-        ),
+      ),
     );
   }
 
@@ -112,36 +123,45 @@ class _DetailState extends State<Detail> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(items[index].category!.name ?? 'Default Name'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      items[index].category!.name ?? 'Default Name',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Text('${items[index].products!.length} Items')
+                  ],
+                ),
               ),
               Container(
                 height: 260,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-          if (items[index].products != null)
-            ...items[index].products!.map((productItem) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Image.network(productItem.pictures!), // Replace with your image URL or asset path
-                            ),
-                            Text(productItem.name!),
-                            Text(productItem.id.toString()),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    ]
-                  ),
+                  child: Row(children: [
+                    if (items[index].products != null)
+                      ...items[index].products!.map((productItem) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Image.network(productItem
+                                    .pictures!), // Replace with your image URL or asset path
+                              ),
+                              Text(productItem
+                                  .attributes!.last.attribute!.name!),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                  ]),
                 ),
               ),
             ],
           );
         },
       ),
-    );  }
+    );
+  }
 }
