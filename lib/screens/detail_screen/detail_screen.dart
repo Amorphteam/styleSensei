@@ -53,7 +53,7 @@ class _DetailState extends State<Detail> {
         body: BlocBuilder<DetailCubit, DetailState>(
           builder: (context, state) {
             if (state is ProductListLoadedState) {
-              var collection = state.productModel.collection?.title;
+              var collection = state.productModel.collection!.items?[0].products?.length;
               return Text(collection.toString());
             } else if (state is DetailLoadingState) {
               return Center(child: CircularProgressIndicator());

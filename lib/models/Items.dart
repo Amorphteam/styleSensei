@@ -1,3 +1,5 @@
+import 'package:style_sensei/models/Products.dart';
+
 import 'Category.dart';
 
 /// category_id : "20838253"
@@ -8,7 +10,7 @@ class Items {
   Items({
       String? categoryId, 
       Category? category, 
-      dynamic products,}){
+      List<Products>? products,}){
     _categoryId = categoryId;
     _category = category;
     _products = products;
@@ -21,17 +23,17 @@ class Items {
   }
   String? _categoryId;
   Category? _category;
-  dynamic _products;
+  List<Products>? _products;
 Items copyWith({  String? categoryId,
   Category? category,
-  dynamic products,
+  List<Products>? products,
 }) => Items(  categoryId: categoryId ?? _categoryId,
   category: category ?? _category,
   products: products ?? _products,
 );
   String? get categoryId => _categoryId;
   Category? get category => _category;
-  dynamic get products => _products;
+  List<Products>? get products => _products;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
