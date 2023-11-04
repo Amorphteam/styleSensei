@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:style_sensei/models/Items.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
@@ -18,7 +19,9 @@ class Detail extends StatefulWidget {
 }
 
 class _DetailState extends State<Detail> {
-   String mainImageCollectionUrl = '';
+  String mainImageCollectionUrl = '';
+  Map<String, bool> bookmarkedItems = {};
+
   @override
   void initState() {
     super.initState();
@@ -44,18 +47,18 @@ class _DetailState extends State<Detail> {
 
               flexibleSpace: FlexibleSpaceBar(
                 background: BlocBuilder<DetailCubit, DetailState>(
-              builder: (context, state) {
-                if (state is ProductListLoadedState) {
-                  return Image.network(
-                    state.productModel.collection!.image!,
-                    fit: BoxFit.cover,
-                  );
-                } else {
-                  // Return a placeholder or empty container if the image URL is not available.
-                  return Container();
-                }
-              },
-              ),
+                  builder: (context, state) {
+                    if (state is ProductListLoadedState) {
+                      return Image.network(
+                        state.productModel.collection!.image!,
+                        fit: BoxFit.cover,
+                      );
+                    } else {
+                      // Return a placeholder or empty container if the image URL is not available.
+                      return Container();
+                    }
+                  },
+                ),
               ),
             ),
           ];
@@ -64,7 +67,7 @@ class _DetailState extends State<Detail> {
           builder: (context, state) {
             if (state is ProductListLoadedState) {
               var collection = state.productModel.collection!.items;
-                mainImageCollectionUrl = state.productModel.collection!.image!;
+              mainImageCollectionUrl = state.productModel.collection!.image!;
 
               return buildWidget(collection!);
             } else if (state is DetailLoadingState) {
@@ -130,7 +133,7 @@ class _DetailState extends State<Detail> {
                       items[index].category!.name ?? 'Default Name',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Text('${items[index].products!.length} Items')
+                    Text('${items[index].products?.length ?? ' '} Items')
                   ],
                 ),
               ),
@@ -138,26 +141,65 @@ class _DetailState extends State<Detail> {
                 height: 260,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    if (items[index].products != null)
-                      ...items[index].products!.map((productItem) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Image.network(productItem
-                                    .pictures!), // Replace with your image URL or asset path
-                              ),
-                              Text(productItem
-                                  .attributes!.last.attribute!.name!),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                  ]),
+                  child: Row(
+                    children: [
+                      if (items[index].products != null)
+                        ...items[index].products!.map((productItem) {
+                          // Initialize the bookmark state for this item if it has not been done yet
+                          bookmarkedItems[productItem.id.toString()] ??= false;
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    Expanded(
+                                      child:
+                                          Image.network(productItem.pictures!),
+                                    ),
+                                    Text(productItem
+                                        .attributes!.last.attribute!.name!),
+                                  ],
+                                ),
+                                Positioned(
+                                  top: 8,
+                                  right: 16,
+                                  child: Container(
+                                    width: 30.0,
+                                    height: 30.0,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      // Circular shape
+                                    ),
+                                    child: IconButton(
+                                      icon: bookmarkedItems[productItem.id.toString()]!
+                                          ? SvgPicture.asset(
+                                        'assets/images/bookmarked.svg', // Path to your SVG file
+                                      )
+                                          : SvgPicture.asset(
+                                        'assets/images/bookmark.svg', // Path to your SVG file
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          // Toggle the bookmark state
+                                          bookmarkedItems[
+                                                  productItem.id.toString()] =
+                                              !bookmarkedItems[
+                                                  productItem.id.toString()]!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                    ],
+                  ),
                 ),
-              ),
+              )
             ],
           );
         },
