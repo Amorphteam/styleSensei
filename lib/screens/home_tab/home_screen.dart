@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import '../../models/Collections.dart';
@@ -122,7 +123,10 @@ class _HomeTabState extends State<HomeTab> {
                     state.collectionModel.collections;
                 return StaggeredGridView(collections: collections);
               } else if (state is HomeLoadingState) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: Container(
+                    width: 200,
+                    height: 100,
+                    child: Lottie.asset('assets/json/loading.json')),);
               } else if (state is HomeErrorState) {
                 return Text('error is ${state.error}');
               } else {

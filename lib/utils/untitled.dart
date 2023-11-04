@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
@@ -118,11 +120,24 @@ class _ImageTileState extends State<ImageTile> {
           isLongPressing = false;
         });
       },
-      child: Image.network(
-        widget.collections[widget.index].image,
+      child:
+      CachedNetworkImage(
+        imageUrl: widget.collections[widget.index].image,
         width: widget.width.toDouble(),
         height: widget.height.toDouble(),
         fit: BoxFit.cover,
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!, // Light grey color for the base
+          highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+          child: Container(
+            width: widget.width.toDouble(),
+            height: widget.height.toDouble(),
+            color: Colors.white,
+          ),
+        ),        errorWidget: (context, url, error) {
+          print(error); // This will print the error to the console
+          return Icon(Icons.error);
+        },
       ),
     );
   }

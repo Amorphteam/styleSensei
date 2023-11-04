@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/models/Items.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
@@ -51,10 +54,22 @@ class _DetailState extends State<Detail> {
                 background: BlocBuilder<DetailCubit, DetailState>(
                   builder: (context, state) {
                     if (state is ProductListLoadedState) {
-                      return Image.network(
-                        state.productModel.collection!.image!,
+
+                      return CachedNetworkImage(
+                        imageUrl: state.productModel.collection!.image!,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!, // Light grey color for the base
+                          highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+                          child: Container(
+                            color: Colors.white,
+                          ),
+                        ),        errorWidget: (context, url, error) {
+                        print(error); // This will print the error to the console
+                        return Icon(Icons.error);
+                      },
                       );
+
                     } else {
                       // Return a placeholder or empty container if the image URL is not available.
                       return Container();
@@ -73,7 +88,10 @@ class _DetailState extends State<Detail> {
 
               return buildWidget(collection!);
             } else if (state is DetailLoadingState) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Container(
+                  width: 200,
+                  height: 100,
+                  child: Lottie.asset('assets/json/loading.json')),);
             } else if (state is DetailErrorState) {
               return Text('error is ${state.error}');
             } else {
@@ -85,137 +103,140 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildImageList() {
-    // Replace the list 'imageUrls' with your own list of image URLs.
-    List<String> imageUrls = [
-      'assets/images/s1.png',
-      'assets/images/s2.png',
-      'assets/images/s3.png',
-      'assets/images/s4.png',
-    ];
 
+  Widget buildWidget(List<Items> items) {
     return Column(
       children: [
-        Container(
-          height: 200,
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0, left: 16.0, top: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SvgPicture.asset('assets/images/collection.svg'),
+              Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Text('Collection details', style: Theme.of(context).textTheme.titleMedium,),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
           child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: imageUrls.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.all(2.0),
-                child: Image.network(
-                  imageUrls[index],
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
+            itemCount: items.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          items[index].category!.name ?? 'Default Name',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text('${items[index].products?.length ?? ' '} Items', style: Theme.of(context).textTheme.labelSmall,)
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 260,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          if (items[index].products != null)
+                            ...items[index].products!.map((productItem) {
+                              // Initialize the bookmark state for this item if it has not been done yet
+                              bookmarkedItems[productItem.id.toString()] ??= false;
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              showImagePopup(context, productItem);
+                                            },
+                                            child:
+
+                                            CachedNetworkImage(
+                                              imageUrl: productItem.pictures!.split(',')[0],
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => Shimmer.fromColors(
+                                                baseColor: Colors.grey[300]!, // Light grey color for the base
+                                                highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+                                                child: Container(
+                                                  height: 260,
+                                                  width: 130,
+                                                  color: Colors.white,
+                                                ),
+                                              ),        errorWidget: (context, url, error) {
+                                              print(error); // This will print the error to the console
+                                              return Icon(Icons.error);
+                                            },
+                                            ),
+
+                                          ),
+                                        ),
+                                        Container(width: 120,
+                                          child: Text(productItem
+                                              .attributes!.last.attribute!.name!),
+                                        ),
+                                        IconButton(onPressed: (){}, icon: SvgPicture.asset(
+                                          'assets/images/basket.svg', // Path to your SVG file
+                                        ))
+                                      ],
+                                    ),
+                                    Positioned(
+                                      top: 8,
+                                      right: 16,
+                                      child: Container(
+                                        width: 30.0,
+                                        height: 30.0,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                          // Circular shape
+                                        ),
+                                        child: IconButton(
+                                          icon: bookmarkedItems[productItem.id.toString()]!
+                                              ? SvgPicture.asset(
+                                            'assets/images/bookmarked.svg', // Path to your SVG file
+                                          )
+                                              : SvgPicture.asset(
+                                            'assets/images/bookmark.svg', // Path to your SVG file
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              // Toggle the bookmark state
+                                              bookmarkedItems[
+                                                      productItem.id.toString()] =
+                                                  !bookmarkedItems[
+                                                      productItem.id.toString()]!;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
               );
             },
           ),
         ),
       ],
-    );
-  }
-
-  Widget buildWidget(List<Items> items) {
-    return Container(
-      child: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      items[index].category!.name ?? 'Default Name',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    Text('${items[index].products?.length ?? ' '} Items')
-                  ],
-                ),
-              ),
-              Container(
-                height: 260,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      if (items[index].products != null)
-                        ...items[index].products!.map((productItem) {
-                          // Initialize the bookmark state for this item if it has not been done yet
-                          bookmarkedItems[productItem.id.toString()] ??= false;
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Stack(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          showImagePopup(context, productItem);
-                                        },
-                                        child: Image.network(productItem.pictures!.split(',')[0]),
-                                      ),
-                                    ),
-                                    Container(width: 120,
-                                      child: Text(productItem
-                                          .attributes!.last.attribute!.name!),
-                                    ),
-                                    IconButton(onPressed: (){}, icon: SvgPicture.asset(
-                                      'assets/images/basket.svg', // Path to your SVG file
-                                    ))
-                                  ],
-                                ),
-                                Positioned(
-                                  top: 8,
-                                  right: 16,
-                                  child: Container(
-                                    width: 30.0,
-                                    height: 30.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      // Circular shape
-                                    ),
-                                    child: IconButton(
-                                      icon: bookmarkedItems[productItem.id.toString()]!
-                                          ? SvgPicture.asset(
-                                        'assets/images/bookmarked.svg', // Path to your SVG file
-                                      )
-                                          : SvgPicture.asset(
-                                        'assets/images/bookmark.svg', // Path to your SVG file
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          // Toggle the bookmark state
-                                          bookmarkedItems[
-                                                  productItem.id.toString()] =
-                                              !bookmarkedItems[
-                                                  productItem.id.toString()]!;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          );
-        },
-      ),
     );
   }
 

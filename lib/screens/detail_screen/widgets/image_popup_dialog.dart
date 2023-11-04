@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../models/Products.dart';
 
@@ -46,10 +48,20 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
           ),
           // Large Image Display
           Expanded(
-            child: Image.network(
-              imageUrls![selectedIndex],
+            child: CachedNetworkImage(
+              imageUrl: imageUrls![selectedIndex],
               fit: BoxFit.contain,
-              width: double.infinity,
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.grey[300]!, // Light grey color for the base
+                highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              ),        errorWidget: (context, url, error) {
+              print(error); // This will print the error to the console
+              return Icon(Icons.error);
+            },
             ),
           ),
           // Thumbnails Display
@@ -76,9 +88,21 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                         borderRadius: BorderRadius.circular(0),
                       )
                           : null,
-                      child: Image.network(
-                        imageUrls[index],
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrls[index],
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!, // Light grey color for the base
+                          highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+                          child: Container(
+                            height: 100,
+                            width: 60,
+                            color: Colors.white,
+                          ),
+                        ),        errorWidget: (context, url, error) {
+                        print(error); // This will print the error to the console
+                        return Icon(Icons.error);
+                      },
                       ),
                     ),
                   );
