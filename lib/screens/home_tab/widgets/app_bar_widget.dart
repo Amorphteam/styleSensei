@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
-  final String assetName = 'assets/images/logo.svg';
+  final String assetName = 'assets/images/logo.png';
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CustomAppBar extends StatelessWidget {
             Text('Hi Sara', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),),
             Text('Here are our suggestions for you', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w200),),
           ],),
-          SvgPicture.asset(assetName)
+          Image.asset(assetName)
         ],
       ),
     );
