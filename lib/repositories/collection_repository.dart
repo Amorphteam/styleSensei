@@ -9,7 +9,7 @@ class CollectionRepository {
   final String apiUrl = 'http://stylesensei.net:8282/api/v1/';
 
   Future<CollectionModel> fetchCollectionModel() async {
-    String pathUrl = 'collection';
+    String pathUrl = 'collection?limit=300';
     final response = await http.get(Uri.parse(apiUrl+pathUrl));
 
     if (response.statusCode == 200) {

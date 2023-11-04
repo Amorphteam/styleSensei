@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:style_sensei/models/Items.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
+import '../../models/Products.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
@@ -102,7 +104,7 @@ class _DetailState extends State<Detail> {
             itemBuilder: (context, index) {
               return Padding(
                 padding: EdgeInsets.all(2.0),
-                child: Image.asset(
+                child: Image.network(
                   imageUrls[index],
                   width: 200,
                   height: 200,
@@ -152,13 +154,23 @@ class _DetailState extends State<Detail> {
                             child: Stack(
                               children: [
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
-                                      child:
-                                          Image.network(productItem.pictures!),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          showImagePopup(context, productItem);
+                                        },
+                                        child: Image.network(productItem.pictures!.split(',')[0]),
+                                      ),
                                     ),
-                                    Text(productItem
-                                        .attributes!.last.attribute!.name!),
+                                    Container(width: 120,
+                                      child: Text(productItem
+                                          .attributes!.last.attribute!.name!),
+                                    ),
+                                    IconButton(onPressed: (){}, icon: SvgPicture.asset(
+                                      'assets/images/basket.svg', // Path to your SVG file
+                                    ))
                                   ],
                                 ),
                                 Positioned(
@@ -206,4 +218,16 @@ class _DetailState extends State<Detail> {
       ),
     );
   }
+
+  void showImagePopup(BuildContext context, Products product) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ImagePopupDialog(product: product);
+      },
+    );
+  }
+
 }
+
+
