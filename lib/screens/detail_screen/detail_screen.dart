@@ -141,7 +141,10 @@ class _DetailState extends State<Detail> {
                     ),
                   ),
                   Container(
-                    height: 260,
+                    height: MediaQuery.of(context)
+                        .size
+                        .height *
+                        0.35,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -171,8 +174,14 @@ class _DetailState extends State<Detail> {
                                                 baseColor: Colors.grey[300]!, // Light grey color for the base
                                                 highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
                                                 child: Container(
-                                                  height: 260,
-                                                  width: 130,
+                                                  height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                      0.29,
+                                                  width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                0.23,
                                                   color: Colors.white,
                                                 ),
                                               ),        errorWidget: (context, url, error) {
@@ -183,9 +192,13 @@ class _DetailState extends State<Detail> {
 
                                           ),
                                         ),
-                                        Container(width: 120,
+                                        Container(width: MediaQuery.of(context)
+                                            .size
+                                            .width *
+                                        0.23,
                                           child: Text(productItem
-                                              .attributes!.last.attribute!.name!),
+                                              .name!, overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,),
                                         ),
                                         IconButton(onPressed: (){}, icon: SvgPicture.asset(
                                           'assets/images/basket.svg', // Path to your SVG file

@@ -31,7 +31,7 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
         children: [
           // Top bar with title, bookmark and shopping cart icons
           ListTile(
-            title: Text('Test name for product', style: Theme.of(context).textTheme.titleMedium),
+            title: Text(widget.product.name?? '', style: Theme.of(context).textTheme.titleMedium),
             trailing: Wrap(
               spacing: 8, // space between two icons
               children: <Widget>[
