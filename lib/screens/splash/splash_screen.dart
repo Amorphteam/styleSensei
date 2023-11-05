@@ -16,24 +16,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final List<Widget> splashPages = [
-    SplashPageWithPattern(
-        Colors.white, "assets/images/splash0.png", "Never stop looking for "),
+    // SplashPageWithPattern(
+        // Colors.white, "assets/images/splash0.png", "Never stop looking for "),
     SplashPage(
         Colors.white,
         "assets/images/splash1.png",
         "Getting to know you",
-        "This journey is all about YOU. in this Process we will determineyour fashion goals by learning about you.",
-        false),
+        "This journey is all about YOU. in this Process we will determineyour fashion goals by learning about you."),
     SplashPage(
         Colors.white,
         "assets/images/splash2.png",
         "Discover your personal style",
-        "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect Outfits for various occasions, daily wear, or special work presentations.",
-        true),
-    LoadingPage(Colors.white, "assets/images/loading.png",
-        "We are tailoring your space to YOUR style"),
-    ErrorPage(Colors.white, "assets/images/error.png", "Internal Server Error",
-        "Oops! Something went wrong on our end."),
+        "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect Outfits for various occasions, daily wear, or special work presentations."),
+
   ];
 
   double pageIndex = 0;
@@ -62,8 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 position: pageIndex.toInt(),
                 decorator: DotsDecorator(
                   size: const Size.square(9.0),
-                  color: Colors.grey,
-                  // Color of inactive dots
+                  color: Colors.grey, // Color of inactive dots
                   activeSize: const Size(9.0, 9.0),
                   activeShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -73,10 +67,65 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
+          // "Prev" Button
+          if (pageIndex > 0)
+            Positioned(
+              bottom: 30, // Adjust the position as needed
+              left: 40,
+              child: InkWell(
+                onTap: () {
+                  _pageController.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                },
+                child: Text(
+                  'Prev',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color:  Colors.grey, // Lighter color if no previous page
+                  ),
+                ),
+              ),
+            ),
+          // "Next" Button
+          Positioned(
+            bottom: 30, // Adjust the position as needed
+            right: 40,
+            child: InkWell(
+              onTap: () {
+                if (pageIndex < splashPages.length - 1) {
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+
+                }else {
+                  final homeCubit =
+                  HomeCubit(); // Create an instance of HomeCubit
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => homeCubit,
+                        child: MyHomePage(),
+                      ),
+                    ),
+                  );
+
+                }
+              },
+              child: Text(
+                'Next',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
-    );
-  }
+    );  }
 }
 
 class SplashPage extends StatelessWidget {
@@ -84,10 +133,8 @@ class SplashPage extends StatelessWidget {
   final String imagePath;
   final String title;
   final String des;
-  final bool isTheLastSplash;
 
-  SplashPage(this.backgroundColor, this.imagePath, this.title, this.des,
-      this.isTheLastSplash);
+  SplashPage(this.backgroundColor, this.imagePath, this.title, this.des);
 
   @override
   Widget build(BuildContext context) {
@@ -152,27 +199,6 @@ class SplashPage extends StatelessWidget {
             ),
           ),
         ),
-        if (isTheLastSplash)
-          Positioned(
-            bottom: 20,
-            right: 40,
-            child: GestureDetector(
-              onTap: () {
-                final homeCubit =
-                    HomeCubit(); // Create an instance of HomeCubit
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => homeCubit,
-                      child: MyHomePage(),
-                    ),
-                  ),
-                );
-              },
-              child: SvgPicture.asset("assets/images/arrow_right.svg"),
-            ),
-          ),
       ],
     );
   }
