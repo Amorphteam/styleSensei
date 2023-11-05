@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
+import 'package:style_sensei/screens/style/cubit/image_selection_cubit.dart';
 
 import '../home_tab/cubit/home_cubit.dart';
+import '../style/image_selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -101,14 +103,14 @@ class _SplashScreenState extends State<SplashScreen> {
                   );
 
                 }else {
-                  final homeCubit =
-                  HomeCubit(); // Create an instance of HomeCubit
+                  final imageSelectionCubit =
+                  ImageSelectionCubit(); // Create an instance of HomeCubit
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => BlocProvider(
-                        create: (context) => homeCubit,
-                        child: MyHomePage(),
+                        create: (context) => imageSelectionCubit,
+                        child: ImageSelectionScreen(),
                       ),
                     ),
                   );
