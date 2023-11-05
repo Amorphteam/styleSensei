@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/Products.dart';
 
@@ -31,18 +32,21 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
         children: [
           // Top bar with title, bookmark and shopping cart icons
           ListTile(
-            title: Text(widget.product.name?? '', style: Theme.of(context).textTheme.titleMedium),
+            title: Text(widget.product.name ?? '',
+                style: Theme.of(context).textTheme.titleMedium),
             trailing: Wrap(
               spacing: 8, // space between two icons
               children: <Widget>[
                 IconButton(
                   icon: SvgPicture.asset('assets/images/bookmark.svg'),
-                  onPressed: (){},
+                  onPressed: () {},
                 ),
                 IconButton(
-                  icon: SvgPicture.asset('assets/images/basket.svg'),
-                  onPressed: (){},
-                ),
+                    onPressed: () =>
+                        _openSourceWebsite(widget.product.correspondingUrl!),
+                    icon: SvgPicture.asset(
+                      'assets/images/basket.svg', // Path to your SVG file
+                    ))
               ],
             ),
           ),
@@ -52,16 +56,19 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
               imageUrl: imageUrls![selectedIndex],
               fit: BoxFit.contain,
               placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey[300]!, // Light grey color for the base
-                highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+                baseColor: Colors.grey[300]!,
+                // Light grey color for the base
+                highlightColor: Colors.grey[100]!,
+                // Lighter grey color for the highlight
                 child: Container(
                   width: double.infinity,
                   color: Colors.white,
                 ),
-              ),        errorWidget: (context, url, error) {
-              print(error); // This will print the error to the console
-              return Icon(Icons.error);
-            },
+              ),
+              errorWidget: (context, url, error) {
+                print(error); // This will print the error to the console
+                return Icon(Icons.error);
+              },
             ),
           ),
           // Thumbnails Display
@@ -84,25 +91,29 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                       padding: EdgeInsets.all(4),
                       decoration: isSelected
                           ? BoxDecoration(
-                        border: Border.all(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.circular(0),
-                      )
+                              border: Border.all(color: Colors.black, width: 2),
+                              borderRadius: BorderRadius.circular(0),
+                            )
                           : null,
                       child: CachedNetworkImage(
                         imageUrl: imageUrls[index],
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!, // Light grey color for the base
-                          highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+                          baseColor: Colors.grey[300]!,
+                          // Light grey color for the base
+                          highlightColor: Colors.grey[100]!,
+                          // Lighter grey color for the highlight
                           child: Container(
                             height: 100,
                             width: 60,
                             color: Colors.white,
                           ),
-                        ),        errorWidget: (context, url, error) {
-                        print(error); // This will print the error to the console
-                        return Icon(Icons.error);
-                      },
+                        ),
+                        errorWidget: (context, url, error) {
+                          print(
+                              error); // This will print the error to the console
+                          return Icon(Icons.error);
+                        },
                       ),
                     ),
                   );
@@ -113,5 +124,12 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
         ],
       ),
     );
+  }
+
+  Future<void> _openSourceWebsite(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 }

@@ -14,15 +14,16 @@ import 'Attributes.dart';
 
 class Products {
   Products({
-      num? id, 
-      String? name, 
-      String? description, 
-      String? categoryId, 
-      num? crawlerId, 
-      String? pictures, 
-      String? createdAt, 
-      String? modifiedAt, 
-      Category? category, 
+      num? id,
+      String? name,
+      String? description,
+      String? categoryId,
+      num? crawlerId,
+      String? pictures,
+      String? correspondingUrl,
+      String? createdAt,
+      String? modifiedAt,
+      Category? category,
       List<Attributes>? attributes,}){
     _id = id;
     _name = name;
@@ -30,6 +31,7 @@ class Products {
     _categoryId = categoryId;
     _crawlerId = crawlerId;
     _pictures = pictures;
+    _correspondingUrl = correspondingUrl;
     _createdAt = createdAt;
     _modifiedAt = modifiedAt;
     _category = category;
@@ -43,6 +45,7 @@ class Products {
     _categoryId = json['category_id'];
     _crawlerId = json['crawler_id'];
     _pictures = json['pictures'];
+    _correspondingUrl = json['corresponding_url'];
     _createdAt = json['created_at'];
     _modifiedAt = json['modified_at'];
     _category = json['category'] != null ? Category.fromJson(json['category']) : null;
@@ -59,6 +62,7 @@ class Products {
   String? _categoryId;
   num? _crawlerId;
   String? _pictures;
+  String? _correspondingUrl;
   String? _createdAt;
   String? _modifiedAt;
   Category? _category;
@@ -69,6 +73,7 @@ Products copyWith({  num? id,
   String? categoryId,
   num? crawlerId,
   String? pictures,
+  String? correspondingUrl,
   String? createdAt,
   String? modifiedAt,
   Category? category,
@@ -79,6 +84,7 @@ Products copyWith({  num? id,
   categoryId: categoryId ?? _categoryId,
   crawlerId: crawlerId ?? _crawlerId,
   pictures: pictures ?? _pictures,
+  correspondingUrl: correspondingUrl ?? _correspondingUrl,
   createdAt: createdAt ?? _createdAt,
   modifiedAt: modifiedAt ?? _modifiedAt,
   category: category ?? _category,
@@ -90,6 +96,7 @@ Products copyWith({  num? id,
   String? get categoryId => _categoryId;
   num? get crawlerId => _crawlerId;
   String? get pictures => _pictures;
+  String? get correspondingUrl => _correspondingUrl;
   String? get createdAt => _createdAt;
   String? get modifiedAt => _modifiedAt;
   Category? get category => _category;
@@ -103,6 +110,7 @@ Products copyWith({  num? id,
     map['category_id'] = _categoryId;
     map['crawler_id'] = _crawlerId;
     map['pictures'] = _pictures;
+    map['corresponding_url'] = _correspondingUrl;
     map['created_at'] = _createdAt;
     map['modified_at'] = _modifiedAt;
     if (_category != null) {

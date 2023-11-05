@@ -9,6 +9,7 @@ import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/Products.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/untitled.dart';
@@ -200,7 +201,7 @@ class _DetailState extends State<Detail> {
                                               .name!, overflow: TextOverflow.ellipsis,
                                           maxLines: 2,),
                                         ),
-                                        IconButton(onPressed: (){}, icon: SvgPicture.asset(
+                                        IconButton(onPressed: () => _openSourceWebsite(productItem.correspondingUrl!), icon: SvgPicture.asset(
                                           'assets/images/basket.svg', // Path to your SVG file
                                         ))
                                       ],
@@ -262,6 +263,12 @@ class _DetailState extends State<Detail> {
     );
   }
 
+  Future<void> _openSourceWebsite(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
 }
 
 

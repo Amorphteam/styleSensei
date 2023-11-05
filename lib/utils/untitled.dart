@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/Collections.dart';
 
@@ -170,6 +171,7 @@ class _ImageTileState extends State<ImageTile> {
       },
     );
   }
+
 
 
   // Function to show a dialog for normal press (you can customize this as needed)
