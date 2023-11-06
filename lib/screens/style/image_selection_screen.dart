@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:style_sensei/screens/waiting/cubit/waiting_cubit.dart';
+import 'package:style_sensei/screens/waiting/waiting_screen.dart';
 
 import '../home_tab/cubit/home_cubit.dart';
 import '../home_tab/home_screen.dart';
@@ -146,14 +148,14 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   ? () {
                 List<int> collectionTags = getTagsSelected();
                 print('aaaa $collectionTags');
-                final imageSelectionCubit =
-                HomeCubit(); // Create an instance of HomeCubit
+                final waitingCubit =
+                WaitingCubit(); // Create an instance of HomeCubit
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
-                      create: (context) => imageSelectionCubit,
-                      child: MyHomePage(collectionTags: collectionTags,),
+                      create: (context) => waitingCubit,
+                      child: WaitingScreen(collectionTags: collectionTags,),
                     ),
                   ),
                       (Route<dynamic> route) => false, // No route will allow return
