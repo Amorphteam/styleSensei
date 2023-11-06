@@ -379,7 +379,23 @@ class BulletPoint extends StatelessWidget {
           ),
         ),
         SizedBox(width: 8.0),
-        Expanded(child: Text(text)),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.labelMedium, // default text style
+              children: [
+                TextSpan(
+                  text: text.substring(0, text.indexOf(':') + 1), // text before the colon
+                  style: TextStyle(fontWeight: FontWeight.bold), // make it bold
+                ),
+                TextSpan(
+                  text: text.substring(text.indexOf(':') + 1), // text after the colon
+                  // The style is inherited from the default if not specified
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

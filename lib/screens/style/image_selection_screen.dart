@@ -12,8 +12,9 @@ import '../home_tab/home_screen.dart';
 class ImageItem {
   final String path;
   final int tag;
+  final String des;
 
-  ImageItem(this.path, this.tag);
+  ImageItem(this.path, this.tag, this.des);
 }
 
 

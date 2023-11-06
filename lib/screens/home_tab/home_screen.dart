@@ -86,6 +86,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   List<ImageItem> imageAssetsUrl = [];
   String styleName = '';
+  List<String> styleDescriptions = [];
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -93,6 +94,7 @@ class _HomeTabState extends State<HomeTab> {
     });
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
+    styleDescriptions = getDesStyle();
     super.initState();
   }
 
@@ -196,19 +198,16 @@ class _HomeTabState extends State<HomeTab> {
                     ],
                   ),
                   SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: BulletPoint(
-                        text: 'Classic Timeless, well-tailored, and formal.'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: BulletPoint(
-                        text: 'Minimalist Simple and monochromatic.'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: BulletPoint(text: 'Chic Sophisticated and refined.'),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(), // Disable scrolling for the nested ListView.builder
+                    shrinkWrap: true, // Use this to fit the ListView into the available space
+                    itemCount: styleDescriptions.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: BulletPoint(text: styleDescriptions[index]),
+                      );
+                    },
                   ),
                   SizedBox(height: 16.0),
                   TextButton(
@@ -312,6 +311,22 @@ class _HomeTabState extends State<HomeTab> {
     // Join all the unique results into a string, separated by a comma and a space.
     return uniqueResults.join(', ');
   }
+
+  List<String> getDesStyle() {
+    List<String> results = []; // Initialize an empty list to store the results
+
+    for (int searchId in widget.collectionTags) {
+      for (var item in images.where((item) => item.tag == searchId)) {
+        results.add(item.des);
+      }
+    }
+
+    // Remove duplicates by converting the list to a set and back to a list
+    results = results.toSet().toList();
+
+    return results; // Return the aggregated results without duplicates
+  }
+
 
 
 }
