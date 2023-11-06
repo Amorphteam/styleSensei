@@ -5,33 +5,44 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../home_tab/cubit/home_cubit.dart';
 import '../home_tab/home_screen.dart';
 
+
+class ImageItem {
+  final String path;
+  final String tag;
+
+  ImageItem(this.path, this.tag);
+}
+
+
 class ImageSelectionScreen extends StatefulWidget {
   @override
   _ImageSelectionScreenState createState() => _ImageSelectionScreenState();
 }
 
 class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
-  List<String> images = [
-    'assets/images/0.png', // replace with your asset names
-    'assets/images/1.png',
-    'assets/images/2.png',
-    'assets/images/3.png',
-    'assets/images/4.png',
-    'assets/images/5.png',
-    'assets/images/6.png',
-    'assets/images/7.png',
-    'assets/images/8.png',
-    // ... other asset names
+  List<ImageItem> images = [
+    ImageItem('assets/images/0.png', 'Tag0'),
+    ImageItem('assets/images/1.png', 'Tag1'),
+    ImageItem('assets/images/2.png', 'Tag2'),
+    ImageItem('assets/images/3.png', 'Tag3'),
+    ImageItem('assets/images/4.png', 'Tag4'),
+    ImageItem('assets/images/5.png', 'Tag5'),
   ];
 
   Set<int> selectedIndexes = {};
+  void printSelectedTags() {
+    for (var index in selectedIndexes) {
+      print(images[index].tag); // Printing the tag of each selected image
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          SizedBox(height: 20),
+    return Container(
+      color: Colors.white,
+      child: ListView(
+        children: [
+          SizedBox(height: 8),
           Container(
               margin: EdgeInsets.all(16),
               child: Row(
@@ -41,14 +52,14 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Hello there!',
+                        'Pick 4 or more styles you like',
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'Let’s find your signature look',
+                        'By understanding your preferences, \nwe can offer you tailored recommendations.',
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ],
@@ -59,50 +70,57 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   )
                 ],
               )),
-
-          Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.all(8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 2,
-                mainAxisSpacing: 2,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (selectedIndexes.contains(index)) {
-                        selectedIndexes.remove(index);
-                      } else {
-                        selectedIndexes.add(index);
-                      }
-                    });
-                  },
-                  child: GridTile(
-                    child: Image.asset(images[index], fit: BoxFit.cover),
-                    footer: GridTileBar(
-                      backgroundColor: selectedIndexes.contains(index)
-                          ? Colors.black45
-                          : Colors.transparent,
-                      trailing: selectedIndexes.contains(index)
-                          ? Icon(Icons.radio_button_checked, color: Colors.red)
-                          : Icon(Icons.radio_button_off, color: Colors.grey),
+          SizedBox(height: 8),
+          GridView.builder(
+            physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+            shrinkWrap: true, // You won't see infinite size error
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 2,
+              mainAxisSpacing: 2,
+              childAspectRatio: 0.75,
+            ),
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              bool isSelected = selectedIndexes.contains(index);
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (isSelected) {
+                      selectedIndexes.remove(index);
+                    } else {
+                      selectedIndexes.add(index);
+                    }
+                  });
+                },
+                child: GridTile(
+                  child: Stack(
+                    children: [
+                      Image.asset(images[index].path, fit: BoxFit.cover),
+                      if (!isSelected) // If not selected, show the semi-transparent overlay
+                        Container(color: Colors.black38),
+                    ],
+                  ),
+                  footer: GridTileBar(
+                    title: Container(), // This can be used to push the trailing icon to the right if needed.
+                    trailing: Align(
+                      alignment: Alignment.centerRight,
+                      child: isSelected
+                          ? Icon(Icons.check_circle, color: Colors.red)
+                          : Icon(Icons.radio_button_off, color: Colors.white),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             child: ElevatedButton(
               onPressed: selectedIndexes.length >= 3
                   ? () {
-                final homeCubit =
-                HomeCubit(); // Create an instance of HomeCubit
+                printSelectedTags();
+                final homeCubit = HomeCubit(); // Create an instance of HomeCubit
                 Navigator.push(
                   context,
                   MaterialPageRoute(
