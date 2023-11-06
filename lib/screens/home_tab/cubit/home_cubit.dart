@@ -9,10 +9,10 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
 
-  Future<void> fetchData(CollectionRepository? collectionRepository) async{
+  Future<void> fetchData(CollectionRepository? collectionRepository, List<int> collectionTags) async{
     emit(HomeLoadingState());
     try {
-      final collection = await collectionRepository?.fetchCollectionModel();
+      final collection = await collectionRepository?.fetchCollectionModel(collectionTags);
       if (collection != null) {
         emit(CollectionListLoadedState(collection));
       }else {

@@ -8,8 +8,9 @@ import '../models/ProductsModel.dart';
 class CollectionRepository {
   final String apiUrl = 'http://stylesensei.net:8282/api/v1/';
 
-  Future<CollectionModel> fetchCollectionModel() async {
-    String pathUrl = 'collection?limit=300';
+  Future<CollectionModel> fetchCollectionModel(List<int> collectionTags) async {
+    String tagsQuery = collectionTags.join(',');
+    String pathUrl = 'collection?limit=300&tags=$tagsQuery';
     final response = await http.get(Uri.parse(apiUrl+pathUrl));
 
     if (response.statusCode == 200) {

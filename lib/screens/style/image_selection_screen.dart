@@ -8,7 +8,7 @@ import '../home_tab/home_screen.dart';
 
 class ImageItem {
   final String path;
-  final String tag;
+  final int tag;
 
   ImageItem(this.path, this.tag);
 }
@@ -21,20 +21,37 @@ class ImageSelectionScreen extends StatefulWidget {
 
 class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
   List<ImageItem> images = [
-    ImageItem('assets/images/0.png', 'Tag0'),
-    ImageItem('assets/images/1.png', 'Tag1'),
-    ImageItem('assets/images/2.png', 'Tag2'),
-    ImageItem('assets/images/3.png', 'Tag3'),
-    ImageItem('assets/images/4.png', 'Tag4'),
-    ImageItem('assets/images/5.png', 'Tag5'),
+    // "Boho": 404,
+    //             "Casual": 411,
+    //             "Chic": 403,
+    //             "Classic": 405,
+    //             "Eclectic": 408,
+    //             "Feminine": 402,
+    //             "Formal": 413,
+    //             "Minimal": 401,
+    //             "Retro": 410,
+    //             "Rock": 406,
+    //             "Smart Casual": 412,
+    //             "Streetwear": 407,
+    //             "Tomboy": 409,
+    //             "Unisex": 415,
+    //             "Wintage": 414
+    ImageItem('assets/images/0.png', 401),
+    ImageItem('assets/images/1.png', 401),
+    ImageItem('assets/images/2.png', 401),
+    ImageItem('assets/images/3.png', 401),
+    ImageItem('assets/images/4.png', 401),
+    ImageItem('assets/images/5.png', 411),
+    ImageItem('assets/images/0.png', 411),
+    ImageItem('assets/images/6.png', 411),
+    ImageItem('assets/images/7.png', 411),
+    ImageItem('assets/images/8.png', 411),
+    ImageItem('assets/images/1.png', 411),
+    ImageItem('assets/images/5.png', 411),
   ];
 
   Set<int> selectedIndexes = {};
-  void printSelectedTags() {
-    for (var index in selectedIndexes) {
-      print(images[index].tag); // Printing the tag of each selected image
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +94,7 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                 physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
                 shrinkWrap: true, // You won't see infinite size error
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: 3,
                   crossAxisSpacing: 2,
                   mainAxisSpacing: 2,
                   childAspectRatio: 0.75,
@@ -99,7 +116,7 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                       child: Stack(
                         children: [
                           Image.asset(images[index].path, fit: BoxFit.cover),
-                          if (!isSelected) Container(color: Colors.black38), // Semi-transparent overlay
+                          if (isSelected) Container(color: Colors.black54), // Semi-transparent overlay
                         ],
                       ),
                       footer: GridTileBar(
@@ -112,6 +129,8 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   );
                 },
               ),
+              SizedBox(height: 60),
+
             ],
           ),
         ),
@@ -125,7 +144,20 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
             child: ElevatedButton(
               onPressed: selectedIndexes.length >= 3
                   ? () {
-                printSelectedTags();
+                List<int> collectionTags = getTagsSelected();
+                print('aaaa $collectionTags');
+                final imageSelectionCubit =
+                HomeCubit(); // Create an instance of HomeCubit
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => imageSelectionCubit,
+                      child: MyHomePage(collectionTags: collectionTags,),
+                    ),
+                  ),
+                );
+
                 // Your navigation logic here
               }
                   : null, // Button is disabled if less than 4 items are selected
@@ -154,5 +186,15 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
 
       ],
     );
+  }
+
+  List<int> getTagsSelected() {
+    List<int> collectionTags = [];
+    for (var index in selectedIndexes) {
+      if (!collectionTags.contains(images[index].tag)){
+      collectionTags.add(images[index].tag);
+      }
+    }
+    return collectionTags;
   }
 }

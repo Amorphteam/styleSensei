@@ -9,7 +9,8 @@ import 'widgets/staggered_grid_view2_widget.dart';
 import 'widgets/tab_bar_widget.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  final List<int> collectionTags;
+  const MyHomePage({super.key, required this.collectionTags});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -23,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _screens = [
-      HomeTab(homeCubit: context.read<HomeCubit>()),
+      HomeTab(homeCubit: context.read<HomeCubit>(), collectionTags: widget.collectionTags,),
       // Pass the HomeCubit to the first screen
       Container(
         color: Colors.orangeAccent,
@@ -65,8 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class HomeTab extends StatefulWidget {
   final HomeCubit homeCubit;
+  final List<int> collectionTags;
 
-  HomeTab({Key? key, required this.homeCubit}) : super(key: key);
+  HomeTab({Key? key, required this.homeCubit, required this.collectionTags}) : super(key: key);
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -76,7 +78,7 @@ class _HomeTabState extends State<HomeTab> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.homeCubit.fetchData(CollectionRepository());
+      widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
     });
     super.initState();
   }
