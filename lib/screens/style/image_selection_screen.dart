@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:style_sensei/screens/waiting/cubit/waiting_cubit.dart';
 import 'package:style_sensei/screens/waiting/waiting_screen.dart';
 
+import '../../utils/untitled.dart';
 import '../home_tab/cubit/home_cubit.dart';
 import '../home_tab/home_screen.dart';
 
@@ -22,41 +23,37 @@ class ImageSelectionScreen extends StatefulWidget {
 }
 
 class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
-  List<ImageItem> images = [
-    // "Boho": 404,
-    //             "Casual": 411,
-    //             "Chic": 403,
-    //             "Classic": 405,
-    //             "Eclectic": 408,
-    //             "Feminine": 402,
-    //             "Formal": 413,
-    //             "Minimal": 401,
-    //             "Retro": 410,
-    //             "Rock": 406,
-    //             "Smart Casual": 412,
-    //             "Streetwear": 407,
-    //             "Tomboy": 409,
-    //             "Unisex": 415,
-    //             "Wintage": 414
-    ImageItem('assets/images/0.png', 401),
-    ImageItem('assets/images/1.png', 401),
-    ImageItem('assets/images/2.png', 401),
-    ImageItem('assets/images/3.png', 401),
-    ImageItem('assets/images/4.png', 401),
-    ImageItem('assets/images/5.png', 411),
-    ImageItem('assets/images/0.png', 411),
-    ImageItem('assets/images/6.png', 411),
-    ImageItem('assets/images/7.png', 411),
-    ImageItem('assets/images/8.png', 411),
-    ImageItem('assets/images/1.png', 411),
-    ImageItem('assets/images/5.png', 411),
-  ];
+  //             "Classic": 405,
+  //             "Casual": 411,
+  // "Boho": 404,
+  //             "Rock": 406,
+  //             "Eclectic": 408,
+  //             "Feminine": 402,
+  //             "Minimal": 401,
+  //             "Tomboy": 409,
+  //             "Wintage": 414
+
+
+  //             "Chic": 403,
+  //             "Formal": 413,
+  //             "Retro": 410,
+  //             "Smart Casual": 412,
+  //             "Streetwear": 407,
+  //             "Unisex": 415,
+
+
+
 
   Set<int> selectedIndexes = {};
-
+  @override
+  void initState() {
+    super.initState();
+    images.shuffle(); // This will shuffle the order of images
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Stack(
       children: [
         Container(
@@ -99,7 +96,7 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                   crossAxisCount: 3,
                   crossAxisSpacing: 2,
                   mainAxisSpacing: 2,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 0.7,
                 ),
                 itemCount: images.length,
                 itemBuilder: (context, index) {
@@ -116,13 +113,18 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                     },
                     child: GridTile(
                       child: Stack(
+                        fit: StackFit.expand, // Ensure the stack fills the parent
                         children: [
-                          Image.asset(images[index].path, fit: BoxFit.cover),
+                          // Image.asset widget with BoxFit.cover should cover the entire grid tile.
+                          Image.asset(
+                            images[index].path,
+                            fit: BoxFit.cover, // This will cover the entire grid area
+                          ),
                           if (isSelected) Container(color: Colors.black54), // Semi-transparent overlay
                         ],
                       ),
                       footer: GridTileBar(
-                        title: Text(''), // Empty text widget can be used to push the icon to the right if needed.
+                        title: Text(''), // Empty text widget for alignment purposes
                         trailing: isSelected
                             ? Icon(Icons.check_circle, color: Colors.red)
                             : Icon(Icons.radio_button_off, color: Colors.white),

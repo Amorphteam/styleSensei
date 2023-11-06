@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import '../../models/Collections.dart';
+import '../../utils/untitled.dart';
 import '../splash/splash_screen.dart';
 import '../style/cubit/image_selection_cubit.dart';
 import '../style/image_selection_screen.dart';
@@ -83,11 +84,15 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  List<ImageItem> imageAssetsUrl = [];
+  String styleName = '';
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
     });
+    imageAssetsUrl = searchingTag();
+    styleName = getStyleName();
     super.initState();
   }
 
@@ -127,10 +132,20 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                       ),
                       Expanded(
-                        child: Text(
-                            'It looks like your top choices revolve around elegant, monochromatic, and formal attire.',
-                            style: Theme.of(context).textTheme.titleSmall),
-                      ),
+                        child: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.titleSmall, // Default text style
+                            children: <TextSpan>[
+                              TextSpan(text: 'It looks like your top choices revolve around '),
+                              TextSpan(
+                                text: '$styleName',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: ' attire.'),
+                            ],
+                          ),
+                        ),
+                      )
                     ],
                   ),
 
@@ -144,7 +159,7 @@ class _HomeTabState extends State<HomeTab> {
                         Transform.rotate(
                           angle: -0.2,
                           // Adjust the angle to tilt the card to the left
-                          child: ImageCard(assetName: 'assets/images/0.png'),
+                          child: ImageCard(assetName: imageAssetsUrl[0].path),
                         ),
                         // Right image
 
@@ -152,12 +167,12 @@ class _HomeTabState extends State<HomeTab> {
                         Transform.rotate(
                           angle: 0.0,
                           // Adjust the angle to tilt the card to the right
-                          child: ImageCard(assetName: 'assets/images/1.png'),
+                          child: ImageCard(assetName: imageAssetsUrl[1].path),
                         ),
                         Transform.rotate(
                           angle: 0.1,
                           // Adjust the angle to tilt the card to the right
-                          child: ImageCard(assetName: 'assets/images/2.png'),
+                          child: ImageCard(assetName: imageAssetsUrl[2].path),
                         ),
                       ],
                     ),
@@ -272,4 +287,31 @@ class _HomeTabState extends State<HomeTab> {
       ),
     );
   }
+
+  List<ImageItem> searchingTag() {
+    List<ImageItem> results = []; // Initialize an empty list to store the results
+
+    for (int searchId in widget.collectionTags) {
+      results.addAll(images.where((item) => item.tag == searchId));
+    }
+    return results; // Return the aggregated results
+  }
+
+
+  String getStyleName() {
+    Set<String> uniqueResults = Set(); // Use a set to store unique results.
+
+    for (int searchId in widget.collectionTags) {
+      for (var item in images.where((item) => item.tag == searchId)) {
+        // Use a regular expression to remove numbers before .jpeg and add the processed path to the set.
+        String pathWithoutNumber = item.path.replaceAll(RegExp(r'\d+\.jpeg$'), '.jpeg');
+        uniqueResults.add(pathWithoutNumber.replaceAll('assets/images/', '').replaceAll('.jpeg', ''));
+      }
+    }
+
+    // Join all the unique results into a string, separated by a comma and a space.
+    return uniqueResults.join(', ');
+  }
+
+
 }

@@ -8,6 +8,7 @@ import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/Collections.dart';
+import '../screens/style/image_selection_screen.dart';
 
 const _defaultColor = Color(0xFF34568B);
 
@@ -230,3 +231,43 @@ class _InteractiveTileState extends State<InteractiveTile> {
     );
   }
 }
+List<ImageItem> images = [
+  ImageItem('assets/images/classic1.jpeg', 405),
+  ImageItem('assets/images/classic2.jpeg', 405),
+  ImageItem('assets/images/classic3.jpeg', 405),
+  ImageItem('assets/images/classic4.jpeg', 405),
+  ImageItem('assets/images/casual1.jpeg', 411),
+  ImageItem('assets/images/casual2.jpeg', 411),
+  ImageItem('assets/images/casual3.jpeg', 411),
+  ImageItem('assets/images/casual4.jpeg', 411),
+  ImageItem('assets/images/bohemian1.jpeg', 404),
+  ImageItem('assets/images/bohemian2.jpeg', 404),
+  ImageItem('assets/images/bohemian3.jpeg', 404),
+  ImageItem('assets/images/bohemian4.jpeg', 404),
+  ImageItem('assets/images/rock1.jpeg', 406),
+  ImageItem('assets/images/rock2.jpeg', 406),
+  ImageItem('assets/images/rock3.jpeg', 406),
+  ImageItem('assets/images/rock4.jpeg', 406),
+  ImageItem('assets/images/eclectic1.jpeg', 408),
+  ImageItem('assets/images/eclectic2.jpeg', 408),
+  ImageItem('assets/images/eclectic3.jpeg', 408),
+  ImageItem('assets/images/eclectic4.jpeg', 408),
+  ImageItem('assets/images/feminine1.jpeg', 402),
+  ImageItem('assets/images/feminine2.jpeg', 402),
+  ImageItem('assets/images/feminine3.jpeg', 402),
+  ImageItem('assets/images/feminine4.jpeg', 402),
+  ImageItem('assets/images/minimal1.jpeg', 401),
+  ImageItem('assets/images/minimal2.jpeg', 401),
+  ImageItem('assets/images/minimal3.jpeg', 401),
+  ImageItem('assets/images/minimal4.jpeg', 401),
+  ImageItem('assets/images/tomboy1.jpeg', 409),
+  ImageItem('assets/images/tomboy2.jpeg', 409),
+  ImageItem('assets/images/tomboy3.jpeg', 409),
+  ImageItem('assets/images/tomboy4.jpeg', 409),
+  ImageItem('assets/images/tomboy5.jpeg', 409),
+  ImageItem('assets/images/vintage1.jpeg', 414),
+  ImageItem('assets/images/vintage2.jpeg', 414),
+  ImageItem('assets/images/vintage3.jpeg', 414),
+  ImageItem('assets/images/vintage4.jpeg', 414),
+  ImageItem('assets/images/vintage5.jpeg', 414),
+];
