@@ -4,6 +4,9 @@ import 'package:lottie/lottie.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import '../../models/Collections.dart';
+import '../splash/splash_screen.dart';
+import '../style/cubit/image_selection_cubit.dart';
+import '../style/image_selection_screen.dart';
 import 'widgets/staggered_grid_view_widget.dart';
 import 'widgets/staggered_grid_view2_widget.dart';
 import 'widgets/tab_bar_widget.dart';
@@ -91,32 +94,145 @@ class _HomeTabState extends State<HomeTab> {
         children: [
           SizedBox(height: 8),
           Container(
-              margin: EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+
+                children: <Widget>[
+
+                  Container(
+                    alignment: Alignment.centerLeft, // Align the text to the right side of the container
+
+                    child: Text(
+
+                      'Hello there!',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Row(
                     children: [
-                      Text(
-                        'Hello there!',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset('assets/images/circle.png', width: 50, height: 50,),
                       ),
-                      Text(
-                        'Let’s find your signature look',
-                        style: Theme.of(context).textTheme.titleSmall,
+                      Expanded(
+                        child: Text(
+                          'It looks like your top choices revolve around elegant, monochromatic, and formal attire.',
+                          style: Theme.of(context).textTheme.titleSmall
+                          ),
                       ),
                     ],
                   ),
-                  Image.asset(
-                    'assets/images/large_text_logo.png',
-                    width: 12,
-                  )
+
+                  SizedBox(height: 24.0),
+                  // Placeholder for images, you would use Image.asset or Image.network instead
+                  Container(
+                    width: MediaQuery.of(context)
+                        .size
+                        .width *
+                        0.8,
+                    child: Row(
+                      children: [
+                        // Left image
+                        Transform.rotate(
+                          angle: -0.2, // Adjust the angle to tilt the card to the left
+                          child: ImageCard(assetName: 'assets/images/0.png'),
+                        ),
+                        // Right image
+
+                        // Center image (no rotation)
+                        Transform.rotate(
+                          angle: 0.0, // Adjust the angle to tilt the card to the right
+                          child: ImageCard(assetName: 'assets/images/1.png'),
+
+                        ),
+                        Transform.rotate(
+                          angle: 0.1, // Adjust the angle to tilt the card to the right
+                          child: ImageCard(assetName: 'assets/images/2.png'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24.0),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset('assets/images/cards.png', width: 40, height: 40,),
+                      ),
+                      Expanded(
+                        child: Text(
+                            'Based on your preferences, you might prefer these styles:',
+                            style: Theme.of(context).textTheme.titleSmall
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: BulletPoint(text: 'Classic Timeless, well-tailored, and formal.'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: BulletPoint(text: 'Minimalist Simple and monochromatic.'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: BulletPoint(text: 'Chic Sophisticated and refined.'),
+                  ),
+                  SizedBox(height: 16.0),
+                  TextButton(
+                    onPressed: () async {
+                      await Future.delayed(Duration(microseconds: 200));
+                      final imageSelectionCubit =
+                      ImageSelectionCubit(); // Create an instance of HomeCubit
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => imageSelectionCubit,
+                            child: ImageSelectionScreen(),
+                          ),
+                        ),
+                      );
+                      },
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.labelSmall, // Default text style
+                        children: [
+                          TextSpan(
+                            text: 'If the result doesn\'t match your style, ', // Unstyled part
+                          ),
+                          TextSpan(
+                            text: 'Try the test again', // Styled part
+                            style: TextStyle(color: Colors.red), // Apply the red color
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
                 ],
-              )),
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Let’s find your signature look',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
           SizedBox(height: 8),
           BlocBuilder<HomeCubit, HomeState>(
             builder: (context, state) {

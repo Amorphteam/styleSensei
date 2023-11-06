@@ -148,7 +148,7 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                 print('aaaa $collectionTags');
                 final imageSelectionCubit =
                 HomeCubit(); // Create an instance of HomeCubit
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
@@ -156,6 +156,8 @@ class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
                       child: MyHomePage(collectionTags: collectionTags,),
                     ),
                   ),
+                      (Route<dynamic> route) => false, // No route will allow return
+
                 );
 
                 // Your navigation logic here

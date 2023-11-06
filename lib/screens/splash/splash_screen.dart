@@ -9,6 +9,7 @@ import 'package:style_sensei/screens/style/cubit/image_selection_cubit.dart';
 
 import '../home_tab/cubit/home_cubit.dart';
 import '../style/image_selection_screen.dart';
+import 'dart:math' as math;
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -421,6 +422,60 @@ class ErrorPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+
+class BulletPoint extends StatelessWidget {
+  final String text;
+  const BulletPoint({Key? key, required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          height: 10.0,
+          width: 10.0,
+          decoration: BoxDecoration(
+            color: Colors.red,
+            shape: BoxShape.circle,
+          ),
+        ),
+        SizedBox(width: 8.0),
+        Expanded(child: Text(text)),
+      ],
+    );
+  }
+}
+class ImageCard extends StatelessWidget {
+  final String assetName;
+
+  const ImageCard({Key? key, required this.assetName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      height: 160,
+      margin: EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4,
+            spreadRadius: 2,
+            offset: Offset(2, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(assetName, fit: BoxFit.cover),
       ),
     );
   }
