@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +23,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'centrale',
         useMaterial3: true,
-
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red, // Pick a seed color
+          brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
+        ),
       ),
       home: BlocProvider(
         create: (context) => SplashCubit(),
@@ -60,34 +64,48 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     return Scaffold(
-      body: _screens[currentPageIndex],
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: labelBehavior,
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.home_rounded),
-            label: 'Explore',
+        body: _screens[currentPageIndex],
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+            // This will change the background color of the NavigationBar
+            // no matter what theme you are using.
+            bottomAppBarColor: Colors.white,
+            // If you are using material3, you might need to set the color scheme
+            // and use surfaceVariant or surfaceTint color for NavigationBar
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  background: Colors.white,
+                  surfaceVariant: Colors.white,
+                  surfaceTint: Colors.white,
+                ),
           ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.bookmark),
-            icon: Icon(Icons.bookmark_border),
-            label: 'Saved',
+          child: NavigationBar(
+            labelBehavior: labelBehavior,
+            selectedIndex: currentPageIndex,
+            onDestinationSelected: (int index) {
+              setState(() {
+                currentPageIndex = index;
+              });
+            },
+            backgroundColor: Colors.white,
+            destinations: <Widget>[
+              NavigationDestination(
+                selectedIcon: SvgPicture.asset('assets/images/home_bold.svg'),
+                icon: SvgPicture.asset('assets/images/home_light.svg'),
+                label: 'Explore',
+              ),
+              NavigationDestination(
+                selectedIcon: SvgPicture.asset('assets/images/bookmarked.svg'),
+                icon: SvgPicture.asset('assets/images/bookmark.svg'),
+                label: 'Saved',
+              ),
+              NavigationDestination(
+                selectedIcon:
+                    SvgPicture.asset('assets/images/profile_bold.svg'),
+                icon: SvgPicture.asset('assets/images/profile_light.svg'),
+                label: 'Profile',
+              ),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.account_circle_rounded),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }
-
-
-

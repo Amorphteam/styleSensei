@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
@@ -40,6 +41,8 @@ class _SavedScreenState extends State<SavedScreen> {
                   )
                 ],
               )),
+          Lottie.asset('assets/json/large_loading.json', repeat: false),
+
         ],
       ));
   }
