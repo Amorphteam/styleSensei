@@ -8,7 +8,7 @@ import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/Collections.dart';
-import '../screens/style/image_selection_screen.dart';
+import '../screens/style/style_screen.dart';
 
 const _defaultColor = Color(0xFF34568B);
 
@@ -111,7 +111,7 @@ class _ImageTileState extends State<ImageTile> {
         setState(() {
           isLongPressing = true;
         });
-        _showLongPressDialog(context, widget.index);
+        // _showLongPressDialog(context, widget.index);
       },
       onTap: () {
         if (!isLongPressing) {

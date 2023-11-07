@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
-import 'package:style_sensei/screens/style/cubit/image_selection_cubit.dart';
+import 'package:style_sensei/screens/style/cubit/style_cubit.dart';
 
 import '../home_tab/cubit/home_cubit.dart';
-import '../style/image_selection_screen.dart';
+import '../style/style_screen.dart';
 import 'dart:math' as math;
 
 class SplashScreen extends StatefulWidget {
@@ -111,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     MaterialPageRoute(
                       builder: (context) => BlocProvider(
                         create: (context) => imageSelectionCubit,
-                        child: ImageSelectionScreen(),
+                        child: StyleScreen(),
                       ),
                     ),
                   );

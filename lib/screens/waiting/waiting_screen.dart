@@ -6,6 +6,8 @@ import 'package:lottie/lottie.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
 
+import '../../main.dart';
+
 class WaitingScreen extends StatefulWidget {
   final List<int> collectionTags;
 

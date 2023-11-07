@@ -1,4 +1,4 @@
-part of 'image_selection_cubit.dart';
+part of 'style_cubit.dart';
 
 @immutable
 abstract class ImageSelectionState {}

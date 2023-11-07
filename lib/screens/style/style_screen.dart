@@ -18,12 +18,12 @@ class ImageItem {
 }
 
 
-class ImageSelectionScreen extends StatefulWidget {
+class StyleScreen extends StatefulWidget {
   @override
-  _ImageSelectionScreenState createState() => _ImageSelectionScreenState();
+  _StyleScreenState createState() => _StyleScreenState();
 }
 
-class _ImageSelectionScreenState extends State<ImageSelectionScreen> {
+class _StyleScreenState extends State<StyleScreen> {
   //             "Classic": 405,
   //             "Casual": 411,
   // "Boho": 404,

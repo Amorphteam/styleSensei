@@ -171,6 +171,14 @@ class _DetailState extends State<Detail> {
                                             CachedNetworkImage(
                                               imageUrl: productItem.pictures!.split(',')[0],
                                               fit: BoxFit.cover,
+                                              height:MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                                  0.29,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.33,
                                               placeholder: (context, url) => Shimmer.fromColors(
                                                 baseColor: Colors.grey[300]!, // Light grey color for the base
                                                 highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
@@ -182,7 +190,7 @@ class _DetailState extends State<Detail> {
                                                   width: MediaQuery.of(context)
                                                 .size
                                                 .width *
-                                                0.23,
+                                                0.33,
                                                   color: Colors.white,
                                                 ),
                                               ),        errorWidget: (context, url, error) {

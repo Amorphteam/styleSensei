@@ -6,71 +6,12 @@ import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import '../../models/Collections.dart';
 import '../../utils/untitled.dart';
 import '../splash/splash_screen.dart';
-import '../style/cubit/image_selection_cubit.dart';
-import '../style/image_selection_screen.dart';
+import '../style/cubit/style_cubit.dart';
+import '../style/style_screen.dart';
 import 'widgets/staggered_grid_view_widget.dart';
 import 'widgets/staggered_grid_view2_widget.dart';
 import 'widgets/tab_bar_widget.dart';
 
-class MyHomePage extends StatefulWidget {
-  final List<int> collectionTags;
-
-  const MyHomePage({super.key, required this.collectionTags});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int currentPageIndex = 0;
-  NavigationDestinationLabelBehavior labelBehavior =
-      NavigationDestinationLabelBehavior.onlyShowSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> _screens = [
-      HomeTab(
-        homeCubit: context.read<HomeCubit>(),
-        collectionTags: widget.collectionTags,
-      ),
-      // Pass the HomeCubit to the first screen
-      Container(
-        color: Colors.orangeAccent,
-      ),
-      Container(
-        color: Colors.red,
-      ),
-    ];
-
-    return Scaffold(
-      body: _screens[currentPageIndex],
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: labelBehavior,
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.home_rounded),
-            label: 'Explore',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.bookmark),
-            icon: Icon(Icons.bookmark_border),
-            label: 'Saved',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.account_circle_rounded),
-            label: 'Search',
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class HomeTab extends StatefulWidget {
   final HomeCubit homeCubit;
@@ -100,6 +41,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    imageAssetsUrl.shuffle();
     return Container(
       color: Colors.white,
       child: ListView(
@@ -220,7 +162,7 @@ class _HomeTabState extends State<HomeTab> {
                         MaterialPageRoute(
                           builder: (context) => BlocProvider(
                             create: (context) => imageSelectionCubit,
-                            child: ImageSelectionScreen(),
+                            child: StyleScreen(),
                           ),
                         ),
                       );
