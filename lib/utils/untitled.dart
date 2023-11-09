@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
@@ -269,3 +270,22 @@ List<ImageItem> images = [
   ImageItem('assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
   ImageItem('assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
 ];
+
+void saveItemIds(List<int> itemIds)async{
+  SharedPreferences prefs=await SharedPreferences.getInstance();
+
+// convert your custom list to string list
+  List<String> stringsList=  itemIds.map((i)=>i.toString()).toList();
+
+// store your string list in shared prefs
+  prefs.setStringList("itemIds", stringsList);
+}
+
+Future<List<int>?> getItemIds() async {
+  SharedPreferences prefs=await SharedPreferences.getInstance();
+
+  List<String>? savedStrList = prefs.getStringList('itemIds');
+  List<int>? intProductList = savedStrList?.map((i) => int.parse(i)).toList();
+
+  return intProductList;
+}
