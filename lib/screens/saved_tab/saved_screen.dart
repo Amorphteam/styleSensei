@@ -70,131 +70,156 @@ class _SavedScreenState extends State<SavedScreen> {
                 )),
             BlocBuilder<SavedCubit, SavedState>(
               builder: (context, state) {
-                if (state is ProductListLoadedState){
-                  print('aaa ${state.products?.products.length}');
-                  return Container(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
+                if (state is ProductListLoadedState) {
+                  final groupedProducts = groupProductsByCategory(state.products?.products ?? []);
+                  final categories = groupedProducts.keys.toList();
+
+                  return Column(
+                    children: categories.map((categoryName) {
+                      final productsInCategory = groupedProducts[categoryName]!;
+                      return Column(
                         children: [
-                          if (state.products?.products != null)
-                            ...state.products!.products.map((productItem) {
-                              // Initialize the bookmark state for this item if it has not been done yet
-                              bookmarkedItems[productItem.id.toString()] ??=
-                              false;
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Stack(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  categoryName,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.35,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start, // Add this line
+                                children: productsInCategory.map((productItem) {
+                                  // Initialize the bookmark state for this item if it has not been done yet
+                                  bookmarkedItems[productItem.id.toString()] ??=
+                                  false;
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Stack(
                                       children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              showImagePopup(
-                                                  context, productItem);
-                                            },
-                                            child: CachedNetworkImage(
-                                              imageUrl: productItem.pictures!
-                                                  .split(',')[0],
-                                              fit: BoxFit.cover,
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                                  0.29,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                                  0.33,
-                                              placeholder: (context, url) =>
-                                                  Shimmer.fromColors(
-                                                    baseColor: Colors.grey[300]!,
-                                                    // Light grey color for the base
-                                                    highlightColor: Colors.grey[100]!,
-                                                    // Lighter grey color for the highlight
-                                                    child: Container(
-                                                      height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                          0.29,
-                                                      width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                          0.33,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                              errorWidget: (context, url, error) {
-                                                print(
-                                                    error); // This will print the error to the console
-                                                return Icon(Icons.error);
-                                              },
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  showImagePopup(
+                                                      context, productItem);
+                                                },
+                                                child: CachedNetworkImage(
+                                                  imageUrl: productItem.pictures!
+                                                      .split(',')[0],
+                                                  fit: BoxFit.cover,
+                                                  height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                      0.29,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                      0.33,
+                                                  placeholder: (context, url) =>
+                                                      Shimmer.fromColors(
+                                                        baseColor: Colors.grey[300]!,
+                                                        // Light grey color for the base
+                                                        highlightColor: Colors.grey[100]!,
+                                                        // Lighter grey color for the highlight
+                                                        child: Container(
+                                                          height: MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                              0.29,
+                                                          width: MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                              0.33,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                  errorWidget: (context, url, error) {
+                                                    print(
+                                                        error); // This will print the error to the console
+                                                    return Icon(Icons.error);
+                                                  },
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Container(
+                                              width:
+                                              MediaQuery.of(context).size.width *
+                                                  0.23,
+                                              child: Text(
+                                                productItem.name!,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                              ),
+                                            ),
+                                            IconButton(
+                                                onPressed: () => _openSourceWebsite(
+                                                    productItem.correspondingUrl!),
+                                                icon: SvgPicture.asset(
+                                                  'assets/images/basket.svg', // Path to your SVG file
+                                                ))
+                                          ],
                                         ),
-                                        Container(
-                                          width:
-                                          MediaQuery.of(context).size.width *
-                                              0.23,
-                                          child: Text(
-                                            productItem.name!,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                          ),
-                                        ),
-                                        IconButton(
-                                            onPressed: () => _openSourceWebsite(
-                                                productItem.correspondingUrl!),
-                                            icon: SvgPicture.asset(
-                                              'assets/images/basket.svg', // Path to your SVG file
-                                            ))
+                                        Positioned(
+                                            top: 8,
+                                            right: 16,
+                                            child: Container(
+                                              width: 30.0,
+                                              height: 30.0,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                                // Circular shape
+                                              ),
+                                              child: IconButton(
+                                                icon: bookmarkedItems[
+                                                productItem.id.toString()]!
+                                                    ? SvgPicture.asset(
+                                                  'assets/images/bookmarked.svg', // Path to your SVG file
+                                                )
+                                                    : SvgPicture.asset(
+                                                  'assets/images/bookmark.svg', // Path to your SVG file
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    // Toggle the bookmark state
+                                                    bookmarkedItems[productItem.id
+                                                        .toString()] =
+                                                    !bookmarkedItems[productItem
+                                                        .id
+                                                        .toString()]!;
+                                                    // Save bookmarked items to SharedPreferences
+                                                    saveBookmarkedItems(
+                                                        bookmarkedItems);
+                                                  });
+                                                },
+                                              ),
+                                            )),
                                       ],
                                     ),
-                                    Positioned(
-                                        top: 8,
-                                        right: 16,
-                                        child: Container(
-                                          width: 30.0,
-                                          height: 30.0,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            // Circular shape
-                                          ),
-                                          child: IconButton(
-                                            icon: bookmarkedItems[
-                                            productItem.id.toString()]!
-                                                ? SvgPicture.asset(
-                                              'assets/images/bookmarked.svg', // Path to your SVG file
-                                            )
-                                                : SvgPicture.asset(
-                                              'assets/images/bookmark.svg', // Path to your SVG file
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                // Toggle the bookmark state
-                                                bookmarkedItems[productItem.id
-                                                    .toString()] =
-                                                !bookmarkedItems[productItem
-                                                    .id
-                                                    .toString()]!;
-                                                // Save bookmarked items to SharedPreferences
-                                                saveBookmarkedItems(
-                                                    bookmarkedItems);
-                                              });
-                                            },
-                                          ),
-                                        )),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
+                                  );
+                                }
+                                ).toList(),
+                              ),
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
+                      );
+                    }).toList(),
                   );
                 }else if (state is SavedLoadingState) {
                   return Center(
@@ -236,4 +261,19 @@ class _SavedScreenState extends State<SavedScreen> {
       throw Exception('Could not launch $_url');
     }
   }
+
+  Map<String, List<Products>> groupProductsByCategory(List<Products> products) {
+    final Map<String, List<Products>> groupedProducts = {};
+
+    for (var product in products) {
+      final category = product.category?.name ?? 'Other';
+      if (!groupedProducts.containsKey(category)) {
+        groupedProducts[category] = [];
+      }
+      groupedProducts[category]!.add(product);
+    }
+
+    return groupedProducts;
+  }
+
 }
