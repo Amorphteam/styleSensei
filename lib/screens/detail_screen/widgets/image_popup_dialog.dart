@@ -4,11 +4,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../models/Products.dart';
+import '../../../utils/untitled.dart';
 
 class ImagePopupDialog extends StatefulWidget {
   final Products product;
+  final Map<String, bool> bookmarkedItems;
+  final Function() loadBookmarkedItems;
+  final Function(Map<String, bool>) saveBookmarkedItems;
 
-  ImagePopupDialog({Key? key, required this.product}) : super(key: key);
+  ImagePopupDialog({
+    required this.product,
+    required this.bookmarkedItems,
+    required this.loadBookmarkedItems,
+    required this.saveBookmarkedItems,
+  });
+
 
   @override
   _ImagePopupDialogState createState() => _ImagePopupDialogState();
@@ -40,21 +50,21 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                 spacing: 8, // space between the icons
                 children: <Widget>[
                   IconButton(
-                    icon: SvgPicture.asset(
-                      // Chooses the bookmark icon based on the isBookmarked state.
-                      isBookmarked ? 'assets/images/bookmarked.svg' : 'assets/images/bookmark.svg',
-                      // Optionally change color when the item is bookmarked
-                      color: isBookmarked ? Colors.black : null,
+                    icon: widget.bookmarkedItems[widget.product.id.toString()]!
+                        ? SvgPicture.asset(
+                      'assets/images/bookmarked.svg', // Path to your SVG file
+                    )
+                        : SvgPicture.asset(
+                      'assets/images/bookmark.svg', // Path to your SVG file
                     ),
                     onPressed: () {
-                      // Toggles the bookmark state when the icon is tapped.
-                      setState(() {
-                        isBookmarked = !isBookmarked;
-                      });
-                      // Here you should implement the logic to persist the bookmark state
+                      // Toggle the bookmark state
+                      widget.bookmarkedItems[widget.product.id.toString()] =
+                      !widget.bookmarkedItems[widget.product.id.toString()]!;
+                      // Save bookmarked items
+                      saveBookmarkedItems(widget.bookmarkedItems);
                     },
-                  ),
-                  IconButton(
+                  ),                  IconButton(
                     onPressed: () => _openSourceWebsite(widget.product.correspondingUrl!),
                     icon: SvgPicture.asset('assets/images/basket.svg'),
                   ),

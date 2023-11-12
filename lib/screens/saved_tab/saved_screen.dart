@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../utils/untitled.dart';
+
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
 
@@ -10,6 +12,16 @@ class SavedScreen extends StatefulWidget {
 }
 
 class _SavedScreenState extends State<SavedScreen> {
+  List<String> bookmarkIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadBookmarkedItems().then((bookmarkedItemIds) {
+      bookmarkIds = bookmarkedItemIds.keys.toList();
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
