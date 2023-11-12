@@ -150,7 +150,6 @@ class _StyleScreenState extends State<StyleScreen> {
               onPressed: selectedIndexes.length >= 3
                   ? () {
                 List<int> collectionTags = getTagsSelected();
-                print('aaaa $collectionTags');
                 final waitingCubit =
                 WaitingCubit(); // Create an instance of HomeCubit
                 Navigator.pushAndRemoveUntil(

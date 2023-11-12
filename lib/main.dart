@@ -5,6 +5,7 @@ import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:style_sensei/screens/profile_tab/profile_screen.dart';
+import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
 import 'package:style_sensei/screens/saved_tab/saved_screen.dart';
 import 'package:style_sensei/screens/splash/cubit/splash_cubit.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
@@ -59,7 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
         collectionTags: widget.collectionTags,
       ),
       // Pass the HomeCubit to the first screen
-      SavedScreen(),
+      BlocProvider(
+        create: (context) => SavedCubit(), // Create an instance of SavedCubit
+        child: SavedScreen(),
+      ),
       ProfileScreen(),
     ];
 
