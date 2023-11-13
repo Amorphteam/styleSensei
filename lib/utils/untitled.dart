@@ -271,21 +271,24 @@ List<ImageItem> images = [
   ImageItem('assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
 ];
 
-void saveItemIds(List<int> itemIds)async{
-  SharedPreferences prefs=await SharedPreferences.getInstance();
-
-// convert your custom list to string list
-  List<String> stringsList=  itemIds.map((i)=>i.toString()).toList();
-
-// store your string list in shared prefs
-  prefs.setStringList("itemIds", stringsList);
+Future<Map<String, bool>> loadBookmarkedItems() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  Map<String, bool> bookmarkedItems = {};
+  List<String>? bookmarkedItemIds = prefs.getStringList('bookmarkedItemIds');
+  if (bookmarkedItemIds != null) {
+    bookmarkedItemIds.forEach((itemId) {
+      bookmarkedItems[itemId] = true;
+    });
+  }
+  return bookmarkedItems;
 }
 
-Future<List<int>?> getItemIds() async {
-  SharedPreferences prefs=await SharedPreferences.getInstance();
-
-  List<String>? savedStrList = prefs.getStringList('itemIds');
-  List<int>? intProductList = savedStrList?.map((i) => int.parse(i)).toList();
-
-  return intProductList;
+// Function to save bookmarked item IDs to SharedPreferences
+Future<void> saveBookmarkedItems(Map<String, bool> bookmarkedItems) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> bookmarkedItemIds = bookmarkedItems.entries
+      .where((entry) => entry.value)
+      .map((entry) => entry.key)
+      .toList();
+  await prefs.setStringList('bookmarkedItemIds', bookmarkedItemIds);
 }

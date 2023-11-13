@@ -1,6 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../models/Products.dart';
+import '../../repositories/collection_repository.dart';
+import '../../utils/untitled.dart';
+import '../detail_screen/widgets/image_popup_dialog.dart';
 
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
@@ -10,39 +21,259 @@ class SavedScreen extends StatefulWidget {
 }
 
 class _SavedScreenState extends State<SavedScreen> {
+  List<int> bookmarkIds = [];
+  Map<String, bool> bookmarkedItems = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      loadBookmarkedItems().then((Map<String, bool> bookmarkedItemIds) {
+        bookmarkIds = bookmarkedItemIds.keys.map(int.parse).toList();
+        BlocProvider.of<SavedCubit>(context)
+            .fetchData(CollectionRepository(), bookmarkIds);
+      });
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      color: Colors.white,
-      child: ListView(
-        children: [
-          Container(
-              margin: EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Saved Products',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
+        color: Colors.white,
+        child: ListView(
+          children: [
+            SizedBox(height: 8),
+            Container(
+                margin: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Saved Products',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Image.asset(
+                      'assets/images/large_text_logo.png',
+                      width: 12,
+                    )
+                  ],
+                )),
+            BlocBuilder<SavedCubit, SavedState>(
+              builder: (context, state) {
+                if (state is ProductListLoadedState) {
+                  final groupedProducts = groupProductsByCategory(state.products?.products ?? []);
+                  final categories = groupedProducts.keys.toList();
 
-                    ],
-                  ),
-                  Image.asset(
-                    'assets/images/large_text_logo.png',
-                    width: 12,
-                  )
-                ],
-              )),
-          Lottie.asset('assets/json/large_loading.json', repeat: false),
+                  return Column(
+                    children: categories.map((categoryName) {
+                      final productsInCategory = groupedProducts[categoryName]!;
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  categoryName,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.35,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start, // Add this line
+                                children: productsInCategory.map((productItem) {
+                                  // Initialize the bookmark state for this item if it has not been done yet
+                                  bookmarkedItems[productItem.id.toString()] ??=
+                                  false;
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Stack(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  showImagePopup(
+                                                      context, productItem);
+                                                },
+                                                child: CachedNetworkImage(
+                                                  imageUrl: productItem.pictures!
+                                                      .split(',')[0],
+                                                  fit: BoxFit.cover,
+                                                  height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                      0.29,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                      0.33,
+                                                  placeholder: (context, url) =>
+                                                      Shimmer.fromColors(
+                                                        baseColor: Colors.grey[300]!,
+                                                        // Light grey color for the base
+                                                        highlightColor: Colors.grey[100]!,
+                                                        // Lighter grey color for the highlight
+                                                        child: Container(
+                                                          height: MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                              0.29,
+                                                          width: MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                              0.33,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                  errorWidget: (context, url, error) {
+                                                    print(
+                                                        error); // This will print the error to the console
+                                                    return Icon(Icons.error);
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width:
+                                              MediaQuery.of(context).size.width *
+                                                  0.23,
+                                              child: Text(
+                                                productItem.name!,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                              ),
+                                            ),
+                                            IconButton(
+                                                onPressed: () => _openSourceWebsite(
+                                                    productItem.correspondingUrl!),
+                                                icon: SvgPicture.asset(
+                                                  'assets/images/basket.svg', // Path to your SVG file
+                                                ))
+                                          ],
+                                        ),
+                                        Positioned(
+                                            top: 8,
+                                            right: 16,
+                                            child: Container(
+                                              width: 30.0,
+                                              height: 30.0,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                                // Circular shape
+                                              ),
+                                              child: IconButton(
+                                                icon: bookmarkedItems[
+                                                productItem.id.toString()]!
+                                                    ? SvgPicture.asset(
+                                                  'assets/images/bookmarked.svg', // Path to your SVG file
+                                                )
+                                                    : SvgPicture.asset(
+                                                  'assets/images/bookmark.svg', // Path to your SVG file
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    // Toggle the bookmark state
+                                                    bookmarkedItems[productItem.id
+                                                        .toString()] =
+                                                    !bookmarkedItems[productItem
+                                                        .id
+                                                        .toString()]!;
+                                                    // Save bookmarked items to SharedPreferences
+                                                    saveBookmarkedItems(
+                                                        bookmarkedItems);
+                                                  });
+                                                },
+                                              ),
+                                            )),
+                                      ],
+                                    ),
+                                  );
+                                }
+                                ).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  );
+                }else if (state is SavedLoadingState) {
+                  return Center(
+                    child: Container(
+                        width: 200,
+                        height: 100,
+                        child: Lottie.asset('assets/json/loading.json')),
+                  );
+              } else if (state is SavedErrorState){
+                  return Text('error is ${state.error}');
 
-        ],
-      ));
+                }else {
+                  return Lottie.asset('assets/json/large_loading.json', repeat: false);
+                }
+              },
+            )
+          ],
+        ));
   }
+
+  void showImagePopup(BuildContext context, Products product) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ImagePopupDialog(
+          product: product,
+          bookmarkedItems: bookmarkedItems,
+          loadBookmarkedItems: loadBookmarkedItems,
+          saveBookmarkedItems: saveBookmarkedItems,
+        );
+      },
+    );
+  }
+
+
+  Future<void> _openSourceWebsite(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
+  Map<String, List<Products>> groupProductsByCategory(List<Products> products) {
+    final Map<String, List<Products>> groupedProducts = {};
+
+    for (var product in products) {
+      final category = product.category?.name ?? 'Other';
+      if (!groupedProducts.containsKey(category)) {
+        groupedProducts[category] = [];
+      }
+      groupedProducts[category]!.add(product);
+    }
+
+    return groupedProducts;
+  }
+
 }

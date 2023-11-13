@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:style_sensei/models/Collection_model.dart';
+import 'package:style_sensei/models/Products.dart';
+import 'package:style_sensei/models/ProtuctsTemp.dart';
 
 import '../models/ProductsModel.dart';
 
@@ -31,5 +33,19 @@ class CollectionRepository {
       throw Exception('Failed to fetch data');
     }
   }
+
+
+  Future<ProductsTemp> fetchProductModelByIds(List<int> collectionId) async {
+    String idsQuery = collectionId.join(',');
+    String pathUrl = 'product/list/get-by-ids?ids=$idsQuery';
+    final response = await http.get(Uri.parse(apiUrl + pathUrl));
+    if (response.statusCode == 200) {
+      final jsonMap = json.decode(response.body);
+      return ProductsTemp.fromJson(jsonMap);
+    } else {
+      throw Exception('Failed to fetch data');
+    }
+  }
+
 
 }
