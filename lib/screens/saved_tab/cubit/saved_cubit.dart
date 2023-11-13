@@ -12,7 +12,6 @@ class SavedCubit extends Cubit<SavedState> {
   SavedCubit() : super(SavedInitial());
 
   Future<void> fetchData(CollectionRepository? collectionRepository, List<int> bookmarkIds) async{
-    print('aaaaaaa $bookmarkIds');
     emit(SavedLoadingState());
     try {
       final products = await collectionRepository?.fetchProductModelByIds(bookmarkIds);

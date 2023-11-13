@@ -24,7 +24,9 @@ class SavedScreen extends StatefulWidget {
 class _SavedScreenState extends State<SavedScreen> {
   List<int> bookmarkIds = [];
   Map<String, bool> bookmarkedItems = {};
-
+  List<Products>? products;
+  Map<String, List<Products>>? groupedProducts;
+  List<String>? categories;
   @override
   void initState() {
     super.initState();
@@ -34,8 +36,10 @@ class _SavedScreenState extends State<SavedScreen> {
         setState(() {
           bookmarkedItems = bookmarkedItemIds;
         });
-        BlocProvider.of<SavedCubit>(context)
-            .fetchData(CollectionRepository(), bookmarkIds);
+        if (bookmarkIds.isNotEmpty) {
+          BlocProvider.of<SavedCubit>(context)
+              .fetchData(CollectionRepository(), bookmarkIds);
+        }
       });
     });
   }
@@ -73,13 +77,13 @@ class _SavedScreenState extends State<SavedScreen> {
             BlocBuilder<SavedCubit, SavedState>(
               builder: (context, state) {
                 if (state is ProductListLoadedState) {
-                  final groupedProducts =
-                      groupProductsByCategory(state.products?.products ?? []);
-                  final categories = groupedProducts.keys.toList();
+                  products = state.products?.products;
+                  groupedProducts = groupProductsByCategory(products ?? []);
+                   categories = groupedProducts?.keys.toList();
 
                   return Column(
-                    children: categories.map((categoryName) {
-                      final productsInCategory = groupedProducts[categoryName]!;
+                    children: categories!.map((categoryName) {
+                      final productsInCategory = groupedProducts![categoryName]!;
                       return Column(
                         children: [
                           Padding(
@@ -239,7 +243,11 @@ class _SavedScreenState extends State<SavedScreen> {
                                                       bookmarkIds.remove(productItem.id);
                                                     }
 
-                                                      saveBookmarkedItems(bookmarkedItems);
+                                                    products?.remove(productItem);
+                                                    groupedProducts = groupProductsByCategory(products ?? []);
+                                                    categories = groupedProducts?.keys.toList();
+                                                    saveBookmarkedItems(bookmarkedItems);
+
                                                   });
                                                 },
                                               ),
