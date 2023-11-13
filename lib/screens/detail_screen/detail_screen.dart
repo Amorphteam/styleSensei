@@ -11,6 +11,7 @@ import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.da
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../models/Attributes.dart';
 import '../../models/Products.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/untitled.dart';
@@ -221,16 +222,21 @@ class _DetailState extends State<Detail> {
                                             ),
                                           ),
                                         ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.23,
-                                          child: Text(
-                                            productItem.name!,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                          ),
+                                        SizedBox(height: 8,),
+                                        Container(width: MediaQuery.of(context)
+                                            .size
+                                            .width *
+                                            0.33,
+                                          child: Text(getBrandName(productItem.attributes) ?? 'Unknown', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,),
+                                        ),
+                                        Container(width: MediaQuery.of(context)
+                                            .size
+                                            .width *
+                                            0.33,
+                                          child: Text(productItem
+                                              .name!, style: Theme.of(context).textTheme.labelSmall,overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,),
                                         ),
                                         IconButton(
                                             onPressed: () => _openSourceWebsite(
@@ -313,6 +319,17 @@ class _DetailState extends State<Detail> {
       throw Exception('Could not launch $_url');
     }
   }
+  String? getBrandName(List<Attributes>? attributes) {
+    if (attributes == null) {
+      return 'Unknown'; // or any default value you want to return if attributes is null
+    }
 
+    for (var attribute in attributes) {
+      if (attribute.attribute?.name == 'Brand name') {
+        return attribute.value;
+      }
+    }
+    return 'Unknown'; // Default value in case the brand name is not found
+  }
 // Method to load bookmarked item IDs from SharedPreferences
 }

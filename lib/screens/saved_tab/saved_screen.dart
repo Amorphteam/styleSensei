@@ -8,6 +8,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../models/Attributes.dart';
 import '../../models/Products.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/untitled.dart';
@@ -30,16 +31,17 @@ class _SavedScreenState extends State<SavedScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       loadBookmarkedItems().then((Map<String, bool> bookmarkedItemIds) {
         bookmarkIds = bookmarkedItemIds.keys.map(int.parse).toList();
+        setState(() {
+          bookmarkedItems = bookmarkedItemIds;
+        });
         BlocProvider.of<SavedCubit>(context)
             .fetchData(CollectionRepository(), bookmarkIds);
       });
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
         color: Colors.white,
         child: ListView(
@@ -71,7 +73,8 @@ class _SavedScreenState extends State<SavedScreen> {
             BlocBuilder<SavedCubit, SavedState>(
               builder: (context, state) {
                 if (state is ProductListLoadedState) {
-                  final groupedProducts = groupProductsByCategory(state.products?.products ?? []);
+                  final groupedProducts =
+                      groupProductsByCategory(state.products?.products ?? []);
                   final categories = groupedProducts.keys.toList();
 
                   return Column(
@@ -99,18 +102,18 @@ class _SavedScreenState extends State<SavedScreen> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start, // Add this line
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                // Add this line
                                 children: productsInCategory.map((productItem) {
                                   // Initialize the bookmark state for this item if it has not been done yet
-                                  bookmarkedItems[productItem.id.toString()] ??=
-                                  false;
+
                                   return Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Stack(
                                       children: [
                                         Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
                                               child: GestureDetector(
@@ -119,36 +122,42 @@ class _SavedScreenState extends State<SavedScreen> {
                                                       context, productItem);
                                                 },
                                                 child: CachedNetworkImage(
-                                                  imageUrl: productItem.pictures!
+                                                  imageUrl: productItem
+                                                      .pictures!
                                                       .split(',')[0],
                                                   fit: BoxFit.cover,
                                                   height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
+                                                          .size
+                                                          .height *
                                                       0.29,
                                                   width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
+                                                          .size
+                                                          .width *
                                                       0.33,
                                                   placeholder: (context, url) =>
                                                       Shimmer.fromColors(
-                                                        baseColor: Colors.grey[300]!,
-                                                        // Light grey color for the base
-                                                        highlightColor: Colors.grey[100]!,
-                                                        // Lighter grey color for the highlight
-                                                        child: Container(
-                                                          height: MediaQuery.of(context)
-                                                              .size
-                                                              .height *
+                                                    baseColor:
+                                                        Colors.grey[300]!,
+                                                    // Light grey color for the base
+                                                    highlightColor:
+                                                        Colors.grey[100]!,
+                                                    // Lighter grey color for the highlight
+                                                    child: Container(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
                                                               0.29,
-                                                          width: MediaQuery.of(context)
-                                                              .size
-                                                              .width *
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
                                                               0.33,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                  errorWidget: (context, url, error) {
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) {
                                                     print(
                                                         error); // This will print the error to the console
                                                     return Icon(Icons.error);
@@ -156,19 +165,47 @@ class _SavedScreenState extends State<SavedScreen> {
                                                 ),
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
                                             Container(
-                                              width:
-                                              MediaQuery.of(context).size.width *
-                                                  0.23,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.33,
+                                              child: Text(
+                                                getBrandName(productItem
+                                                        .attributes) ??
+                                                    'Unknown',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelSmall
+                                                    ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.33,
                                               child: Text(
                                                 productItem.name!,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelSmall,
                                                 overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
+                                                maxLines: 1,
                                               ),
                                             ),
                                             IconButton(
-                                                onPressed: () => _openSourceWebsite(
-                                                    productItem.correspondingUrl!),
+                                                onPressed: () =>
+                                                    _openSourceWebsite(
+                                                        productItem
+                                                            .correspondingUrl!),
                                                 icon: SvgPicture.asset(
                                                   'assets/images/basket.svg', // Path to your SVG file
                                                 ))
@@ -186,34 +223,32 @@ class _SavedScreenState extends State<SavedScreen> {
                                                 // Circular shape
                                               ),
                                               child: IconButton(
-                                                icon: bookmarkedItems[
-                                                productItem.id.toString()]!
-                                                    ? SvgPicture.asset(
-                                                  'assets/images/bookmarked.svg', // Path to your SVG file
-                                                )
-                                                    : SvgPicture.asset(
-                                                  'assets/images/bookmark.svg', // Path to your SVG file
+                                                icon: SvgPicture.asset(
+                                                  'assets/images/remove.svg', // Path to your SVG file
                                                 ),
                                                 onPressed: () {
                                                   setState(() {
+                                                    final productIdString = productItem.id.toString();
                                                     // Toggle the bookmark state
-                                                    bookmarkedItems[productItem.id
-                                                        .toString()] =
-                                                    !bookmarkedItems[productItem
-                                                        .id
-                                                        .toString()]!;
-                                                    // Save bookmarked items to SharedPreferences
-                                                    saveBookmarkedItems(
-                                                        bookmarkedItems);
+                                                    bool isBookmarked = bookmarkedItems[productIdString] ?? false;
+                                                    bookmarkedItems[productIdString] = !isBookmarked;
+
+                                                    if (!isBookmarked) {
+                                                      // Remove the product from the bookmark list
+                                                      bookmarkedItems.remove(productIdString);
+                                                      bookmarkIds.remove(productItem.id);
+                                                    }
+
+                                                      saveBookmarkedItems(bookmarkedItems);
                                                   });
                                                 },
                                               ),
+
                                             )),
                                       ],
                                     ),
                                   );
-                                }
-                                ).toList(),
+                                }).toList(),
                               ),
                             ),
                           ),
@@ -221,18 +256,18 @@ class _SavedScreenState extends State<SavedScreen> {
                       );
                     }).toList(),
                   );
-                }else if (state is SavedLoadingState) {
+                } else if (state is SavedLoadingState) {
                   return Center(
                     child: Container(
                         width: 200,
                         height: 100,
                         child: Lottie.asset('assets/json/loading.json')),
                   );
-              } else if (state is SavedErrorState){
+                } else if (state is SavedErrorState) {
                   return Text('error is ${state.error}');
-
-                }else {
-                  return Lottie.asset('assets/json/large_loading.json', repeat: false);
+                } else {
+                  return Lottie.asset('assets/json/large_loading.json',
+                      repeat: false);
                 }
               },
             )
@@ -253,7 +288,6 @@ class _SavedScreenState extends State<SavedScreen> {
       },
     );
   }
-
 
   Future<void> _openSourceWebsite(String url) async {
     final Uri _url = Uri.parse(url);
@@ -276,4 +310,16 @@ class _SavedScreenState extends State<SavedScreen> {
     return groupedProducts;
   }
 
+  String? getBrandName(List<Attributes>? attributes) {
+    if (attributes == null) {
+      return 'Unknown'; // or any default value you want to return if attributes is null
+    }
+
+    for (var attribute in attributes) {
+      if (attribute.attribute?.name == 'Brand name') {
+        return attribute.value;
+      }
+    }
+    return 'Unknown'; // Default value in case the brand name is not found
+  }
 }
