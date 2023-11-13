@@ -16,7 +16,6 @@ class _SavedScreenState extends State<SavedScreen> {
       color: Colors.white,
       child: ListView(
         children: [
-          SizedBox(height: 8),
           Container(
               margin: EdgeInsets.all(16),
               child: Row(

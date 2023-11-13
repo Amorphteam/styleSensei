@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../models/Attributes.dart';
 import '../../../models/Products.dart';
 
 class ImagePopupDialog extends StatefulWidget {
@@ -35,7 +36,27 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
           children: [
             // Top bar with the title and action icons
             ListTile(
-              title: Text(widget.product.name ?? '', style: Theme.of(context).textTheme.titleMedium),
+              title: Column(
+                children: [
+                  SizedBox(height: 8,),
+                  Container(width: MediaQuery.of(context)
+                      .size
+                      .width *
+                      1,
+                    child: Text(getBrandName(widget.product.attributes) ?? 'Unknown', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis,
+                      maxLines: 2,),
+                  ),
+                  SizedBox(height: 4,),
+                  Container(width: MediaQuery.of(context)
+                      .size
+                      .width *
+                      1,
+                    child: Text(widget.product.name ?? '', style: Theme.of(context).textTheme.labelMedium),
+
+                  ),
+
+                ],
+              ),
               trailing: Wrap(
                 spacing: 8, // space between the icons
                 children: <Widget>[
@@ -126,7 +147,18 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
       ),
     );
   }
+  String? getBrandName(List<Attributes>? attributes) {
+    if (attributes == null) {
+      return 'Unknown'; // or any default value you want to return if attributes is null
+    }
 
+    for (var attribute in attributes) {
+      if (attribute.attribute?.name == 'Brand name') {
+        return attribute.value;
+      }
+    }
+    return 'Unknown'; // Default value in case the brand name is not found
+  }
   // Function to launch a URL
   Future<void> _openSourceWebsite(String url) async {
     final Uri _url = Uri.parse(url);

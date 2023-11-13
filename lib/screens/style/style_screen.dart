@@ -147,7 +147,7 @@ class _StyleScreenState extends State<StyleScreen> {
             color: Colors.white,
             padding: EdgeInsets.all(8),
             child: ElevatedButton(
-              onPressed: selectedIndexes.length >= 3
+              onPressed: selectedIndexes.length >= 4
                   ? () {
                 List<int> collectionTags = getTagsSelected();
                 print('aaaa $collectionTags');
@@ -174,13 +174,13 @@ class _StyleScreenState extends State<StyleScreen> {
                     if (states.contains(MaterialState.disabled)) {
                       return Colors.grey; // Disabled color
                     }
-                    return selectedIndexes.length < 3 ? Colors.grey : Colors.black; // Enable color changes
+                    return selectedIndexes.length < 4 ? Colors.grey : Colors.black; // Enable color changes
                   },
                 ),
-              ), // Button is disabled if less than 3 items are selected
+              ),
               child: Text(
-                selectedIndexes.length < 3
-                    ? 'Pick ${3 - selectedIndexes.length} more'
+                selectedIndexes.length < 4
+                    ? 'Pick ${4 - selectedIndexes.length} more'
                     : 'Get Recommendations',
                 style: TextStyle(
                   color: Colors.white, // Change color conditionally

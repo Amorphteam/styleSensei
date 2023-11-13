@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Colors.white,
         "assets/images/splash2.png",
         "Discover your personal style",
-        "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect Outfits for various occasions, daily wear, or special work presentations."),
+        "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect outfits for various occasions, daily wear, or special work presentations."),
 
   ];
 
