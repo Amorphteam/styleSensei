@@ -82,9 +82,13 @@ class _SavedScreenState extends State<SavedScreen> {
                    categories = groupedProducts?.keys.toList();
 
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: categories!.map((categoryName) {
                       final productsInCategory = groupedProducts![categoryName]!;
                       return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -106,8 +110,6 @@ class _SavedScreenState extends State<SavedScreen> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                // Add this line
                                 children: productsInCategory.map((productItem) {
                                   // Initialize the bookmark state for this item if it has not been done yet
 
