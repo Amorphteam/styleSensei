@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -294,6 +296,7 @@ class _SavedScreenState extends State<SavedScreen> {
           bookmarkedItems: bookmarkedItems,
           loadBookmarkedItems: loadBookmarkedItems,
           saveBookmarkedItems: saveBookmarkedItems,
+          onBookmarkUpdated: null,
         );
       },
     );

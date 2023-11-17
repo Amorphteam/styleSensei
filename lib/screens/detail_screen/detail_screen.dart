@@ -307,9 +307,15 @@ class _DetailState extends State<Detail> {
           bookmarkedItems: bookmarkedItems,
           loadBookmarkedItems: loadBookmarkedItems,
           saveBookmarkedItems: saveBookmarkedItems,
+          onBookmarkUpdated: updateBookmark,
         );
       },
     );
+  }
+  void updateBookmark(String productId, bool isBookmarked) {
+    setState(() {
+      bookmarkedItems[productId] = isBookmarked;
+    });
   }
 
 

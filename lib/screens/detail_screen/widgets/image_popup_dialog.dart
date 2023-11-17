@@ -12,14 +12,15 @@ class ImagePopupDialog extends StatefulWidget {
   final Map<String, bool> bookmarkedItems;
   final Function() loadBookmarkedItems;
   final Function(Map<String, bool>) saveBookmarkedItems;
+  final Function(String, bool)? onBookmarkUpdated;
 
   ImagePopupDialog({
     required this.product,
     required this.bookmarkedItems,
     required this.loadBookmarkedItems,
     required this.saveBookmarkedItems,
+    required this.onBookmarkUpdated,
   });
-
 
   @override
   _ImagePopupDialogState createState() => _ImagePopupDialogState();
@@ -37,7 +38,8 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
     // The dialog layout
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0), // Defines the shape of the dialog.
+        borderRadius:
+            BorderRadius.circular(0), // Defines the shape of the dialog.
       ),
       child: Container(
         color: Colors.white,
@@ -48,45 +50,61 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
             ListTile(
               title: Column(
                 children: [
-                  SizedBox(height: 8,),
-                  Container(width: MediaQuery.of(context)
-                      .size
-                      .width *
-                      1,
-                    child: Text(getBrandName(widget.product.attributes) ?? 'Unknown', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis,
-                      maxLines: 2,),
+                  SizedBox(
+                    height: 8,
                   ),
-                  SizedBox(height: 4,),
-                  Container(width: MediaQuery.of(context)
-                      .size
-                      .width *
-                      1,
-                    child: Text(widget.product.name ?? '', style: Theme.of(context).textTheme.labelMedium),
-
+                  Container(
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: Text(
+                      getBrandName(widget.product.attributes) ?? 'Unknown',
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
                   ),
-
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: Text(widget.product.name ?? '',
+                        style: Theme.of(context).textTheme.labelMedium),
+                  ),
                 ],
               ),
               trailing: Wrap(
                 spacing: 8, // space between the icons
                 children: <Widget>[
-                  IconButton(
-                    icon: widget.bookmarkedItems[widget.product.id.toString()]!
-                        ? SvgPicture.asset(
-                      'assets/images/bookmarked.svg', // Path to your SVG file
-                    )
-                        : SvgPicture.asset(
-                      'assets/images/bookmark.svg', // Path to your SVG file
+                  if (widget.onBookmarkUpdated != null)
+                    IconButton(
+                      icon:
+                          widget.bookmarkedItems[widget.product.id.toString()]!
+                              ? SvgPicture.asset(
+                                  'assets/images/bookmarked.svg', // Path to your SVG file
+                                )
+                              : SvgPicture.asset(
+                                  'assets/images/bookmark.svg', // Path to your SVG file
+                                ),
+                      onPressed: () {
+                        setState(() {
+                          bool isCurrentlyBookmarked = widget
+                              .bookmarkedItems[widget.product.id.toString()]!;
+                          widget.bookmarkedItems[widget.product.id.toString()] =
+                              !isCurrentlyBookmarked;
+                        });
+                        widget.onBookmarkUpdated!(
+                            widget.product.id.toString(),
+                            widget.bookmarkedItems[
+                                widget.product.id.toString()]!);
+                        saveBookmarkedItems(widget.bookmarkedItems);
+                      },
                     ),
-                    onPressed: () {
-                      // Toggle the bookmark state
-                      widget.bookmarkedItems[widget.product.id.toString()] =
-                      !widget.bookmarkedItems[widget.product.id.toString()]!;
-                      // Save bookmarked items
-                      saveBookmarkedItems(widget.bookmarkedItems);
-                    },
-                  ),                  IconButton(
-                    onPressed: () => _openSourceWebsite(widget.product.correspondingUrl!),
+                  IconButton(
+                    onPressed: () =>
+                        _openSourceWebsite(widget.product.correspondingUrl!),
                     icon: SvgPicture.asset('assets/images/basket.svg'),
                   ),
                 ],
@@ -128,9 +146,11 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                         padding: EdgeInsets.all(4),
                         decoration: isSelected
                             ? BoxDecoration(
-                          border: Border.all(color: Colors.black, width: 2),
-                          borderRadius: BorderRadius.circular(8), // Updated for rounded corners
-                        )
+                                border:
+                                    Border.all(color: Colors.black, width: 2),
+                                borderRadius: BorderRadius.circular(
+                                    8), // Updated for rounded corners
+                              )
                             : null,
                         child: CachedNetworkImage(
                           imageUrl: imageUrls[index],
@@ -144,7 +164,8 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                               color: Colors.white,
                             ),
                           ),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                     );
@@ -157,6 +178,7 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
       ),
     );
   }
+
   String? getBrandName(List<Attributes>? attributes) {
     if (attributes == null) {
       return 'Unknown'; // or any default value you want to return if attributes is null
@@ -169,6 +191,7 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
     }
     return 'Unknown'; // Default value in case the brand name is not found
   }
+
   // Function to launch a URL
   Future<void> _openSourceWebsite(String url) async {
     final Uri _url = Uri.parse(url);
