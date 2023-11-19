@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
@@ -9,6 +10,7 @@ import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
 import 'package:style_sensei/screens/saved_tab/saved_screen.dart';
 import 'package:style_sensei/screens/splash/cubit/splash_cubit.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
+import 'package:style_sensei/utils/AppLocalizationsDelegate.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,6 +23,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Style Sensei',
+      localizationsDelegates: [
+        const AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''), // English
+        const Locale('ar', ''), // Arabic
+      ],
       theme: ThemeData(
         fontFamily: 'centrale',
         useMaterial3: true,

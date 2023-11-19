@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../models/Attributes.dart';
 import '../../models/Products.dart';
 import '../../repositories/collection_repository.dart';
+import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
 import '../detail_screen/widgets/image_popup_dialog.dart';
 
@@ -62,7 +63,7 @@ class _SavedScreenState extends State<SavedScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Saved Products',
+                          AppLocalizations.of(context).translate('saved_app_bar_title'),
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
