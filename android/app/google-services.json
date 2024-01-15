@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "177611763528",
+    "project_id": "stylesensei",
+    "storage_bucket": "stylesensei.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177611763528:android:96ed3b4b49c567d73b0d7d",
+        "android_client_info": {
+          "package_name": "com.amorphteam.stylesensei.style_sensei"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "177611763528-352tl52eecdm2ic9sgcbiqlg68nv5f3e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJFLrw7H97WEDHgy4OXTWovGhAxj3CNSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177611763528-352tl52eecdm2ic9sgcbiqlg68nv5f3e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "177611763528-kng4karlsn0l2lb8qv1anah468msafi9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.amorphteam.stylesensei.styleSensei"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
