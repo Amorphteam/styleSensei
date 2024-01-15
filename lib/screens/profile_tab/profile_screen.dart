@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:style_sensei/utils/user_controller.dart';
 
 import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
@@ -37,14 +38,18 @@ class ProfileScreen extends StatelessWidget {
               )),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Image.asset('assets/images/profile.png', width: 80,)
+            child: Column(
+              children:[CircleAvatar(foregroundImage: NetworkImage(UserController.user?.photoURL ?? ''),),
+                Text(UserController.user?.displayName ?? '', style: Theme.of(context).textTheme.bodySmall,),
+                Text(UserController.user?.email ?? '', style: Theme.of(context).textTheme.bodySmall,),
+
+              ]
             ),
           ),
           SizedBox(height: 16.0),
           ListTile(
-            title: Text('Username'),
-            subtitle: Text('User123'),
+            title: Text('UserName'),
+            subtitle: Text('User12'),
             // Replace with dynamic data
             leading: IconButton(
               onPressed: () {},

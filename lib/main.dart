@@ -14,6 +14,7 @@ import 'package:style_sensei/screens/saved_tab/saved_screen.dart';
 import 'package:style_sensei/screens/splash/cubit/splash_cubit.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
 import 'package:style_sensei/utils/AppLocalizationsDelegate.dart';
+import 'package:style_sensei/utils/user_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,10 +47,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
         ),
       ),
-      home: BlocProvider(
-        create: (context) => SplashCubit(),
-        child: LoginScreen(),
-      ),
+      home: UserController.user != null ? ProfileScreen():LoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
