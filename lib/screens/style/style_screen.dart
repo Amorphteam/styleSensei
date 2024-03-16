@@ -19,37 +19,17 @@ class ImageItem {
 
 
 class StyleScreen extends StatefulWidget {
+
   @override
   _StyleScreenState createState() => _StyleScreenState();
 }
 
 class _StyleScreenState extends State<StyleScreen> {
-  //             "Classic": 405,
-  //             "Casual": 411,
-  // "Boho": 404,
-  //             "Rock": 406,
-  //             "Eclectic": 408,
-  //             "Feminine": 402,
-  //             "Minimal": 401,
-  //             "Tomboy": 409,
-  //             "Wintage": 414
-
-
-  //             "Chic": 403,
-  //             "Formal": 413,
-  //             "Retro": 410,
-  //             "Smart Casual": 412,
-  //             "Streetwear": 407,
-  //             "Unisex": 415,
-
-
-
-
   Set<int> selectedIndexes = {};
   @override
   void initState() {
     super.initState();
-    images.shuffle(); // This will shuffle the order of images
+    images.shuffle();
   }
 
   @override

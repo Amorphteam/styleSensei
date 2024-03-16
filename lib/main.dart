@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
         ),
       ),
-      home: UserController.user != null ? ProfileScreen():LoginScreen(),
+      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

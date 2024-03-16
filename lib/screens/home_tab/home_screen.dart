@@ -6,6 +6,8 @@ import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import '../../models/Collections.dart';
 import '../../utils/untitled.dart';
 import '../splash/splash_screen.dart';
+import '../common/widget/image_card.dart';
+import 'widgets/bullet_point.dart';
 import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
 import 'widgets/staggered_grid_view_widget.dart';
