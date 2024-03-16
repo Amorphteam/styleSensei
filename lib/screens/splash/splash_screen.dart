@@ -27,8 +27,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     SplashSample(
         title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
-    SplashPageWithPattern(
-        Colors.white, "assets/images/splash0.png", "Never stop looking for "),
     BodyTypeSelectionScreen(),
 
   ];

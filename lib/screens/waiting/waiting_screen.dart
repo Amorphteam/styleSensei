@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../main.dart';
 
@@ -19,9 +20,26 @@ class WaitingScreen extends StatefulWidget {
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
+
+  VideoPlayerController? _controller;
+  String? _error;
+
+
   @override
   void initState() {
     super.initState();
+    _controller = VideoPlayerController.asset('assets/video/waiting.mp4')
+      ..initialize().then((_) {
+        setState(() {
+          _controller!.play();
+          _controller!.setLooping(true);
+        });
+      }).catchError((error) {
+        setState(() {
+          _error = error.toString();
+        });
+      });
+
     // Navigate to the next screen after 3 seconds
     Future.delayed(Duration(seconds: 2), () {
       final homeCubit = HomeCubit(); // Create an instance of HomeCubit
@@ -45,57 +63,42 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    String title = 'We are tailoring your space to YOUR style';
-    String path = 'assets/images/loading.png';
-    return Stack(
-      children: [
-        Container(
-          color: Colors.white,
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: 200,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Lottie.asset('assets/json/loading.json'),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: title.substring(0, title.indexOf("YOUR")),
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            TextSpan(
-                              text: "YOUR",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
-                              ),
-                            ),
-                            TextSpan(
-                              text: title.substring(title.indexOf("YOUR") + 4),
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+    if (_error != null) {
+      return Scaffold(body: Center(child: Text('Error: $_error')));
+    }
+    return Scaffold(
+      body: Center(
+        child: _controller != null && _controller!.value.isInitialized
+            ? Stack(
+          children: [
+            Positioned.fill(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller!.value.size.width ?? 0,
+                  height: _controller!.value.size.height ?? 0,
+                  child: VideoPlayer(_controller!), // Video player widget
                 ),
               ),
-              Expanded(
-                child: Image.asset(path),
+            ),
+            Positioned(
+              left: 20, // Add some padding from the left
+              bottom: 40,
+              right: 160,// Add some padding from the bottom
+              child: Text(
+                '',
+                style: TextStyle(
+                  color: Colors.white, // Text color
+                  fontSize: 34, // Text size
+                  fontWeight: FontWeight.bold, // Text weight
+                ),
               ),
-              SizedBox(width: 30),
-            ],
-          ),
-        ),
-
-      ],
+            ),
+          ],
+        )
+            : CircularProgressIndicator(),
+      ),
     );
+
   }
 }
