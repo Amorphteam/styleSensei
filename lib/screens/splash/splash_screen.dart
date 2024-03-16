@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:style_sensei/screens/body/body_screen.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
 import 'package:style_sensei/screens/splash/splash_simple.dart';
 import 'package:style_sensei/screens/splash/splash_with_pattern.dart';
@@ -22,19 +23,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final List<Widget> splashPages = [
-    SplashWithVideo(title: 'This journey is all about YOU. \n Tell us more about yourself. '),
+    SplashWithVideo(),
+
+    SplashSample(
+        title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
     SplashPageWithPattern(
         Colors.white, "assets/images/splash0.png", "Never stop looking for "),
-    SplashPage(
-        Colors.white,
-        "assets/images/splash1.png",
-        "Getting to know you",
-        "This journey is all about YOU. in this Process we will determineyour fashion goals by learning about you."),
-    SplashPage(
-        Colors.white,
-        "assets/images/splash2.png",
-        "Discover your personal style",
-        "We can help you develop your personal look, infuse your closet with pieces that feel like YOU and help finding the perfect outfits for various occasions, daily wear, or special work presentations."),
+    BodyTypeSelectionScreen(),
 
   ];
 

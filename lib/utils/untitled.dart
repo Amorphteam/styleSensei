@@ -270,6 +270,14 @@ List<ImageItem> images = [
   ImageItem('assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
   ImageItem('assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
 ];
+List<ImageItem> bodyType = [
+  ImageItem('assets/images/classic1.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/classic2.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/classic3.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/classic4.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+  ImageItem('assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+];
 
 Future<Map<String, bool>> loadBookmarkedItems() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

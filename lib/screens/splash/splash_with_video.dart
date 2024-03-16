@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashWithVideo extends StatefulWidget {
-  final String title;
+  final String? title;
 
-  const SplashWithVideo({super.key, required this.title});
+  const SplashWithVideo({super.key, this.title});
 
   @override
   _SplashWithVideoState createState() => _SplashWithVideoState();
@@ -56,7 +56,7 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
               bottom: 40,
               right: 160,// Add some padding from the bottom
               child: Text(
-                widget.title,
+                widget.title ?? '',
                 style: TextStyle(
                   color: Colors.white, // Text color
                   fontSize: 34, // Text size
