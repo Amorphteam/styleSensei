@@ -86,17 +86,16 @@ class Tile extends StatelessWidget {
 }
 
 class ImageTile extends StatefulWidget {
+  final List<Collections> collections;
+  final int index;
+  final bool hasSeeDetail;
+
   const ImageTile({
     Key? key,
     required this.collections,
-    required this.index,
-    required this.width,
-    required this.height,
+    required this.index, required this.hasSeeDetail,
+
   }) : super(key: key);
-  final List<Collections> collections;
-  final int index;
-  final int width;
-  final int height;
 
   @override
   _ImageTileState createState() => _ImageTileState();
@@ -126,15 +125,11 @@ class _ImageTileState extends State<ImageTile> {
       child:
       CachedNetworkImage(
         imageUrl: widget.collections[widget.index].image,
-        width: widget.width.toDouble(),
-        height: widget.height.toDouble(),
         fit: BoxFit.cover,
         placeholder: (context, url) => Shimmer.fromColors(
           baseColor: Colors.grey[300]!, // Light grey color for the base
           highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
           child: Container(
-            width: widget.width.toDouble(),
-            height: widget.height.toDouble(),
             color: Colors.white,
           ),
         ),        errorWidget: (context, url, error) {

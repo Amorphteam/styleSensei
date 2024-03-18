@@ -2,47 +2,74 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:style_sensei/models/Collections.dart';
 import 'package:style_sensei/utils/untitled.dart';
 
 class StaggeredGridView extends StatefulWidget {
   final List<Collections> collections;
+
   const StaggeredGridView({Key? key, required this.collections})
       : super(key: key);
+
   @override
   State<StaggeredGridView> createState() => _StaggeredGridViewState();
 }
 
 class _StaggeredGridViewState extends State<StaggeredGridView> {
-
   @override
   Widget build(BuildContext context) {
     return GridView.custom(
       gridDelegate: SliverQuiltedGridDelegate(
-        crossAxisCount: 6,
+        crossAxisCount: 1,
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
         repeatPattern: QuiltedGridRepeatPattern.same,
         pattern: [
-          QuiltedGridTile(8, 6),
-          QuiltedGridTile(4, 3),
-          QuiltedGridTile(4, 3),
-          QuiltedGridTile(3, 2),
-          QuiltedGridTile(3, 2),
-          QuiltedGridTile(3, 2),
+          QuiltedGridTile(2, 1),
         ],
       ),
-      physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-      shrinkWrap: true, // You won't see infinite size error
+      physics: NeverScrollableScrollPhysics(),
+      // to disable GridView's scrolling
+      shrinkWrap: true,
+      // You won't see infinite size error
       childrenDelegate: SliverChildBuilderDelegate(
-            (context, index) {
-          // Check if the index is within the totalImages range
+        (context, index) {
           if (index < widget.collections.length) {
-            return ImageTile(
-              collections: widget.collections,
-              index: index,
-              width: 2000,
-              height: 2000,
+            return Column(
+              children: [
+                Expanded(
+                  child: ImageTile(
+                    collections: widget.collections,
+                    index: index,
+                    hasSeeDetail: true,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Gap(10),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(widget.collections[index].title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    IconButton(
+                        icon: SvgPicture.asset('assets/images/like.svg'),
+                        onPressed: () {}),
+                    IconButton(
+                        icon: SvgPicture.asset('assets/images/dislike.svg'),
+                        onPressed: () {}),
+                    Gap(10),
+                  ],
+                ),
+                Gap(20)
+              ],
             );
           } else {
             return null; // Return null for indexes beyond the limit to avoid rendering empty spaces

@@ -44,6 +44,7 @@ dependencies:
   video_player: ^2.4.2
   http: ^1.1.0
   dots_indicator: ^3.0.0
+  gap: ^3.0.1
   cached_network_image: ^3.2.0
   shared_preferences: ^2.2.2
   lottie: ^2.6.0

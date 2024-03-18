@@ -72,12 +72,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
             ? Stack(
           children: [
             Positioned.fill(
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _controller!.value.size.width ?? 0,
-                  height: _controller!.value.size.height ?? 0,
-                  child: VideoPlayer(_controller!), // Video player widget
+              child: Padding(
+                padding: const EdgeInsets.all(70.0),
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: _controller!.value.size.width ?? 0,
+                    height: _controller!.value.size.height ?? 0,
+                    child: VideoPlayer(_controller!), // Video player widget
+                  ),
                 ),
               ),
             ),
