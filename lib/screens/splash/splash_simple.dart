@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-class SplashSample extends StatelessWidget {
+import '../body/body_screen.dart';
+
+class SplashSimple extends StatelessWidget {
   final String imagePath;
   final String title;
 
-  SplashSample({required this.imagePath, required this.title});
+  SplashSimple({required this.imagePath, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,10 @@ class SplashSample extends StatelessWidget {
             alignment: Alignment.bottomLeft,
             child: Container(
               padding: EdgeInsets.only(left: 55, bottom: 100),
-              width: MediaQuery.of(context).size.width / 1.6, // Width is half of the screen
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 1.6, // Width is half of the screen
               child: Text(
                 title,
                 style: TextStyle(
@@ -29,7 +34,50 @@ class SplashSample extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    primary: Colors.white,
+                  ),
+                  onPressed: () {
+                    openStyleScreen(context);
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child:  Center(
+                      child: Text(
+                        'Get started',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+
+                  ),
+                ),
+              )
+
+          )
+
         ],
+      ),
+    );
+  }
+
+  void openStyleScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BodyTypeSelectionScreen(),
       ),
     );
   }

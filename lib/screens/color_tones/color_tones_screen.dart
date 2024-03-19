@@ -23,9 +23,6 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
       body: ListView(children: [
         SizedBox(height: 8),
         Padding(

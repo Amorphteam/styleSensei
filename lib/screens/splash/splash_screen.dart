@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   final List<Widget> splashPages = [
     SplashWithVideo(),
 
-    SplashSample(
+    SplashSimple(
         title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
     BodyTypeSelectionScreen(),
 

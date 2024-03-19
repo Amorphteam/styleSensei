@@ -13,6 +13,8 @@ import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
 import 'package:style_sensei/screens/saved_tab/saved_screen.dart';
 import 'package:style_sensei/screens/splash/cubit/splash_cubit.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
+import 'package:style_sensei/screens/splash/splash_simple.dart';
+import 'package:style_sensei/screens/splash/splash_with_video.dart';
 import 'package:style_sensei/utils/AppLocalizationsDelegate.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 
@@ -47,7 +49,8 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
         ),
       ),
-      home: SplashScreen(),
+      home: SplashSimple(
+          title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
       debugShowCheckedModeBanner: false,
     );
   }
