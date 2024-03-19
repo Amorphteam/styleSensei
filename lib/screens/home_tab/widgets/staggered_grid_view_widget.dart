@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(widget.collections[index].title,
+                        child: Text(parseTitle(widget.collections[index].title),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -80,4 +81,20 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
       ),
     );
   }
+
+  String parseTitle(dynamic title) {
+    if (title is String) {
+      try {
+        final decoded = json.decode(title);
+        if (decoded is Map<String, dynamic> && decoded.containsKey('en')) {
+          return decoded['en'];
+        }
+      } catch (e) {
+        // If json.decode throws an error, title is not a JSON string.
+        return title;
+      }
+    }
+    return title; // Return the original title if it's not a JSON string
+  }
+
 }

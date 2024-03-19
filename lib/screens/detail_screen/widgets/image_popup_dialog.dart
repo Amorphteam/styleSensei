@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../models/Attributes.dart';
-import '../../../models/Products.dart';
 import '../../../new_models/attribute.dart';
 import '../../../new_models/product.dart';
 import '../../../utils/untitled.dart';

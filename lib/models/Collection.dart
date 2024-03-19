@@ -1,5 +1,6 @@
+import 'package:style_sensei/new_models/collection_item.dart';
+
 import 'Rules.dart';
-import 'Items.dart';
 import 'Tags.dart';
 
 class Collection {
@@ -8,7 +9,7 @@ class Collection {
   String? description;
   String? image;
   List<Rules>? rules;
-  List<Items>? items;
+  List<CollectionItem>? items;
 
   Collection({
     this.id,
@@ -28,7 +29,7 @@ class Collection {
       rules = List<Rules>.from(json['rules'].map((v) => Rules.fromJson(v)));
     }
     if (json['items'] != null) {
-      items = List<Items>.from(json['items'].map((v) => Items.fromJson(v)));
+      items = List<CollectionItem>.from(json['items'].map((v) => CollectionItem.fromJson(v)));
     }
   }
 

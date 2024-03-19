@@ -5,14 +5,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:style_sensei/models/Items.dart';
+
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../models/Attributes.dart';
-import '../../models/Products.dart';
 import '../../new_models/attribute.dart';
 import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
@@ -22,15 +20,15 @@ import '../home_tab/widgets/tab_bar_widget.dart';
 
 class Detail extends StatefulWidget {
   final int index;
+  final String? mainImageUrl;
 
-  Detail({required this.index});
+  Detail({required this.index, this.mainImageUrl});
 
   @override
   State<Detail> createState() => _DetailState();
 }
 
 class _DetailState extends State<Detail> {
-  String mainImageCollectionUrl = '';
   Map<String, bool> bookmarkedItems = {};
 
   @override
@@ -66,7 +64,7 @@ class _DetailState extends State<Detail> {
                   builder: (context, state) {
                     if (state is ProductListLoadedState) {
                       return CachedNetworkImage(
-                        imageUrl: state.productModel.collection!.image!,
+                        imageUrl: widget.mainImageUrl ?? '',
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Shimmer.fromColors(
                           baseColor: Colors.grey[300]!,
@@ -96,8 +94,7 @@ class _DetailState extends State<Detail> {
         body: BlocBuilder<DetailCubit, DetailState>(
           builder: (context, state) {
             if (state is ProductListLoadedState) {
-              var collection = state.productModel.collection!.items;
-              mainImageCollectionUrl = state.productModel.collection!.image!;
+              var collection = state.items;
 
               return buildWidget(collection);
             } else if (state is DetailLoadingState) {
@@ -340,5 +337,6 @@ class _DetailState extends State<Detail> {
     }
     return 'Unknown'; // Default value in case the brand name is not found
   }
+
 // Method to load bookmarked item IDs from SharedPreferences
 }

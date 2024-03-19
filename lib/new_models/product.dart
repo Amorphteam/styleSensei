@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../models/Attribute.dart';
+import 'attribute.dart';
 import 'category.dart';
 
 part 'product.freezed.dart';

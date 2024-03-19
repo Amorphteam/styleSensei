@@ -1,5 +1,5 @@
+import '../new_models/attribute.dart';
 import '../new_models/category.dart';
-import 'Attribute.dart';
 
 /// id : 144
 /// collection_id : 241

@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:style_sensei/models/Collection_model.dart';
-import 'package:style_sensei/models/Products.dart';
 import 'package:style_sensei/models/ProtuctsTemp.dart';
 
 import '../models/ProductsModel.dart';

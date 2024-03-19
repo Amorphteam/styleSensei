@@ -24,7 +24,7 @@ _$ProductImpl _$$ProductImplFromJson(Map<String, dynamic> json) =>
           ? null
           : Category.fromJson(json['category'] as Map<String, dynamic>),
       attributes: (json['attributes'] as List<dynamic>?)
-          ?.map(Attribute.fromJson)
+          ?.map((e) => Attribute.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

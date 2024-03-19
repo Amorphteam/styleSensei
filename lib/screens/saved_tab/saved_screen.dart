@@ -10,8 +10,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../models/Attributes.dart';
-import '../../models/Products.dart';
+import '../../new_models/attribute.dart';
+import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
@@ -27,8 +27,8 @@ class SavedScreen extends StatefulWidget {
 class _SavedScreenState extends State<SavedScreen> {
   List<int> bookmarkIds = [];
   Map<String, bool> bookmarkedItems = {};
-  List<Products>? products;
-  Map<String, List<Products>>? groupedProducts;
+  List<Product>? products;
+  Map<String, List<Product>>? groupedProducts;
   List<String>? categories;
   @override
   void initState() {
@@ -214,7 +214,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                                 onPressed: () =>
                                                     _openSourceWebsite(
                                                         productItem
-                                                            .correspondingUrl!),
+                                                            .corresponding_url!),
                                                 icon: SvgPicture.asset(
                                                   'assets/images/basket.svg', // Path to your SVG file
                                                 ))
@@ -288,7 +288,7 @@ class _SavedScreenState extends State<SavedScreen> {
         ));
   }
 
-  void showImagePopup(BuildContext context, Products product) {
+  void showImagePopup(BuildContext context, Product product) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -310,8 +310,8 @@ class _SavedScreenState extends State<SavedScreen> {
     }
   }
 
-  Map<String, List<Products>> groupProductsByCategory(List<Products> products) {
-    final Map<String, List<Products>> groupedProducts = {};
+  Map<String, List<Product>> groupProductsByCategory(List<Product> products) {
+    final Map<String, List<Product>> groupedProducts = {};
 
     for (var product in products) {
       final category = product.category?.name ?? 'Other';
@@ -324,7 +324,7 @@ class _SavedScreenState extends State<SavedScreen> {
     return groupedProducts;
   }
 
-  String? getBrandName(List<Attributes>? attributes) {
+  String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
       return 'Unknown'; // or any default value you want to return if attributes is null
     }
