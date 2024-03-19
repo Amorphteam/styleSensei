@@ -13,6 +13,9 @@ import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_d
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/Attributes.dart';
 import '../../models/Products.dart';
+import '../../new_models/attribute.dart';
+import '../../new_models/collection_item.dart';
+import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
@@ -96,7 +99,7 @@ class _DetailState extends State<Detail> {
               var collection = state.productModel.collection!.items;
               mainImageCollectionUrl = state.productModel.collection!.image!;
 
-              return buildWidget(collection!);
+              return buildWidget(collection);
             } else if (state is DetailLoadingState) {
               return Center(
                 child: Container(
@@ -115,7 +118,7 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildWidget(List<Items> items) {
+  Widget buildWidget(List<CollectionItem> items) {
     return Column(
       children: [
         Padding(
@@ -240,7 +243,7 @@ class _DetailState extends State<Detail> {
                                         ),
                                         IconButton(
                                             onPressed: () => _openSourceWebsite(
-                                                productItem.correspondingUrl!),
+                                                productItem.corresponding_url!),
                                             icon: SvgPicture.asset(
                                               'assets/images/basket.svg', // Path to your SVG file
                                             ))
@@ -298,7 +301,7 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  void showImagePopup(BuildContext context, Products product) {
+  void showImagePopup(BuildContext context, Product product) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -325,7 +328,7 @@ class _DetailState extends State<Detail> {
       throw Exception('Could not launch $_url');
     }
   }
-  String? getBrandName(List<Attributes>? attributes) {
+  String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
       return 'Unknown'; // or any default value you want to return if attributes is null
     }

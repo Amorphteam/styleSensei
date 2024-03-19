@@ -1,6 +1,6 @@
 import 'package:style_sensei/models/Products.dart';
 
-import 'Category.dart';
+import '../new_models/category.dart';
 
 /// category_id : "20838253"
 /// category : {"id":"20838253","name":"Crossbody & Shoulder Bags","parent_id":"57387491","created_at":"2023-07-28T18:07:42.447648Z","modified_at":"2023-08-20T12:33:08.352656Z"}

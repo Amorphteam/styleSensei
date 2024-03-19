@@ -5,10 +5,12 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../models/Attributes.dart';
 import '../../../models/Products.dart';
+import '../../../new_models/attribute.dart';
+import '../../../new_models/product.dart';
 import '../../../utils/untitled.dart';
 
 class ImagePopupDialog extends StatefulWidget {
-  final Products product;
+  final Product product;
   final Map<String, bool> bookmarkedItems;
   final Function() loadBookmarkedItems;
   final Function(Map<String, bool>) saveBookmarkedItems;
@@ -104,7 +106,7 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                     ),
                   IconButton(
                     onPressed: () =>
-                        _openSourceWebsite(widget.product.correspondingUrl!),
+                        _openSourceWebsite(widget.product.corresponding_url!),
                     icon: SvgPicture.asset('assets/images/basket.svg'),
                   ),
                 ],
@@ -179,7 +181,7 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
     );
   }
 
-  String? getBrandName(List<Attributes>? attributes) {
+  String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
       return 'Unknown'; // or any default value you want to return if attributes is null
     }

@@ -6,6 +6,7 @@ import 'package:style_sensei/models/Products.dart';
 import 'package:style_sensei/models/ProtuctsTemp.dart';
 
 import '../models/ProductsModel.dart';
+import '../new_models/collection_item.dart';
 
 class CollectionRepository {
   final String apiUrl = 'http://stylesensei.net:8282/api/v1/';
@@ -31,6 +32,23 @@ class CollectionRepository {
       return ProductsModel.fromJson(jsonMap);
     } else {
       throw Exception('Failed to fetch data');
+    }
+  }
+
+  Future<List<CollectionItem>> fetchCollectionItems(int collectionId) async {
+    String pathUrl = 'collection/$collectionId/items';
+    final Uri fullUrl = Uri.parse(apiUrl + pathUrl);
+
+    var headers = {'Content-Type': 'application/json'};
+    var body = json.encode({"favorite_attributes": {}});
+
+    final response = await http.post(fullUrl, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(response.body)['collection_items'] as List<dynamic>;
+      return jsonList.map((jsonItem) => CollectionItem.fromJson(jsonItem as Map<String, dynamic>)).toList();
+    } else {
+      throw Exception('Failed to fetch data: ${response.reasonPhrase}');
     }
   }
 

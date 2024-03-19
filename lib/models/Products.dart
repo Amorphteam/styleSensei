@@ -1,4 +1,4 @@
-import 'Category.dart';
+import '../new_models/category.dart';
 import 'Attributes.dart';
 
 /// id : 656

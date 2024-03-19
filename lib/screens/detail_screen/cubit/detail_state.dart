@@ -12,7 +12,7 @@ class DetailErrorState extends DetailState {
 }
 
 class ProductListLoadedState extends DetailState {
-  final ProductsModel productModel;
+  final List<CollectionItem> items;
 
-  ProductListLoadedState(this.productModel);
+  ProductListLoadedState(this.items);
 }
