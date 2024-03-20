@@ -14,8 +14,9 @@ class DetailCubit extends Cubit<DetailState> {
     emit(DetailLoadingState());
     try {
       final items = await collectionRepository?.fetchCollectionItems(collectionId);
+      final collectionDetail = await collectionRepository?.fetchProductModel(collectionId);
       if (items != null) {
-        emit(ProductListLoadedState(items));
+        emit(ProductListLoadedState(items, collectionDetail));
       }else {
         emit(DetailErrorState("The collection is null"));
       }

@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:style_sensei/models/ProductsModel.dart';
 
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
@@ -49,10 +52,12 @@ class _DetailState extends State<Detail> {
       });
 
     _videoController?.addListener(() {
-      if (_videoController!.value.position == _videoController!.value.duration) {
+      if (_videoController!.value.position ==
+          _videoController!.value.duration) {
         // Video finished playing
         setState(() {
-          _isVideoPlayed = true; // Mark video as played to show the text instead
+          _isVideoPlayed =
+              true; // Mark video as played to show the text instead
         });
       }
     });
@@ -76,24 +81,63 @@ class _DetailState extends State<Detail> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<DetailCubit, DetailState>(
+      builder: (context, state) {
+        if (state is ProductListLoadedState) {
+          var collection = state.items;
+          var collectionDetail = state.collectionDetail;
+          return buildUi(context, collection, collectionDetail);
+        } else if (state is DetailLoadingState) {
+          return Scaffold(
+            body: Center(
+              child: Container(
+                width: 200,
+                height: 100,
+                child: Lottie.asset('assets/json/loading.json'),
+              ),
+            ),
+          );
+        } else if (state is DetailErrorState) {
+          return Scaffold(
+            body: Center(
+              child: Text('Error is ${state.error}'),
+            ),
+          );
+        } else {
+          // This handles DetailInitial and any other unhandled state
+          return Scaffold(
+            body: Center(child: Text('Loading...')),
+          );
+        }
+      },
+    );
+  }
+
+
+  Widget buildUi(BuildContext context, List<CollectionItem> collection,
+      ProductsModel? collectionDetail) {
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
               expandedHeight: 600.0,
               floating: false,
               pinned: true,
+              title: innerBoxIsScrolled ? Text(getTitle(collectionDetail?.collection?.title)) : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
-                  children: [PageView.builder(
+                  children: [
+                    PageView.builder(
                     controller: _pageController,
                     itemCount: 3,
                     onPageChanged: (int page) {
-                      setState(() => _currentPage = page);
-                      if (page == 1) {
-                        _videoController!.play();
-                      }
+                      setState(() {
+                        _currentPage = page;
+                        if (page == 1) {
+                          _videoController?.play();
+                        }
+                      });
                     },
                     itemBuilder: (context, index) {
                       if (index == 0) {
@@ -105,10 +149,24 @@ class _DetailState extends State<Detail> {
                         if (_isVideoPlayed) {
                           return Container(
                             color: Color(0xFFC6C2B8),
-                            child: Center(
-                              child: Text(
-                                'Text after Video',
-                                style: TextStyle(color: Colors.white, fontSize: 24),
+                            child: Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Column(
+                                children: [
+                                  Gap(40),
+                                  Text(
+                                    'Who it’s Best For?',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  Gap(20),
+                                  Text(
+                                    getBodyShapeText(collectionDetail?.collection?.description),
+                                    style: Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                ],
                               ),
                             ),
                           );
@@ -135,8 +193,7 @@ class _DetailState extends State<Detail> {
                       }
                     },
                   ),
-                    Positioned(
-                      bottom: 10,
+                    Positioned(                      bottom: 10,
                       left: 0,
                       right: 0,
                       child: Row(
@@ -155,33 +212,14 @@ class _DetailState extends State<Detail> {
                           );
                         }),
                       ),
-                    ),
+                    )
                 ]
                 ),
               ),
             ),
           ];
         },
-        body: BlocBuilder<DetailCubit, DetailState>(
-          builder: (context, state) {
-            if (state is ProductListLoadedState) {
-              var collection = state.items;
-
-              return buildWidget(collection);
-            } else if (state is DetailLoadingState) {
-              return Center(
-                child: Container(
-                    width: 200,
-                    height: 100,
-                    child: Lottie.asset('assets/json/loading.json')),
-              );
-            } else if (state is DetailErrorState) {
-              return Text('error is ${state.error}');
-            } else {
-              return Text('');
-            }
-          },
-        ),
+        body: buildWidget(collection),
       ),
     );
   }
@@ -199,7 +237,10 @@ class _DetailState extends State<Detail> {
                 padding: EdgeInsets.only(left: 10.0, top: 2),
                 child: Text(
                   'Collection details',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -275,14 +316,16 @@ class _DetailState extends State<Detail> {
                                                       Colors.grey[100]!,
                                                   // Lighter grey color for the highlight
                                                   child: Container(
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        0.29,
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.33,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.29,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.33,
                                                     color: Colors.white,
                                                   ),
                                                 ),
@@ -295,26 +338,48 @@ class _DetailState extends State<Detail> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(height: 8,),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 12.0),
-                                            child: Text(getBrandName(productItem.attributes) ?? 'Unknown', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,),
+                                          SizedBox(
+                                            height: 8,
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(left: 12.0),
-                                            child: Text(productItem
-                                                .name!, style: Theme.of(context).textTheme.labelSmall,overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,),
+                                            padding: const EdgeInsets.only(
+                                                left: 12.0),
+                                            child: Text(
+                                              getBrandName(
+                                                      productItem.attributes) ??
+                                                  'Unknown',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 12.0),
+                                            child: Text(
+                                              productItem.name!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
                                           ),
                                           TextButton(
-                                            onPressed: () => _openSourceWebsite(productItem.corresponding_url!),
+                                            onPressed: () => _openSourceWebsite(
+                                                productItem.corresponding_url!),
                                             child: Text(
                                               'Proceed to the Store',
                                               style: TextStyle(
                                                 fontSize: 11,
                                                 color: Colors.blue,
-                                                fontWeight: FontWeight.bold,// You can choose the color that fits your design
+                                                fontWeight: FontWeight
+                                                    .bold, // You can choose the color that fits your design
                                               ),
                                             ),
                                           )
@@ -387,12 +452,12 @@ class _DetailState extends State<Detail> {
       },
     );
   }
+
   void updateBookmark(String productId, bool isBookmarked) {
     setState(() {
       bookmarkedItems[productId] = isBookmarked;
     });
   }
-
 
   Future<void> _openSourceWebsite(String url) async {
     final Uri _url = Uri.parse(url);
@@ -400,6 +465,7 @@ class _DetailState extends State<Detail> {
       throw Exception('Could not launch $_url');
     }
   }
+
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
       return 'Unknown'; // or any default value you want to return if attributes is null
@@ -411,6 +477,32 @@ class _DetailState extends State<Detail> {
       }
     }
     return 'Unknown'; // Default value in case the brand name is not found
+  }
+
+  String getBodyShapeText(String? jsonString) {
+    if (jsonString != null) {
+      try {
+        Map<String, dynamic> jsonData = json.decode(jsonString);
+        String bodyShapeEn = jsonData['body_shape']['en'];
+        return bodyShapeEn;
+      } catch (error) {
+        return jsonString;
+      }
+    }
+    return '';
+  }
+
+  String getTitle(String? titleJson) {
+    if (titleJson != null) {
+      try {
+        Map<String, dynamic> jsonData = json.decode(titleJson);
+        String enTitle = jsonData['en'];
+        return enTitle;
+      } catch (error) {
+        return titleJson;
+      }
+    }
+    return '';
   }
 
 // Method to load bookmarked item IDs from SharedPreferences

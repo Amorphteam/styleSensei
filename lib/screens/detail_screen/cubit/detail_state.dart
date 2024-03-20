@@ -13,6 +13,6 @@ class DetailErrorState extends DetailState {
 
 class ProductListLoadedState extends DetailState {
   final List<CollectionItem> items;
-
-  ProductListLoadedState(this.items);
+  final ProductsModel? collectionDetail;
+  ProductListLoadedState(this.items, this.collectionDetail);
 }
