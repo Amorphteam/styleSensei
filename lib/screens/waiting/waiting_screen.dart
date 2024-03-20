@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../main.dart';
+import '../../utils/untitled.dart';
 
 class WaitingScreen extends StatefulWidget {
-  final List<int> collectionTags;
 
 
-  WaitingScreen({required this.collectionTags});
+  WaitingScreen();
 
   @override
   State<WaitingScreen> createState() => _WaitingScreenState();
@@ -28,6 +29,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeVideoPlayer();
+    _fetchAndNavigate();
+  }
+
+  void _initializeVideoPlayer() {
     _controller = VideoPlayerController.asset('assets/video/waiting.mp4')
       ..initialize().then((_) {
         setState(() {
@@ -39,8 +45,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
           _error = error.toString();
         });
       });
+  }
 
-    // Navigate to the next screen after 3 seconds
+  void _fetchAndNavigate() async {
+    List<int> selectedIds = await getSelectedIds();
+    print("Selected IDs: $selectedIds");
     Future.delayed(Duration(seconds: 2), () {
       final homeCubit = HomeCubit(); // Create an instance of HomeCubit
 
@@ -51,12 +60,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
             opacity: animation,
             child: BlocProvider(
               create: (context) => homeCubit,
-              child: MyHomePage(collectionTags: widget.collectionTags),
+              child: MyHomePage(collectionTags: selectedIds),
             ),
           ),
-          transitionDuration: Duration(milliseconds: 1000), // Transition duration
+          transitionDuration: Duration(milliseconds: 1000),
         ),
-            (Route<dynamic> route) => false, // No route will allow return
+            (Route<dynamic> route) => false,
       );
     });
   }

@@ -12,6 +12,7 @@ class CollectionRepository {
 
   Future<CollectionModel> fetchCollectionModel(List<int> collectionTags) async {
     String tagsQuery = collectionTags.join(',');
+    print('collectionTages = $tagsQuery');
     String pathUrl = 'collection?limit=300&tags=$tagsQuery';
     final response = await http.get(Uri.parse(apiUrl+pathUrl));
 

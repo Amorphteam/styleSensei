@@ -93,8 +93,8 @@ class ImageTile extends StatefulWidget {
   const ImageTile({
     Key? key,
     required this.collections,
-    required this.index, required this.hasSeeDetail,
-
+    required this.index,
+    required this.hasSeeDetail,
   }) : super(key: key);
 
   @override
@@ -116,23 +116,26 @@ class _ImageTileState extends State<ImageTile> {
       onTap: () {
         if (!isLongPressing) {
           // Handle normal tap here
-          _showNormalPressDialog(context, widget.collections[widget.index].id, widget.collections[widget.index].image);
+          _showNormalPressDialog(context, widget.collections[widget.index].id,
+              widget.collections[widget.index].image);
         }
         setState(() {
           isLongPressing = false;
         });
       },
-      child:
-      CachedNetworkImage(
+      child: CachedNetworkImage(
         imageUrl: widget.collections[widget.index].image,
         fit: BoxFit.cover,
         placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.grey[300]!, // Light grey color for the base
-          highlightColor: Colors.grey[100]!, // Lighter grey color for the highlight
+          baseColor: Colors.grey[300]!,
+          // Light grey color for the base
+          highlightColor: Colors.grey[100]!,
+          // Lighter grey color for the highlight
           child: Container(
             color: Colors.white,
           ),
-        ),        errorWidget: (context, url, error) {
+        ),
+        errorWidget: (context, url, error) {
           print(error); // This will print the error to the console
           return Icon(Icons.error);
         },
@@ -148,7 +151,8 @@ class _ImageTileState extends State<ImageTile> {
         return Theme(
           data: Theme.of(context).copyWith(
             dialogTheme: DialogTheme(
-              shape: RoundedRectangleBorder( // Set the shape with radius 0
+              shape: RoundedRectangleBorder(
+                // Set the shape with radius 0
                 borderRadius: BorderRadius.circular(0.0),
               ),
             ),
@@ -157,7 +161,8 @@ class _ImageTileState extends State<ImageTile> {
             widthFactor: 1.2,
             child: AlertDialog(
               contentPadding: EdgeInsets.zero,
-              content: SingleChildScrollView( // Use SingleChildScrollView to allow the AlertDialog to wrap its height
+              content: SingleChildScrollView(
+                // Use SingleChildScrollView to allow the AlertDialog to wrap its height
                 child: ImageCard(
                   imagePath: 'assets/images/$index.png',
                 ),
@@ -169,22 +174,23 @@ class _ImageTileState extends State<ImageTile> {
     );
   }
 
-
-
   // Function to show a dialog for normal press (you can customize this as needed)
-  void _showNormalPressDialog(BuildContext context, int index, String mainImageUrl) {
+  void _showNormalPressDialog(
+      BuildContext context, int index, String mainImageUrl) {
     // Navigate to the Detail Screen with BlocProvider
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BlocProvider(
           create: (context) => DetailCubit(),
-          child: Detail(index: index, mainImageUrl: mainImageUrl,),
+          child: Detail(
+            index: index,
+            mainImageUrl: mainImageUrl,
+          ),
         ),
       ),
     );
   }
-
 }
 
 class InteractiveTile extends StatefulWidget {
@@ -227,52 +233,100 @@ class _InteractiveTileState extends State<InteractiveTile> {
     );
   }
 }
+
 List<ImageItem> images = [
-  ImageItem('assets/images/classic1.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic2.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic3.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic4.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem('assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem('assets/images/casual3.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem('assets/images/casual4.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem('assets/images/bohemian1.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/bohemian2.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/bohemian3.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/bohemian4.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.'),
+  ImageItem('assets/images/classic1.jpeg', 405,
+      'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/classic2.jpeg', 405,
+      'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/classic3.jpeg', 405,
+      'Classic: Elegant, structured, neutral.'),
+  ImageItem('assets/images/classic4.jpeg', 405,
+      'Classic: Elegant, structured, neutral.'),
+  ImageItem(
+      'assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+  ImageItem(
+      'assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+  ImageItem(
+      'assets/images/casual3.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+  ImageItem(
+      'assets/images/casual4.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+  ImageItem('assets/images/bohemian1.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.'),
+  ImageItem('assets/images/bohemian2.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.'),
+  ImageItem('assets/images/bohemian3.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.'),
+  ImageItem('assets/images/bohemian4.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.'),
   ImageItem('assets/images/rock1.jpeg', 406, 'Rock: Bold, edgy, leather.'),
   ImageItem('assets/images/rock2.jpeg', 406, 'Rock: Bold, edgy, leather.'),
   ImageItem('assets/images/rock3.jpeg', 406, 'Rock: Bold, edgy, leather.'),
   ImageItem('assets/images/rock4.jpeg', 406, 'Rock: Bold, edgy, leather.'),
-  ImageItem('assets/images/eclectic1.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem('assets/images/eclectic2.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem('assets/images/eclectic3.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem('assets/images/eclectic4.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem('assets/images/feminine1.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem('assets/images/feminine2.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem('assets/images/feminine3.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem('assets/images/feminine4.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem('assets/images/minimal1.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/minimal2.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/minimal3.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/minimal4.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/tomboy1.jpeg', 409, 'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/tomboy2.jpeg', 409, 'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/tomboy3.jpeg', 409, 'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/tomboy4.jpeg', 409, 'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/vintage1.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
-  ImageItem('assets/images/vintage2.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
-  ImageItem('assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
-  ImageItem('assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
+  ImageItem(
+      'assets/images/eclectic1.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
+  ImageItem(
+      'assets/images/eclectic2.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
+  ImageItem(
+      'assets/images/eclectic3.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
+  ImageItem(
+      'assets/images/eclectic4.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
+  ImageItem(
+      'assets/images/feminine1.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
+  ImageItem(
+      'assets/images/feminine2.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
+  ImageItem(
+      'assets/images/feminine3.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
+  ImageItem(
+      'assets/images/feminine4.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
+  ImageItem('assets/images/minimal1.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.'),
+  ImageItem('assets/images/minimal2.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.'),
+  ImageItem('assets/images/minimal3.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.'),
+  ImageItem('assets/images/minimal4.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.'),
+  ImageItem('assets/images/tomboy1.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.'),
+  ImageItem('assets/images/tomboy2.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.'),
+  ImageItem('assets/images/tomboy3.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.'),
+  ImageItem('assets/images/tomboy4.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.'),
+  ImageItem(
+      'assets/images/vintage1.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
+  ImageItem(
+      'assets/images/vintage2.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
+  ImageItem(
+      'assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
+  ImageItem(
+      'assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
 ];
-List<ImageItem> bodyType = [
-  ImageItem('assets/images/classic1.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic2.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic3.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic4.jpeg', 405, 'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem('assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
+final List<ImageItem> bodyTypes = [
+  ImageItem('assets/images/fit.jpg', 805, 'Fit'),
+  ImageItem('assets/images/plus_size.jpg', 804, 'Plus Size'),
+  ImageItem('assets/images/expecting.jpg', 806, 'Expecting'),
+  ImageItem('assets/images/curvy.jpg', 803, 'Curvy'),
+  ImageItem('assets/images/petite.jpg', 802, 'Petite'),
+  ImageItem('assets/images/tall.jpg', 801, 'Tall'),
 ];
+
+final List<ImageItem> colorTones = [
+  ImageItem('assets/images/dark.jpg', 503, 'Dark'),
+  ImageItem('assets/images/bright.jpg', 502, 'Bright'),
+  ImageItem('assets/images/pastel.jpg', 501, 'Pastel'),
+  ImageItem('assets/images/neutral.jpg', 504, 'Neutral'),
+];
+
+class ImageItem {
+  final String path;
+  final int tag;
+  final String des;
+
+  ImageItem(this.path, this.tag, this.des);
+}
 
 Future<Map<String, bool>> loadBookmarkedItems() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -294,4 +348,59 @@ Future<void> saveBookmarkedItems(Map<String, bool> bookmarkedItems) async {
       .map((entry) => entry.key)
       .toList();
   await prefs.setStringList('bookmarkedItemIds', bookmarkedItemIds);
+}
+
+Future<void> saveSelections({
+  List<int>? styleSelections,
+  List<int>? bodyTypeSelections,
+  List<int>? colorToneSelections,
+}) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Fetch and parse existing selections
+  List<int> existingStyleSelections = _parseIdsFromString(prefs.getString('styleSelections'));
+  List<int> existingBodyTypeSelections = _parseIdsFromString(prefs.getString('bodyTypeSelections'));
+  List<int> existingColorToneSelections = _parseIdsFromString(prefs.getString('colorToneSelections'));
+
+  // Merge existing with new and remove duplicates by converting to set and back to list
+  List<int> updatedStyleSelections = {...existingStyleSelections, ...?styleSelections}.toList();
+  List<int> updatedBodyTypeSelections = {...existingBodyTypeSelections, ...?bodyTypeSelections}.toList();
+  List<int> updatedColorToneSelections = {...existingColorToneSelections, ...?colorToneSelections}.toList();
+
+  // Save merged and deduplicated selections
+  await prefs.setString('styleSelections', updatedStyleSelections.join(','));
+  await prefs.setString('bodyTypeSelections', updatedBodyTypeSelections.join(','));
+  await prefs.setString('colorToneSelections', updatedColorToneSelections.join(','));
+}
+
+
+
+Future<List<int>> getSelectedIds() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? styleSelectionsString = prefs.getString('styleSelections');
+  String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
+  String? colorToneSelectionsString = prefs.getString('colorToneSelections');
+
+  List<int> styleSelections = _parseIdsFromString(styleSelectionsString);
+  List<int> bodyTypeSelections = _parseIdsFromString(bodyTypeSelectionsString);
+  List<int> colorToneSelections =
+      _parseIdsFromString(colorToneSelectionsString);
+
+  return [...styleSelections, ...bodyTypeSelections, ...colorToneSelections];
+}
+
+List<int> _parseIdsFromString(String? idsString) {
+  if (idsString == null || idsString.isEmpty) {
+    return [];
+  }
+
+  return idsString.split(',')
+      .map((id) => int.tryParse(id))
+      .where((id) => id != null)
+      .cast<int>()
+      .toList();
+}
+
+bool _isNumeric(String s) {
+  return int.tryParse(s) != null;
 }

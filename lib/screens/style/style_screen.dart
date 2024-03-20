@@ -9,13 +9,7 @@ import '../home_tab/cubit/home_cubit.dart';
 import '../home_tab/home_screen.dart';
 
 
-class ImageItem {
-  final String path;
-  final int tag;
-  final String des;
 
-  ImageItem(this.path, this.tag, this.des);
-}
 
 
 class StyleScreen extends StatefulWidget {
@@ -130,6 +124,7 @@ class _StyleScreenState extends State<StyleScreen> {
               onPressed: selectedIndexes.length >= 4
                   ? () {
                 List<int> collectionTags = getTagsSelected();
+                saveSelections(styleSelections: collectionTags);
                 final waitingCubit =
                 WaitingCubit(); // Create an instance of HomeCubit
                 Navigator.pushAndRemoveUntil(
@@ -137,7 +132,7 @@ class _StyleScreenState extends State<StyleScreen> {
                   MaterialPageRoute(
                     builder: (context) => BlocProvider(
                       create: (context) => waitingCubit,
-                      child: WaitingScreen(collectionTags: collectionTags,),
+                      child: WaitingScreen(),
                     ),
                   ),
                       (Route<dynamic> route) => false, // No route will allow return

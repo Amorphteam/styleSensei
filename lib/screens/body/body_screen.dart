@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../utils/untitled.dart';
 import '../color_tones/color_tones_screen.dart';
 
 class BodyTypeSelectionScreen extends StatefulWidget {
@@ -12,15 +13,6 @@ class BodyTypeSelectionScreen extends StatefulWidget {
 class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
   int selectedBodyType = -1; // To track the selected body type
 
-  // Sample data structure for body types. You would replace these with your actual data.
-  final List<ImageItem> bodyTypes = [
-    ImageItem('assets/images/fit.jpg', 0, 'Fit'),
-    ImageItem('assets/images/plus_size.jpg', 1, 'Plus Size'),
-    ImageItem('assets/images/expecting.jpg', 2, 'Expecting'),
-    ImageItem('assets/images/curvy.jpg', 3, 'Curvy'),
-    ImageItem('assets/images/petite.jpg', 4, 'Petite'),
-    ImageItem('assets/images/tall.jpg', 5, 'Tall'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +111,9 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
               child: ElevatedButton(
                 onPressed: selectedBodyType != -1
                     ? () {
+                  List<int> selectedBodyTypes = [];
+                  selectedBodyTypes.add(selectedBodyType);
+                  saveSelections(bodyTypeSelections: selectedBodyTypes);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -156,10 +151,3 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
   }
 }
 
-class ImageItem {
-  final String path;
-  final int tag;
-  final String des;
-
-  ImageItem(this.path, this.tag, this.des);
-}
