@@ -14,6 +14,7 @@ import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import '../../models/Collections.dart';
 import '../../new_models/attribute.dart';
 import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
@@ -22,10 +23,9 @@ import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
 
 class Detail extends StatefulWidget {
-  final int index;
-  final String? mainImageUrl;
+  final Collections collection;
 
-  Detail({required this.index, this.mainImageUrl});
+  Detail({required this.collection});
 
   @override
   State<Detail> createState() => _DetailState();
@@ -41,7 +41,7 @@ class _DetailState extends State<Detail> {
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.asset('assets/video/splash1.mp4')
+    _videoController = VideoPlayerController.asset('assets/video/body2.m4v')
       ..initialize().then((_) {
         setState(() {
           _videoController!.setLooping(false); // Ensure the video doesn't loop
@@ -64,7 +64,7 @@ class _DetailState extends State<Detail> {
         });
       });
       BlocProvider.of<DetailCubit>(context)
-          .fetchData(CollectionRepository(), widget.index);
+          .fetchData(CollectionRepository(), widget.collection.id);
     });
   }
 
@@ -98,13 +98,13 @@ class _DetailState extends State<Detail> {
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return CachedNetworkImage(
-                          imageUrl: widget.mainImageUrl ?? '',
+                          imageUrl: widget.collection.image ?? '',
                           fit: BoxFit.cover,
                         );
                       } else if (index == 1) {
                         if (_isVideoPlayed) {
                           return Container(
-                            color: Colors.grey,
+                            color: Color(0xFFC6C2B8),
                             child: Center(
                               child: Text(
                                 'Text after Video',
@@ -124,7 +124,7 @@ class _DetailState extends State<Detail> {
                         }
                       } else {
                         return Container(
-                          color: Colors.grey,
+                          color: Color(0xFFC6C2B8),
                           child: Center(
                             child: Text(
                               'Third Slide Content',
@@ -196,10 +196,10 @@ class _DetailState extends State<Detail> {
             children: [
               SvgPicture.asset('assets/images/collection.svg'),
               Padding(
-                padding: EdgeInsets.only(left: 8.0),
+                padding: EdgeInsets.only(left: 10.0, top: 2),
                 child: Text(
                   'Collection details',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -222,14 +222,14 @@ class _DetailState extends State<Detail> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          '${items[index].products?.length ?? ' '} Items',
+                          '${items[index].products?.length ?? ' '} Alternatives',
                           style: Theme.of(context).textTheme.labelSmall,
                         )
                       ],
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.35,
+                    height: MediaQuery.of(context).size.height * 0.40,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -243,79 +243,83 @@ class _DetailState extends State<Detail> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Stack(
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              showImagePopup(
-                                                  context, productItem);
-                                            },
-                                            child: CachedNetworkImage(
-                                              imageUrl: productItem.pictures!
-                                                  .split(',')[0],
-                                              fit: BoxFit.cover,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.29,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.33,
-                                              placeholder: (context, url) =>
-                                                  Shimmer.fromColors(
-                                                baseColor: Colors.grey[300]!,
-                                                // Light grey color for the base
-                                                highlightColor:
-                                                    Colors.grey[100]!,
-                                                // Lighter grey color for the highlight
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.29,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.33,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              errorWidget:
-                                                  (context, url, error) {
-                                                print(
-                                                    error); // This will print the error to the console
-                                                return Icon(Icons.error);
+                                    Container(
+                                      color: Colors.grey[100],
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                showImagePopup(
+                                                    context, productItem);
                                               },
+                                              child: CachedNetworkImage(
+                                                imageUrl: productItem.pictures!
+                                                    .split(',')[0],
+                                                fit: BoxFit.cover,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.34,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.44,
+                                                placeholder: (context, url) =>
+                                                    Shimmer.fromColors(
+                                                  baseColor: Colors.grey[300]!,
+                                                  // Light grey color for the base
+                                                  highlightColor:
+                                                      Colors.grey[100]!,
+                                                  // Lighter grey color for the highlight
+                                                  child: Container(
+                                                    height: MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.29,
+                                                    width: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.33,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                errorWidget:
+                                                    (context, url, error) {
+                                                  print(
+                                                      error); // This will print the error to the console
+                                                  return Icon(Icons.error);
+                                                },
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 8,),
-                                        Container(width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.33,
-                                          child: Text(getBrandName(productItem.attributes) ?? 'Unknown', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,),
-                                        ),
-                                        Container(width: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.33,
-                                          child: Text(productItem
-                                              .name!, style: Theme.of(context).textTheme.labelSmall,overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,),
-                                        ),
-                                        IconButton(
-                                            onPressed: () => _openSourceWebsite(
-                                                productItem.corresponding_url!),
-                                            icon: SvgPicture.asset(
-                                              'assets/images/basket.svg', // Path to your SVG file
-                                            ))
-                                      ],
+                                          SizedBox(height: 8,),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 12.0),
+                                            child: Text(getBrandName(productItem.attributes) ?? 'Unknown', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 12.0),
+                                            child: Text(productItem
+                                                .name!, style: Theme.of(context).textTheme.labelSmall,overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,),
+                                          ),
+                                          TextButton(
+                                            onPressed: () => _openSourceWebsite(productItem.corresponding_url!),
+                                            child: Text(
+                                              'Proceed to the Store',
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.blue,
+                                                fontWeight: FontWeight.bold,// You can choose the color that fits your design
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     Positioned(
                                         top: 8,

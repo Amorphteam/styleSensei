@@ -116,8 +116,7 @@ class _ImageTileState extends State<ImageTile> {
       onTap: () {
         if (!isLongPressing) {
           // Handle normal tap here
-          _showNormalPressDialog(context, widget.collections[widget.index].id,
-              widget.collections[widget.index].image);
+          _showNormalPressDialog(context, widget.collections[widget.index]);
         }
         setState(() {
           isLongPressing = false;
@@ -176,7 +175,7 @@ class _ImageTileState extends State<ImageTile> {
 
   // Function to show a dialog for normal press (you can customize this as needed)
   void _showNormalPressDialog(
-      BuildContext context, int index, String mainImageUrl) {
+      BuildContext context, Collections collection) {
     // Navigate to the Detail Screen with BlocProvider
     Navigator.push(
       context,
@@ -184,8 +183,7 @@ class _ImageTileState extends State<ImageTile> {
         builder: (context) => BlocProvider(
           create: (context) => DetailCubit(),
           child: Detail(
-            index: index,
-            mainImageUrl: mainImageUrl,
+            collection: collection,
           ),
         ),
       ),
