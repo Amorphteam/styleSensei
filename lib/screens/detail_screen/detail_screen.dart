@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.da
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import '../../new_models/attribute.dart';
 import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
@@ -30,10 +33,30 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   Map<String, bool> bookmarkedItems = {};
+  PageController _pageController = PageController();
+  int _currentPage = 0;
+  VideoPlayerController? _videoController;
+  bool _isVideoPlayed = false; // Track if the video has been played
 
   @override
   void initState() {
     super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/splash1.mp4')
+      ..initialize().then((_) {
+        setState(() {
+          _videoController!.setLooping(false); // Ensure the video doesn't loop
+        });
+      });
+
+    _videoController?.addListener(() {
+      if (_videoController!.value.position == _videoController!.value.duration) {
+        // Video finished playing
+        setState(() {
+          _isVideoPlayed = true; // Mark video as played to show the text instead
+        });
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       loadBookmarkedItems().then((loadedBookmarkedItems) {
         setState(() {
@@ -46,6 +69,12 @@ class _DetailState extends State<Detail> {
   }
 
   @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
@@ -53,39 +82,81 @@ class _DetailState extends State<Detail> {
           return [
             SliverAppBar(
               expandedHeight: 600.0,
-              // Set the initial height of the AppBar
               floating: false,
-              // Set to true if you want it to be always visible when scrolling
               pinned: true,
-              // Set to true if you want it to remain visible at the top when scrolling
-
               flexibleSpace: FlexibleSpaceBar(
-                background: BlocBuilder<DetailCubit, DetailState>(
-                  builder: (context, state) {
-                    if (state is ProductListLoadedState) {
-                      return CachedNetworkImage(
-                        imageUrl: widget.mainImageUrl ?? '',
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          // Light grey color for the base
-                          highlightColor: Colors.grey[100]!,
-                          // Lighter grey color for the highlight
-                          child: Container(
-                            color: Colors.white,
+                background: Stack(
+                  children: [PageView.builder(
+                    controller: _pageController,
+                    itemCount: 3,
+                    onPageChanged: (int page) {
+                      setState(() => _currentPage = page);
+                      if (page == 1) {
+                        _videoController!.play();
+                      }
+                    },
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return CachedNetworkImage(
+                          imageUrl: widget.mainImageUrl ?? '',
+                          fit: BoxFit.cover,
+                        );
+                      } else if (index == 1) {
+                        if (_isVideoPlayed) {
+                          return Container(
+                            color: Colors.grey,
+                            child: Center(
+                              child: Text(
+                                'Text after Video',
+                                style: TextStyle(color: Colors.white, fontSize: 24),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return FittedBox(
+                            fit: BoxFit.cover,
+                            child: SizedBox(
+                              width: _videoController!.value.size.width,
+                              height: _videoController!.value.size.height,
+                              child: VideoPlayer(_videoController!),
+                            ),
+                          );
+                        }
+                      } else {
+                        return Container(
+                          color: Colors.grey,
+                          child: Center(
+                            child: Text(
+                              'Third Slide Content',
+                              style: TextStyle(color: Colors.white, fontSize: 24),
+                            ),
                           ),
-                        ),
-                        errorWidget: (context, url, error) {
-                          print(
-                              error); // This will print the error to the console
-                          return Icon(Icons.error);
-                        },
-                      );
-                    } else {
-                      // Return a placeholder or empty container if the image URL is not available.
-                      return Container();
-                    }
-                  },
+                        );
+                      }
+                    },
+                  ),
+                    Positioned(
+                      bottom: 10,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(3, (index) {
+                          return Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: EdgeInsets.symmetric(horizontal: 2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _currentPage == index
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                ]
                 ),
               ),
             ),
