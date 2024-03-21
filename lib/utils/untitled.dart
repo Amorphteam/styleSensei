@@ -330,6 +330,23 @@ final List<ImageItem> occasionWear = [
   ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual'),
 ];
 
+final List<ImageItem> seasonalStyle = [
+  ImageItem('assets/images/dark.jpg', 604, 'Fall'),
+  ImageItem('assets/images/bright.jpg', 603, 'Spring'),
+  ImageItem('assets/images/pastel.jpg', 601, 'Summer'),
+  ImageItem('assets/images/neutral.jpg', 602, 'Winter'),
+];
+
+
+final List<ImageItem> clothingPreferences = [
+  ImageItem('assets/images/dark.jpg', 701, 'Mostly dresses and skirts'),
+  ImageItem('assets/images/bright.jpg', 702, 'Mostly jeans and pants'),
+];
+
+final List<ImageItem> hijabPreferences = [
+  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles'),
+];
+
 class ImageItem {
   final String path;
   final int tag;

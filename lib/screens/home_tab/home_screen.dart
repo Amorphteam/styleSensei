@@ -288,6 +288,9 @@ class _HomeTabState extends State<HomeTab> {
                   {'title': 'Color Tones', 'options': colorTones},
                   {'title': 'Occasion Wear', 'options': occasionWear},
                   {'title': 'Body Types', 'options': bodyTypes},
+                  {'title': 'Seasonal Style', 'options': seasonalStyle},
+                  {'title': 'Clothing Preferences', 'options': clothingPreferences},
+                  {'title': 'Hijab Preferences', 'options': hijabPreferences},
                 ].map((Map<String, dynamic> filter) {
                   String title = filter['title'];
                   List<ImageItem> options = filter['options'];

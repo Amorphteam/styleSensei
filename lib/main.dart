@@ -49,8 +49,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
         ),
       ),
-      home: SplashSimple(
-          title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
+      home: SplashWithVideo(),
       debugShowCheckedModeBanner: false,
     );
   }

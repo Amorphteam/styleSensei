@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "177611763528-nuba2gdv04h8ppmm7lmerfde6gpmab7q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amorphteam.stylesensei.style_sensei",
+            "certificate_hash": "47613ea96c7d568737f044ec02da79ea0a81a4b8"
+          }
+        },
+        {
           "client_id": "177611763528-352tl52eecdm2ic9sgcbiqlg68nv5f3e.apps.googleusercontent.com",
           "client_type": 3
         }
