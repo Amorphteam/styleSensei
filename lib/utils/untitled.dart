@@ -318,6 +318,18 @@ final List<ImageItem> colorTones = [
   ImageItem('assets/images/neutral.jpg', 504, 'Neutral'),
 ];
 
+final List<ImageItem> occasionWear = [
+  ImageItem('assets/images/dark.jpg', 205, 'Athleisure'),
+  ImageItem('assets/images/bright.jpg', 202, 'Formal Event'),
+  ImageItem('assets/images/pastel.jpg', 206, 'Wedding'),
+  ImageItem('assets/images/neutral.jpg', 201, 'Evening Out'),
+  ImageItem('assets/images/dark.jpg', 203, 'Holiday'),
+  ImageItem('assets/images/bright.jpg', 204, 'Weekend'),
+  ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal'),
+  ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual'),
+  ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual'),
+];
+
 class ImageItem {
   final String path;
   final int tag;

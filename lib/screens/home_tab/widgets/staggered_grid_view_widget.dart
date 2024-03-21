@@ -50,7 +50,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                 Row(
                   children: [
                     Gap(10),
-                    Flexible(
+                    Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(parseTitle(widget.collections[index].title),

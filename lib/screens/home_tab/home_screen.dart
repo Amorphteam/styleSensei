@@ -16,7 +16,9 @@ import 'widgets/tab_bar_widget.dart';
 
 class HomeTab extends StatefulWidget {
   final HomeCubit homeCubit;
-  final List<int> collectionTags;
+  List<int> collectionTags;
+
+
 
   HomeTab({Key? key, required this.homeCubit, required this.collectionTags})
       : super(key: key);
@@ -30,19 +32,14 @@ class _HomeTabState extends State<HomeTab> {
   String styleName = '';
   List<String> styleDescriptions = [];
   List<int> selectedTags = [];
-  Map<int, String> selectedChoices = {};
+  Map<String, ImageItem> selectedChoices = {};
 
-  void _updateSelectedChoice(int tag, String choice) {
-    setState(() {
-      selectedChoices[tag] = choice;
-    });
-    // You can also call a method to filter your content based on selectedChoices here
-  }
+
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
+      getData(widget.collectionTags);
     });
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
@@ -50,6 +47,48 @@ class _HomeTabState extends State<HomeTab> {
     selectedTags = List.from(widget.collectionTags);
 
     super.initState();
+  }
+
+  void getData(List<int> tags) {
+    Set<int> uniqueTags = Set.from(widget.collectionTags)..addAll(tags);
+
+    // Assign the unique set back to collectionTags
+    widget.collectionTags = uniqueTags.toList();
+
+    // Fetch data with the unique set of tags
+    widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
+  }
+
+
+  void _showOptions(BuildContext context, String title, List<ImageItem> options) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: Wrap(
+            children: options.map((ImageItem option) {
+              return ListTile(
+                title: Text(option.des),
+                onTap: () {
+                  setState(() {
+                    selectedChoices[title] = option;
+                  });
+                  getData(getSelectedOptionIds());
+                  Navigator.pop(context);
+
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+
+  List<int> getSelectedOptionIds() {
+    return selectedChoices.values.map((item) => item.tag).toList();
   }
 
   void _handleChipSelection(int tag, bool isSelected) {
@@ -245,58 +284,46 @@ class _HomeTabState extends State<HomeTab> {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: widget.collectionTags.map((int tag) {
-                  // Use the selected choice as the chip label if it exists, otherwise use a default label
-                  final tagName = selectedChoices.containsKey(tag)
-                      ? '${getTagName(tag)}: ${selectedChoices[tag]!}'
-                      : getTagName(tag);
+                children: [
+                  {'title': 'Color Tones', 'options': colorTones},
+                  {'title': 'Occasion Wear', 'options': occasionWear},
+                  {'title': 'Body Types', 'options': bodyTypes},
+                ].map((Map<String, dynamic> filter) {
+                  String title = filter['title'];
+                  List<ImageItem> options = filter['options'];
+                  bool isSelected = selectedChoices.containsKey(title);
 
-                  // Decide the chip color based on whether an option is selected
-                  final chipColor = selectedChoices.containsKey(tag)
-                      ? Theme.of(context).colorScheme.inversePrimary // Selected color
-                      : Colors.grey[100]; // Default color
+                  Widget chipLabel = isSelected
+                      ? Text(selectedChoices[title]!.des)
+                      : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(title),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  );
 
-                  // Decide the text color based on whether an option is selected
-                  final textColor = selectedChoices.containsKey(tag)
-                      ? Theme.of(context).colorScheme.onBackground // For selected chip
-                      : Theme.of(context).colorScheme.onSurface; // For default chip
+                  return GestureDetector(
+                    onTap: () => _showOptions(context, title, options),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Chip(
+                        label: chipLabel,
+                        backgroundColor: isSelected
+                            ? Theme.of(context).colorScheme.inversePrimary
+                            : Colors.grey[100],
+                        deleteIcon: isSelected ? Icon(Icons.close) : null,
+                        onDeleted: isSelected
+                            ? () {
+                          setState(() {
+                            selectedChoices.remove(title);
+                          });
+                          getData(getSelectedOptionIds());
 
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: ActionChip(
-                      label: Text(tagName),
-                      backgroundColor: chipColor, // Use the dynamic background color
-                      labelStyle: TextStyle(color: textColor), // Use the dynamic text color
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Wrap(
-                              children: [
-                                // Title for the BottomSheet based on the chip that was tapped
-                                ListTile(
-                                  title: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text('$tagName',
-                                        style: TextStyle(fontWeight: FontWeight.bold)),
-                                  ),),
-                                ...['Option 1', 'Option 2', 'Option 3'].map((String choice) => ListTile(
-                                  title: Padding(
-                                    padding: const EdgeInsets.only(left: 16.0),
-                                    child: Text(choice),
-                                  ),
-                                  onTap: () {
-                                    // Update the selected choice when tapped
-                                    _updateSelectedChoice(tag, choice);
-                                    Navigator.pop(context); // Close the BottomSheet
-                                  },
-                                )),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      side: BorderSide.none,
+                        }
+                            : null,
+                        side: BorderSide.none,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -374,7 +401,5 @@ class _HomeTabState extends State<HomeTab> {
     return results; // Return the aggregated results without duplicates
   }
 
-  String getTagName(int tag) {
-    return 'tag with id $tag';
-  }
+
 }
