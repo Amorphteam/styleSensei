@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import '../../models/Collections.dart';
 import '../../utils/untitled.dart';
 import '../splash/splash_screen.dart';
@@ -263,14 +264,14 @@ class _HomeTabState extends State<HomeTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Here are your personalized picks',
+                  AppLocalizations.of(context).translate('home_title'),
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'We refine your collection with each like and dislike.',
+                  AppLocalizations.of(context).translate('home_des'),
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
@@ -285,12 +286,12 @@ class _HomeTabState extends State<HomeTab> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  {'title': 'Color Tones', 'options': colorTones},
-                  {'title': 'Occasion Wear', 'options': occasionWear},
-                  {'title': 'Body Types', 'options': bodyTypes},
-                  {'title': 'Seasonal Style', 'options': seasonalStyle},
-                  {'title': 'Clothing Preferences', 'options': clothingPreferences},
-                  {'title': 'Hijab Preferences', 'options': hijabPreferences},
+                  {'title': AppLocalizations.of(context).translate('color_tone'), 'options': colorTones},
+                  {'title': AppLocalizations.of(context).translate('occasion_wear'), 'options': occasionWear},
+                  {'title': AppLocalizations.of(context).translate('body_types'), 'options': bodyTypes},
+                  {'title': AppLocalizations.of(context).translate('seasonal_style'), 'options': seasonalStyle},
+                  {'title': AppLocalizations.of(context).translate('clothing_preferences'), 'options': clothingPreferences},
+                  {'title': AppLocalizations.of(context).translate('hijab_preferences'), 'options': hijabPreferences},
                 ].map((Map<String, dynamic> filter) {
                   String title = filter['title'];
                   List<ImageItem> options = filter['options'];

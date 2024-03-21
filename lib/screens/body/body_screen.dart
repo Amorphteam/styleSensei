@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../../utils/untitled.dart';
 import '../color_tones/color_tones_screen.dart';
@@ -32,14 +33,14 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Tell us more about your appearance and preferences.',
+                            AppLocalizations.of(context).translate('body_type_title'),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            'You can easily edit this information at any time within the app.',
+                            AppLocalizations.of(context).translate('body_type_des'),
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                         ],
@@ -55,7 +56,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Choose the body type that best aligns with yours.',
+                AppLocalizations.of(context).translate('body_type_guide'),
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium
@@ -137,7 +138,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                   ),
                 ),
                 child: Text(
-                  'Pick 1',
+                  AppLocalizations.of(context).translate('pick_1'),
                   style: TextStyle(
                     color: Colors.white, // Change color conditionally
                   ),

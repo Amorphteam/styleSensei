@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../body/body_screen.dart';
 
@@ -54,7 +55,7 @@ class SplashSimple extends StatelessWidget {
                     width: MediaQuery.of(context).size.width / 1.5,
                     child:  Center(
                       child: Text(
-                        'Get started',
+                        AppLocalizations.of(context).translate('get_started'),
                         style: TextStyle(
                           fontSize: 14.0,
                           color: Colors.white,

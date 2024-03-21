@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 
 import '../style/cubit/style_cubit.dart';
@@ -22,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Profile',
+                        AppLocalizations.of(context).translate('profile_title'),
                         style: Theme.of(context)
                             .textTheme
                             .titleLarge

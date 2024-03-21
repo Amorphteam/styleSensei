@@ -233,126 +233,96 @@ class _InteractiveTileState extends State<InteractiveTile> {
 }
 
 List<ImageItem> images = [
-  ImageItem('assets/images/classic1.jpeg', 405,
-      'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic2.jpeg', 405,
-      'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic3.jpeg', 405,
-      'Classic: Elegant, structured, neutral.'),
-  ImageItem('assets/images/classic4.jpeg', 405,
-      'Classic: Elegant, structured, neutral.'),
-  ImageItem(
-      'assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem(
-      'assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem(
-      'assets/images/casual3.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem(
-      'assets/images/casual4.jpeg', 411, 'Casual: Relaxed, easy, simple.'),
-  ImageItem('assets/images/bohemian1.jpeg', 404,
-      'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/bohemian2.jpeg', 404,
-      'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/bohemian3.jpeg', 404,
-      'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/bohemian4.jpeg', 404,
-      'Bohemian (Boho): Artistic, textured, earthy.'),
-  ImageItem('assets/images/rock1.jpeg', 406, 'Rock: Bold, edgy, leather.'),
-  ImageItem('assets/images/rock2.jpeg', 406, 'Rock: Bold, edgy, leather.'),
-  ImageItem('assets/images/rock3.jpeg', 406, 'Rock: Bold, edgy, leather.'),
-  ImageItem('assets/images/rock4.jpeg', 406, 'Rock: Bold, edgy, leather.'),
-  ImageItem(
-      'assets/images/eclectic1.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem(
-      'assets/images/eclectic2.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem(
-      'assets/images/eclectic3.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem(
-      'assets/images/eclectic4.jpeg', 408, 'Eclectic: Diverse, mixed, unique.'),
-  ImageItem(
-      'assets/images/feminine1.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem(
-      'assets/images/feminine2.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem(
-      'assets/images/feminine3.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem(
-      'assets/images/feminine4.jpeg', 402, 'Feminine: Soft, ruffled, flowing.'),
-  ImageItem('assets/images/minimal1.jpeg', 401,
-      'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/minimal2.jpeg', 401,
-      'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/minimal3.jpeg', 401,
-      'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/minimal4.jpeg', 401,
-      'Minimal: Sleek, simple, monochromatic.'),
-  ImageItem('assets/images/tomboy1.jpeg', 409,
-      'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/tomboy2.jpeg', 409,
-      'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/tomboy3.jpeg', 409,
-      'Tomboy: Masculine, practical, denim.'),
-  ImageItem('assets/images/tomboy4.jpeg', 409,
-      'Tomboy: Masculine, practical, denim.'),
-  ImageItem(
-      'assets/images/vintage1.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
-  ImageItem(
-      'assets/images/vintage2.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
-  ImageItem(
-      'assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
-  ImageItem(
-      'assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.'),
+  ImageItem('assets/images/classic1.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/classic2.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/classic3.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/classic4.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem('assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem('assets/images/casual3.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem('assets/images/casual4.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem('assets/images/bohemian1.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/bohemian2.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/bohemian3.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/bohemian4.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/rock1.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
+  ImageItem('assets/images/rock2.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
+  ImageItem('assets/images/rock3.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
+  ImageItem('assets/images/rock4.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
+  ImageItem('assets/images/eclectic1.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/eclectic2.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/eclectic3.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/eclectic4.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/feminine1.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine2.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine3.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine4.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/minimal1.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/minimal2.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/minimal3.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/minimal4.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/tomboy1.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/tomboy2.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/tomboy3.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/tomboy4.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/vintage1.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/vintage2.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
 ];
+
 final List<ImageItem> bodyTypes = [
-  ImageItem('assets/images/fit.jpg', 805, 'Fit'),
-  ImageItem('assets/images/plus_size.jpg', 804, 'Plus Size'),
-  ImageItem('assets/images/expecting.jpg', 806, 'Expecting'),
-  ImageItem('assets/images/curvy.jpg', 803, 'Curvy'),
-  ImageItem('assets/images/petite.jpg', 802, 'Petite'),
-  ImageItem('assets/images/tall.jpg', 801, 'Tall'),
+  ImageItem('assets/images/fit.jpg', 805, 'Fit', 'رشيق'),
+  ImageItem('assets/images/plus_size.jpg', 804, 'Plus Size', 'مقاس كبير'),
+  ImageItem('assets/images/expecting.jpg', 806, 'Expecting', 'حامل'),
+  ImageItem('assets/images/curvy.jpg', 803, 'Curvy', 'ممتلئ'),
+  ImageItem('assets/images/petite.jpg', 802, 'Petite', 'صغير الحجم'),
+  ImageItem('assets/images/tall.jpg', 801, 'Tall', 'طويل'),
 ];
 
 final List<ImageItem> colorTones = [
-  ImageItem('assets/images/dark.jpg', 503, 'Dark'),
-  ImageItem('assets/images/bright.jpg', 502, 'Bright'),
-  ImageItem('assets/images/pastel.jpg', 501, 'Pastel'),
-  ImageItem('assets/images/neutral.jpg', 504, 'Neutral'),
+  ImageItem('assets/images/dark.jpg', 503, 'Dark', 'داكن'),
+  ImageItem('assets/images/bright.jpg', 502, 'Bright', 'مشرق'),
+  ImageItem('assets/images/pastel.jpg', 501, 'Pastel', 'باستيل'),
+  ImageItem('assets/images/neutral.jpg', 504, 'Neutral', 'محايد'),
 ];
 
 final List<ImageItem> occasionWear = [
-  ImageItem('assets/images/dark.jpg', 205, 'Athleisure'),
-  ImageItem('assets/images/bright.jpg', 202, 'Formal Event'),
-  ImageItem('assets/images/pastel.jpg', 206, 'Wedding'),
-  ImageItem('assets/images/neutral.jpg', 201, 'Evening Out'),
-  ImageItem('assets/images/dark.jpg', 203, 'Holiday'),
-  ImageItem('assets/images/bright.jpg', 204, 'Weekend'),
-  ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal'),
-  ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual'),
-  ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual'),
+  ImageItem('assets/images/dark.jpg', 205, 'Athleisure', 'رياضي'),
+  ImageItem('assets/images/bright.jpg', 202, 'Formal Event', 'حدث رسمي'),
+  ImageItem('assets/images/pastel.jpg', 206, 'Wedding', 'زفاف'),
+  ImageItem('assets/images/neutral.jpg', 201, 'Evening Out', 'خروج مسائي'),
+  ImageItem('assets/images/dark.jpg', 203, 'Holiday', 'عطلة'),
+  ImageItem('assets/images/bright.jpg', 204, 'Weekend', 'عطلة نهاية الأسبوع'),
+  ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal', 'ملابس العمل - رسمي'),
+  ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual', 'ملابس العمل - كاجوال أنيق'),
+  ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual', 'ملابس العمل - كاجوال'),
 ];
 
 final List<ImageItem> seasonalStyle = [
-  ImageItem('assets/images/dark.jpg', 604, 'Fall'),
-  ImageItem('assets/images/bright.jpg', 603, 'Spring'),
-  ImageItem('assets/images/pastel.jpg', 601, 'Summer'),
-  ImageItem('assets/images/neutral.jpg', 602, 'Winter'),
+  ImageItem('assets/images/dark.jpg', 604, 'Fall', 'خريف'),
+  ImageItem('assets/images/bright.jpg', 603, 'Spring', 'ربيع'),
+  ImageItem('assets/images/pastel.jpg', 601, 'Summer', 'صيف'),
+  ImageItem('assets/images/neutral.jpg', 602, 'Winter', 'شتاء'),
 ];
 
-
 final List<ImageItem> clothingPreferences = [
-  ImageItem('assets/images/dark.jpg', 701, 'Mostly dresses and skirts'),
-  ImageItem('assets/images/bright.jpg', 702, 'Mostly jeans and pants'),
+  ImageItem('assets/images/dark.jpg', 701, 'Mostly dresses and skirts', 'غالبًا فساتين وتنانير'),
+  ImageItem('assets/images/bright.jpg', 702, 'Mostly jeans and pants', 'غالبًا جينز وبنطلونات'),
 ];
 
 final List<ImageItem> hijabPreferences = [
-  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles'),
+  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles', 'أنماط تناسب الحجاب'),
 ];
+
 
 class ImageItem {
   final String path;
   final int tag;
   final String des;
+  final String arDes;
 
-  ImageItem(this.path, this.tag, this.des);
+  ImageItem(this.path, this.tag, this.des, this.arDes);
 }
 
 Future<Map<String, bool>> loadBookmarkedItems() async {

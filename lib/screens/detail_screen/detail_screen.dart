@@ -15,6 +15,7 @@ import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../../models/Collections.dart';
@@ -374,7 +375,7 @@ class _DetailState extends State<Detail> {
                                             onPressed: () => _openSourceWebsite(
                                                 productItem.corresponding_url!),
                                             child: Text(
-                                              'Proceed to the Store',
+                                              AppLocalizations.of(context).translate('shopping_bu'),
                                               style: TextStyle(
                                                 fontSize: 11,
                                                 color: Colors.blue,

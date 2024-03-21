@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
 import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
@@ -22,7 +23,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              'Choose your favorite color tones.',
+              AppLocalizations.of(context).translate('color_tone_title'),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
@@ -102,7 +103,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                 ),
               ),
               child: Text(
-                'Pick 1',
+                AppLocalizations.of(context).translate('pick_1'),
                 style: TextStyle(color: Colors.white),
               ),
             ),

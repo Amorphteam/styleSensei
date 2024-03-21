@@ -1,3 +1,26 @@
 {
-  "saved_app_bar_title": "Saved Products"
+  "get_started": "Get started",
+  "body_type_title": "Tell us more about your appearance and preferences.",
+  "body_type_des": "You can easily edit this information at any time within the app.",
+  "body_type_guide": "Choose the body type that best aligns with yours.",
+  "pick_1": "Pick 1",
+  "color_tone_title": "Choose your favorite color tones.",
+  "style_title": "Pick 4 or more styles you like",
+  "style_des": "By understanding your preferences, \n we can offer you tailored recommendations.",
+  "pick": "pick",
+  "more": "more",
+  "recommendation": "Get Recommendations",
+  "home_title": "Here are your personalized picks",
+  "home_des": "We refine your collection with each like and dislike.",
+  "saved_title": "Saved items",
+  "profile_title": "Profile",
+  "explorer": "Explore",
+  "saved": "Saved",
+  "shpping_bu": "Proceed to the Store",
+  "color_tone": "Color tones",
+  "occasion_wear": "Occasion Wear",
+  "body_types": "Body Types",
+  "seasonal_style": "Seasonal Style",
+  "clothing_preferences": "Clothing Preferences",
+  "hijab_preferences": "Hijab Preferences"
 }

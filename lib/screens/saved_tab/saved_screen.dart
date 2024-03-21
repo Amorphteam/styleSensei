@@ -63,7 +63,7 @@ class _SavedScreenState extends State<SavedScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context).translate('saved_app_bar_title'),
+                          AppLocalizations.of(context).translate('saved_title'),
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
@@ -210,7 +210,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                                 onPressed: () => _openSourceWebsite(
                                                     productItem.corresponding_url!),
                                                 child: Text(
-                                                  'Proceed to the Store',
+                                                  AppLocalizations.of(context).translate('shopping_bu'),
                                                   style: TextStyle(
                                                     fontSize: 11,
                                                     color: Colors.blue,

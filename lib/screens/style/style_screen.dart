@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:style_sensei/screens/waiting/cubit/waiting_cubit.dart';
 import 'package:style_sensei/screens/waiting/waiting_screen.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../../utils/untitled.dart';
 import '../home_tab/cubit/home_cubit.dart';
@@ -45,14 +46,14 @@ class _StyleScreenState extends State<StyleScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Pick 4 or more styles you like',
+                            AppLocalizations.of(context).translate('style_title'),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            'By understanding your preferences, \nwe can offer you tailored recommendations.',
+                            AppLocalizations.of(context).translate('style_des'),
                             style: Theme.of(context).textTheme.titleSmall,
                           ),
                         ],
@@ -154,8 +155,8 @@ class _StyleScreenState extends State<StyleScreen> {
               ),
               child: Text(
                 selectedIndexes.length < 4
-                    ? 'Pick ${4 - selectedIndexes.length} more'
-                    : 'Get Recommendations',
+                    ? AppLocalizations.of(context).translate('pick') +'${4 - selectedIndexes.length}' +AppLocalizations.of(context).translate('more')
+                    : AppLocalizations.of(context).translate('recommendation'),
                 style: TextStyle(
                   color: Colors.white, // Change color conditionally
                 ),

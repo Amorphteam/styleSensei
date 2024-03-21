@@ -15,6 +15,7 @@ import 'package:style_sensei/screens/splash/cubit/splash_cubit.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
 import 'package:style_sensei/screens/splash/splash_simple.dart';
 import 'package:style_sensei/screens/splash/splash_with_video.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/AppLocalizationsDelegate.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
         ),
       ),
-      home: SplashWithVideo(),
+      home: SplashSimple(imagePath: '', title: ''),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -112,18 +113,18 @@ class _MyHomePageState extends State<MyHomePage> {
               NavigationDestination(
                 selectedIcon: SvgPicture.asset('assets/images/home_bold.svg'),
                 icon: SvgPicture.asset('assets/images/home_light.svg'),
-                label: 'Explore',
+                label: AppLocalizations.of(context).translate('explorer'),
               ),
               NavigationDestination(
                 selectedIcon: SvgPicture.asset('assets/images/bookmarked.svg'),
                 icon: SvgPicture.asset('assets/images/bookmark.svg'),
-                label: 'Saved',
+                label: AppLocalizations.of(context).translate('saved'),
               ),
               NavigationDestination(
                 selectedIcon:
                     SvgPicture.asset('assets/images/profile_bold.svg'),
                 icon: SvgPicture.asset('assets/images/profile_light.svg'),
-                label: 'Profile',
+                label: AppLocalizations.of(context).translate('profile'),
               ),
             ],
           ),
