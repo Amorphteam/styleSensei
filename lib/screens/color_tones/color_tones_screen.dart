@@ -16,6 +16,9 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if the current locale is Arabic
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return Scaffold(
       body: ListView(
         children: [
@@ -38,6 +41,9 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
             ),
             itemCount: colorTones.length,
             itemBuilder: (context, index) {
+              // Choose the description based on the current language
+              String description = isArabic ? colorTones[index].arDes : colorTones[index].des;
+
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -68,7 +74,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                         });
                       },
                     ),
-                    Text(colorTones[index].des),
+                    Text(description),
                   ],
                 ),
               );

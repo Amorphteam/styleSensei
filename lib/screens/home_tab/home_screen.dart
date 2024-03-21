@@ -62,6 +62,9 @@ class _HomeTabState extends State<HomeTab> {
 
 
   void _showOptions(BuildContext context, String title, List<ImageItem> options) {
+    Locale locale = Localizations.localeOf(context);
+    bool isArabic = locale.languageCode == 'ar';
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -69,15 +72,15 @@ class _HomeTabState extends State<HomeTab> {
           padding: const EdgeInsets.all(28.0),
           child: Wrap(
             children: options.map((ImageItem option) {
+              String displayText = isArabic ? option.arDes : option.des;
               return ListTile(
-                title: Text(option.des),
+                title: Text(displayText),
                 onTap: () {
                   setState(() {
                     selectedChoices[title] = option;
                   });
                   getData(getSelectedOptionIds());
                   Navigator.pop(context);
-
                 },
               );
             }).toList(),

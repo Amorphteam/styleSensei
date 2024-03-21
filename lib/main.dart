@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 selectedIcon:
                     SvgPicture.asset('assets/images/profile_bold.svg'),
                 icon: SvgPicture.asset('assets/images/profile_light.svg'),
-                label: AppLocalizations.of(context).translate('profile'),
+                label: AppLocalizations.of(context).translate('profile_title'),
               ),
             ],
           ),

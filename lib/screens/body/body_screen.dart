@@ -17,6 +17,8 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';  // Check if the current language is Arabic
+
     return Scaffold(
       body: Stack(children: [
         Container(
@@ -76,6 +78,10 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
               ),
               itemCount: bodyTypes.length,
               itemBuilder: (context, index) {
+                String description = isArabic
+                    ? bodyTypes[index].arDes
+                    : bodyTypes[index].des;
+
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -101,7 +107,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                           }
                         },
                       ),
-                      Text(bodyTypes[index].des),
+                      Text(description),
                     ],
                   ),
                 );
