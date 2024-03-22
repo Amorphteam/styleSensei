@@ -51,6 +51,20 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
+      builder: (context, child) {
+        var locale = Localizations.localeOf(context);
+        if (locale.languageCode == 'ar') {
+          return Theme(
+            data: ThemeData(
+              useMaterial3: true,
+              // Define the font for Arabic text
+              fontFamily: 'tajawal',
+            ),
+            child: child!,
+          );
+        }
+        return child!;
+      },
       home: SplashWithVideo(),
       debugShowCheckedModeBanner: false,
     );

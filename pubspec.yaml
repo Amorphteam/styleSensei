@@ -109,6 +109,12 @@ flutter:
   fonts:
      - family: centrale
        fonts:
+         - asset: assets/fonts/centrale_light.otf
+         - asset: assets/fonts/centrale_regular.otf
+           weight: 700
+
+     - family: tajawal
+       fonts:
          - asset: assets/fonts/tajawal_light.ttf
          - asset: assets/fonts/tajawal_regular.ttf
            weight: 700
