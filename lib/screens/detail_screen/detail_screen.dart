@@ -117,6 +117,7 @@ class _DetailState extends State<Detail> {
 
   Widget buildUi(BuildContext context, List<CollectionItem> collection,
       ProductsModel? collectionDetail) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -125,7 +126,7 @@ class _DetailState extends State<Detail> {
               expandedHeight: 600.0,
               floating: false,
               pinned: true,
-              title: innerBoxIsScrolled ? Text(getTitle(collectionDetail?.collection?.title)) : null,
+              title: innerBoxIsScrolled ? Text(getTitle(collectionDetail?.collection?.title, (isArabic)?'ar':'en')) : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   children: [
@@ -164,7 +165,7 @@ class _DetailState extends State<Detail> {
                                   ),
                                   Gap(20),
                                   Text(
-                                    getBodyShapeText(collectionDetail?.collection?.description),
+                                    getBodyShapeText(collectionDetail?.collection?.description, (isArabic)?'ar':'en'),
                                     style: Theme.of(context).textTheme.titleMedium,
                                   ),
                                 ],
@@ -480,11 +481,11 @@ class _DetailState extends State<Detail> {
     return 'Unknown'; // Default value in case the brand name is not found
   }
 
-  String getBodyShapeText(String? jsonString) {
+  String getBodyShapeText(String? jsonString, String language) {
     if (jsonString != null) {
       try {
         Map<String, dynamic> jsonData = json.decode(jsonString);
-        String bodyShapeEn = jsonData['body_shape']['en'];
+        String bodyShapeEn = jsonData['body_shape'][language];
         return bodyShapeEn;
       } catch (error) {
         return jsonString;
@@ -493,11 +494,11 @@ class _DetailState extends State<Detail> {
     return '';
   }
 
-  String getTitle(String? titleJson) {
+  String getTitle(String? titleJson, String language) {
     if (titleJson != null) {
       try {
         Map<String, dynamic> jsonData = json.decode(titleJson);
-        String enTitle = jsonData['en'];
+        String enTitle = jsonData[language];
         return enTitle;
       } catch (error) {
         return titleJson;

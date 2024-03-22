@@ -5,9 +5,8 @@ import '../body/body_screen.dart';
 
 class SplashSimple extends StatelessWidget {
   final String imagePath;
-  final String title;
 
-  SplashSimple({required this.imagePath, required this.title});
+  SplashSimple({required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class SplashSimple extends StatelessWidget {
                   .size
                   .width / 1.6, // Width is half of the screen
               child: Text(
-                title,
+                AppLocalizations.of(context).translate('splash_title'),
                 style: TextStyle(
                   fontSize: 32,
                   color: Colors.white,

@@ -10,6 +10,7 @@ import 'package:style_sensei/screens/splash/splash_simple.dart';
 import 'package:style_sensei/screens/splash/splash_with_pattern.dart';
 import 'package:style_sensei/screens/splash/splash_with_video.dart';
 import 'package:style_sensei/screens/style/cubit/style_cubit.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../home_tab/cubit/home_cubit.dart';
 import '../style/style_screen.dart';
@@ -25,8 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   final List<Widget> splashPages = [
     SplashWithVideo(),
 
-    SplashSimple(
-        title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
+    SplashSimple(imagePath: "assets/images/splash1.jpg"),
     BodyTypeSelectionScreen(),
 
   ];

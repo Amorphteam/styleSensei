@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
 import 'package:style_sensei/screens/splash/splash_simple.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../utils/user_controller.dart';
@@ -99,7 +100,7 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                         ),
                         SizedBox(width: 8), // You can adjust spacing as needed
                         Text(
-                          'Continue with Google',
+                          AppLocalizations.of(context).translate('google_login'),
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.white,
@@ -123,8 +124,7 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
       final user = await UserController.loginWithGoogle();
       if (user != null && mounted) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SplashSimple(
-                title: "This journey is all about YOU. \nTell us more about yourself.", imagePath: "assets/images/splash1.jpg"),
+            builder: (context) => SplashSimple(imagePath: "assets/images/splash1.jpg"),
         ));
       }
 

@@ -21,6 +21,8 @@ class StaggeredGridView extends StatefulWidget {
 class _StaggeredGridViewState extends State<StaggeredGridView> {
   @override
   Widget build(BuildContext context) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return GridView.custom(
       gridDelegate: SliverQuiltedGridDelegate(
         crossAxisCount: 1,
@@ -53,7 +55,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(parseTitle(widget.collections[index].title),
+                        child: Text(parseTitle(widget.collections[index].title, (isArabic)?'ar':'en'),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -82,12 +84,12 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
     );
   }
 
-  String parseTitle(dynamic title) {
+  String parseTitle(dynamic title, String language) {
     if (title is String) {
       try {
         final decoded = json.decode(title);
-        if (decoded is Map<String, dynamic> && decoded.containsKey('en')) {
-          return decoded['en'];
+        if (decoded is Map<String, dynamic> && decoded.containsKey(language)) {
+          return decoded[language];
         }
       } catch (e) {
         // If json.decode throws an error, title is not a JSON string.

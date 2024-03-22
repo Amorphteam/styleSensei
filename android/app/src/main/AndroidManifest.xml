@@ -9,7 +9,7 @@
         </intent>
     </queries>
     <application
-        android:label="style_sensei"
+        android:label="Style Sensei"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

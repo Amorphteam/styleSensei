@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
         ),
       ),
-      home: SplashSimple(imagePath: '', title: ''),
+      home: SplashWithVideo(),
       debugShowCheckedModeBanner: false,
     );
   }
