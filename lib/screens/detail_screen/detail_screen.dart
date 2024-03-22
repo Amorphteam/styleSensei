@@ -234,7 +234,12 @@ class _DetailState extends State<Detail> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SvgPicture.asset('assets/images/collection.svg'),
+          ColorFiltered(
+          colorFilter: ColorFilter.mode(
+          Theme.of(context).colorScheme.onSurface,
+          BlendMode.srcIn,
+        ),
+        child: SvgPicture.asset('assets/images/collection.svg')),
               Padding(
                 padding: EdgeInsets.only(left: 10.0, top: 2),
                 child: Text(
@@ -265,7 +270,7 @@ class _DetailState extends State<Detail> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          '${items[index].products?.length ?? ' '} Alternatives',
+                          '${items[index].products?.length ?? ' '}' + AppLocalizations.of(context).translate('alternatives'),
                           style: Theme.of(context).textTheme.labelSmall,
                         )
                       ],
@@ -287,7 +292,7 @@ class _DetailState extends State<Detail> {
                                 child: Stack(
                                   children: [
                                     Container(
-                                      color: Colors.grey[100],
+                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -312,10 +317,10 @@ class _DetailState extends State<Detail> {
                                                     0.44,
                                                 placeholder: (context, url) =>
                                                     Shimmer.fromColors(
-                                                  baseColor: Colors.grey[300]!,
+                                                  baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
                                                   // Light grey color for the base
                                                   highlightColor:
-                                                      Colors.grey[100]!,
+                                                  Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                                                   // Lighter grey color for the highlight
                                                   child: Container(
                                                     height:
@@ -379,7 +384,7 @@ class _DetailState extends State<Detail> {
                                               AppLocalizations.of(context).translate('shopping_bu'),
                                               style: TextStyle(
                                                 fontSize: 11,
-                                                color: Colors.blue,
+                                                color: Theme.of(context).colorScheme.inversePrimary,
                                                 fontWeight: FontWeight
                                                     .bold, // You can choose the color that fits your design
                                               ),
@@ -395,7 +400,7 @@ class _DetailState extends State<Detail> {
                                           width: 30.0,
                                           height: 30.0,
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
+                                            color: Theme.of(context).colorScheme.surface.withOpacity(0.2),
                                             shape: BoxShape.circle,
                                             // Circular shape
                                           ),

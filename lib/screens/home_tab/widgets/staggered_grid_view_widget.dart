@@ -63,10 +63,20 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                       ),
                     ),
                     IconButton(
-                        icon: SvgPicture.asset('assets/images/like.svg'),
+                        icon: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+          Theme.of(context).colorScheme.onSurface,
+          BlendMode.srcIn,
+          ),
+          child: SvgPicture.asset('assets/images/like.svg')),
                         onPressed: () {}),
                     IconButton(
-                        icon: SvgPicture.asset('assets/images/dislike.svg'),
+                        icon: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+          Theme.of(context).colorScheme.onSurface,
+          BlendMode.srcIn,
+          ),
+          child: SvgPicture.asset('assets/images/dislike.svg')),
                         onPressed: () {}),
                     Gap(10),
                   ],

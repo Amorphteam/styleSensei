@@ -42,7 +42,6 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
             BorderRadius.circular(0), // Defines the shape of the dialog.
       ),
       child: Container(
-        color: Colors.white,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -105,7 +104,12 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                   IconButton(
                     onPressed: () =>
                         _openSourceWebsite(widget.product.corresponding_url!),
-                    icon: SvgPicture.asset('assets/images/basket.svg'),
+                    icon: ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
+                      child: SvgPicture.asset('assets/images/basket.svg')),
                   ),
                 ],
               ),
@@ -115,12 +119,13 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
               child: CachedNetworkImage(
                 imageUrl: imageUrls![selectedIndex],
                 fit: BoxFit.contain,
-                placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
+                placeholder: (context, url) =>                                                     Shimmer.fromColors(
+                  baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                  // Light grey color for the base
+                  highlightColor:
+                  Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                   child: Container(
                     width: double.infinity,
-                    color: Colors.white,
                   ),
                 ),
                 errorWidget: (context, url, error) => Icon(Icons.error),
@@ -155,13 +160,14 @@ class _ImagePopupDialogState extends State<ImagePopupDialog> {
                         child: CachedNetworkImage(
                           imageUrl: imageUrls[index],
                           fit: BoxFit.cover,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
+                          placeholder: (context, url) =>                                                     Shimmer.fromColors(
+                            baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                            // Light grey color for the base
+                            highlightColor:
+                            Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                             child: Container(
                               height: 100,
                               width: 60,
-                              color: Colors.white,
                             ),
                           ),
                           errorWidget: (context, url, error) =>

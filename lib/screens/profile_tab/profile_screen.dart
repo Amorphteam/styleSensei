@@ -11,7 +11,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
       child: ListView(
         children: <Widget>[
           Container(
@@ -39,13 +38,20 @@ class ProfileScreen extends StatelessWidget {
               )),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children:[CircleAvatar(foregroundImage: NetworkImage(UserController.user?.photoURL ?? ''),),
-                Text(UserController.user?.displayName ?? '', style: Theme.of(context).textTheme.bodySmall,),
-                Text(UserController.user?.email ?? '', style: Theme.of(context).textTheme.bodySmall,),
-
-              ]
-            ),
+            child: Column(children: [
+              CircleAvatar(
+                foregroundImage:
+                    NetworkImage(UserController.user?.photoURL ?? ''),
+              ),
+              Text(
+                UserController.user?.displayName ?? '',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              Text(
+                UserController.user?.email ?? '',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ]),
           ),
           SizedBox(height: 16.0),
           ListTile(
@@ -54,7 +60,18 @@ class ProfileScreen extends StatelessWidget {
             // Replace with dynamic data
             leading: IconButton(
               onPressed: () {},
-              icon: SvgPicture.asset('assets/images/profile_bold.svg'),
+              icon: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSurface,
+                  BlendMode.srcIn,
+                ),
+                child: ColorFiltered(
+    colorFilter: ColorFilter.mode(
+    Theme.of(context).colorScheme.onSurface,
+    BlendMode.srcIn,
+    ),
+    child: SvgPicture.asset('assets/images/profile_bold.svg')),
+              ),
             ),
           ),
           ListTile(
@@ -63,7 +80,12 @@ class ProfileScreen extends StatelessWidget {
             // Replace with dynamic data
             leading: IconButton(
               onPressed: () {},
-              icon: SvgPicture.asset('assets/images/send_bold.svg'),
+              icon: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                  child: SvgPicture.asset('assets/images/send_bold.svg')),
             ),
           ),
           ListTile(
@@ -72,7 +94,12 @@ class ProfileScreen extends StatelessWidget {
             // Replace with dynamic data
             leading: IconButton(
               onPressed: () {},
-              icon: SvgPicture.asset('assets/images/call_bold.svg'),
+              icon: ColorFiltered(
+    colorFilter: ColorFilter.mode(
+    Theme.of(context).colorScheme.onSurface,
+    BlendMode.srcIn,
+    ),
+    child: SvgPicture.asset('assets/images/call_bold.svg')),
             ),
           ),
           ListTile(
@@ -83,7 +110,12 @@ class ProfileScreen extends StatelessWidget {
             // Replace with dynamic data
             leading: IconButton(
               onPressed: () {},
-              icon: SvgPicture.asset('assets/images/show_bold.svg'),
+              icon: ColorFiltered(
+    colorFilter: ColorFilter.mode(
+    Theme.of(context).colorScheme.onSurface,
+    BlendMode.srcIn,
+    ),
+    child: SvgPicture.asset('assets/images/show_bold.svg')),
             ),
           ),
           Padding(

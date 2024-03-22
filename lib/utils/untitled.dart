@@ -125,10 +125,11 @@ class _ImageTileState extends State<ImageTile> {
       child: CachedNetworkImage(
         imageUrl: widget.collections[widget.index].image,
         fit: BoxFit.cover,
-        placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
+        placeholder: (context, url) =>                                                     Shimmer.fromColors(
+          baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
           // Light grey color for the base
-          highlightColor: Colors.grey[100]!,
+          highlightColor:
+          Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
           // Lighter grey color for the highlight
           child: Container(
             color: Colors.white,

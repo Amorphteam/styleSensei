@@ -45,10 +45,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'centrale',
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red, // Pick a seed color
-          brightness: Brightness.light, // Choose Brightness.light or Brightness.dark
-        ),
+      ),
+      darkTheme: ThemeData(
+        fontFamily: 'centrale',
+        useMaterial3: true,
+        brightness: Brightness.dark,
       ),
       home: SplashWithVideo(),
       debugShowCheckedModeBanner: false,
@@ -91,14 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           data: Theme.of(context).copyWith(
             // This will change the background color of the NavigationBar
             // no matter what theme you are using.
-            bottomAppBarColor: Colors.white,
             // If you are using material3, you might need to set the color scheme
-            // and use surfaceVariant or surfaceTint color for NavigationBar
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  background: Colors.white,
-                  surfaceVariant: Colors.white,
-                  surfaceTint: Colors.white,
-                ),
           ),
           child: NavigationBar(
             labelBehavior: labelBehavior,
@@ -108,22 +102,51 @@ class _MyHomePageState extends State<MyHomePage> {
                 currentPageIndex = index;
               });
             },
-            backgroundColor: Colors.white,
             destinations: <Widget>[
               NavigationDestination(
-                selectedIcon: SvgPicture.asset('assets/images/home_bold.svg'),
-                icon: SvgPicture.asset('assets/images/home_light.svg'),
+                selectedIcon: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.onSurface,
+          BlendMode.srcIn,
+        ),
+      child: SvgPicture.asset('assets/images/home_bold.svg')),
+                icon: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                  child: SvgPicture.asset('assets/images/home_light.svg')),
                 label: AppLocalizations.of(context).translate('explorer'),
               ),
               NavigationDestination(
-                selectedIcon: SvgPicture.asset('assets/images/bookmarked.svg'),
-                icon: SvgPicture.asset('assets/images/bookmark.svg'),
+                selectedIcon: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                  child: SvgPicture.asset('assets/images/bookmarked.svg')),
+                icon: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                  child: SvgPicture.asset('assets/images/bookmark.svg')),
                 label: AppLocalizations.of(context).translate('saved'),
               ),
               NavigationDestination(
                 selectedIcon:
-                    SvgPicture.asset('assets/images/profile_bold.svg'),
-                icon: SvgPicture.asset('assets/images/profile_light.svg'),
+                ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                  child: SvgPicture.asset('assets/images/profile_bold.svg')),
+                icon: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface,
+                    BlendMode.srcIn,
+                  ),
+                  child: SvgPicture.asset('assets/images/profile_light.svg')),
                 label: AppLocalizations.of(context).translate('profile_title'),
               ),
             ],

@@ -50,7 +50,6 @@ class _SavedScreenState extends State<SavedScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white,
         child: ListView(
           children: [
             SizedBox(height: 8),
@@ -146,10 +145,10 @@ class _SavedScreenState extends State<SavedScreen> {
                                                         0.44,
                                                     placeholder: (context, url) =>
                                                         Shimmer.fromColors(
-                                                          baseColor: Colors.grey[300]!,
+                                                          baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
                                                           // Light grey color for the base
                                                           highlightColor:
-                                                          Colors.grey[100]!,
+                                                          Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                                                           // Lighter grey color for the highlight
                                                           child: Container(
                                                             height:

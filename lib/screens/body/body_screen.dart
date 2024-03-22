@@ -22,7 +22,6 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
     return Scaffold(
       body: Stack(children: [
         Container(
-          color: Colors.white,
           child: ListView(children: [
             SizedBox(height: 8),
             Container(

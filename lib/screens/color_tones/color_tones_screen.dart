@@ -62,21 +62,31 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    Checkbox(
-                      value: selectedColorTones.contains(colorTones[index].tag),
-                      onChanged: (bool? value) {
-                        setState(() {
-                          if (value == true) {
-                            selectedColorTones.add(colorTones[index].tag);
-                          } else {
-                            selectedColorTones.remove(colorTones[index].tag);
-                          }
-                        });
-                      },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: selectedColorTones.contains(colorTones[index].tag),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                selectedColorTones.add(colorTones[index].tag);
+                              } else {
+                                selectedColorTones.remove(colorTones[index].tag);
+                              }
+                            });
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(description),
+                        ),
+                      ],
                     ),
-                    Text(description),
                   ],
                 ),
+
               );
             },
           ),

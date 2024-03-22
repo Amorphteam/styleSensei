@@ -68,22 +68,24 @@ class _HomeTabState extends State<HomeTab> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(28.0),
-          child: Wrap(
-            children: options.map((ImageItem option) {
-              String displayText = isArabic ? option.arDes : option.des;
-              return ListTile(
-                title: Text(displayText),
-                onTap: () {
-                  setState(() {
-                    selectedChoices[title] = option;
-                  });
-                  getData(getSelectedOptionIds());
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(28.0),
+            child: Wrap(
+              children: options.map((ImageItem option) {
+                String displayText = isArabic ? option.arDes : option.des;
+                return ListTile(
+                  title: Text(displayText),
+                  onTap: () {
+                    setState(() {
+                      selectedChoices[title] = option;
+                    });
+                    getData(getSelectedOptionIds());
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ),
           ),
         );
       },
@@ -111,7 +113,6 @@ class _HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     imageAssetsUrl.shuffle();
     return Container(
-      color: Colors.white,
       child: ListView(
         children: [
           SizedBox(height: 8),
@@ -270,8 +271,7 @@ class _HomeTabState extends State<HomeTab> {
                   AppLocalizations.of(context).translate('home_title'),
                   style: Theme.of(context)
                       .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                      .titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   AppLocalizations.of(context).translate('home_des'),
@@ -318,8 +318,8 @@ class _HomeTabState extends State<HomeTab> {
                         label: chipLabel,
                         backgroundColor: isSelected
                             ? Theme.of(context).colorScheme.inversePrimary
-                            : Colors.grey[100],
-                        deleteIcon: isSelected ? Icon(Icons.close) : null,
+                            : Theme.of(context).colorScheme.onInverseSurface,
+                        deleteIcon: isSelected ? Icon(Icons.close, size: 16,) : null,
                         onDeleted: isSelected
                             ? () {
                           setState(() {

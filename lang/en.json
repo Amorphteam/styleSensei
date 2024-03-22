@@ -16,7 +16,7 @@
   "profile_title": "Profile",
   "explorer": "Explore",
   "saved": "Saved",
-  "shpping_bu": "Proceed to the Store",
+  "shopping_bu": "Proceed to the Store",
   "color_tone": "Color tones",
   "occasion_wear": "Occasion Wear",
   "body_types": "Body Types",
@@ -24,5 +24,6 @@
   "clothing_preferences": "Clothing Preferences",
   "hijab_preferences": "Hijab Preferences",
   "splash_title": "This journey is all about YOU. \nTell us more about yourself.",
-  "google_login": "Continue with Google"
+  "google_login": "Continue with Google",
+  "alternatives": "Alternatives"
 }

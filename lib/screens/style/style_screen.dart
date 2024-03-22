@@ -33,7 +33,7 @@ class _StyleScreenState extends State<StyleScreen> {
     return Stack(
       children: [
         Container(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: ListView(
             children: [
               SizedBox(height: 8),
@@ -102,8 +102,8 @@ class _StyleScreenState extends State<StyleScreen> {
                       footer: GridTileBar(
                         title: Text(''), // Empty text widget for alignment purposes
                         trailing: isSelected
-                            ? Icon(Icons.check_circle, color: Colors.red)
-                            : Icon(Icons.radio_button_off, color: Colors.white),
+                            ? Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary)
+                            : Icon(Icons.radio_button_off,),
                       ),
                     ),
                   );
@@ -119,7 +119,7 @@ class _StyleScreenState extends State<StyleScreen> {
           right: 0,
           left: 0,
           child: Container(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             padding: EdgeInsets.all(8),
             child: ElevatedButton(
               onPressed: selectedIndexes.length >= 4
