@@ -111,6 +111,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+
     imageAssetsUrl.shuffle();
     return Container(
       child: ListView(

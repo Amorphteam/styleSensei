@@ -39,29 +39,20 @@ class _StyleScreenState extends State<StyleScreen> {
               SizedBox(height: 8),
               Container(
                   margin: EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context).translate('style_title'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            AppLocalizations.of(context).translate('style_des'),
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                        ],
+                      Text(
+                        AppLocalizations.of(context).translate('style_title'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      Image.asset(
-                        'assets/images/large_text_logo.png',
-                        width: 12,
-                      )
+                      Text(
+                        AppLocalizations.of(context).translate('style_des'),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
                     ],
                   )),
               SizedBox(height: 8),

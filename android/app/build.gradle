@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 }
 android {
     namespace "com.amorphteam.stylesensei.style_sensei"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     signingConfigs {

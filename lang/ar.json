@@ -25,5 +25,17 @@
   "hijab_preferences": "تفضيلات الحجاب",
   "splash_title": "هذه الرحلة تدور حولك أنت. \nأخبرنا المزيد عن نفسك.",
   "google_login": "استمر بحساب جوجل",
-  "alternatives": "بدائل"
+  "alternatives": "بدائل",
+  "like_snackbar_title": "تم تسجيل التفضيل لاقتراحات أكثر دقة.",
+  "dislike_snackbar_title": "لقد استبعدنا هذا الاقتراح من قائمتك.",
+  "dislike_title": "شكرًا! تعليقاتك تساعدنا في تقديم أنماط أفضل لك.",
+  "undo_bu": "تراجع",
+  "style_choice": "الأسلوب",
+  "color_choice": "لون",
+  "body_choice": "نوع الجسم",
+  "send_bu": "إرسال",
+  "dont_show": "لا تظهر هذا مرة أخرى",
+  "collection_detail": "تفاصيل المجموعة",
+  "suitable_for": "الأنسب لمن؟"
+
 }

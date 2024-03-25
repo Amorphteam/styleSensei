@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/Collections.dart';
@@ -123,13 +125,13 @@ class _ImageTileState extends State<ImageTile> {
         });
       },
       child: CachedNetworkImage(
-        imageUrl: widget.collections[widget.index].image,
+        imageUrl: replaceNumbersInUrl(widget.collections[widget.index].image),
         fit: BoxFit.cover,
-        placeholder: (context, url) =>                                                     Shimmer.fromColors(
+        placeholder: (context, url) => Shimmer.fromColors(
           baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
           // Light grey color for the base
           highlightColor:
-          Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+              Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
           // Lighter grey color for the highlight
           child: Container(
             color: Colors.white,
@@ -175,8 +177,7 @@ class _ImageTileState extends State<ImageTile> {
   }
 
   // Function to show a dialog for normal press (you can customize this as needed)
-  void _showNormalPressDialog(
-      BuildContext context, Collections collection) {
+  void _showNormalPressDialog(BuildContext context, Collections collection) {
     // Navigate to the Detail Screen with BlocProvider
     Navigator.push(
       context,
@@ -234,42 +235,74 @@ class _InteractiveTileState extends State<InteractiveTile> {
 }
 
 List<ImageItem> images = [
-  ImageItem('assets/images/classic1.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
-  ImageItem('assets/images/classic2.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
-  ImageItem('assets/images/classic3.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
-  ImageItem('assets/images/classic4.jpeg', 405, 'Classic: Elegant, structured, neutral.', ''),
-  ImageItem('assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
-  ImageItem('assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
-  ImageItem('assets/images/casual3.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
-  ImageItem('assets/images/casual4.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
-  ImageItem('assets/images/bohemian1.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
-  ImageItem('assets/images/bohemian2.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
-  ImageItem('assets/images/bohemian3.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
-  ImageItem('assets/images/bohemian4.jpeg', 404, 'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/classic1.jpeg', 405,
+      'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/classic2.jpeg', 405,
+      'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/classic3.jpeg', 405,
+      'Classic: Elegant, structured, neutral.', ''),
+  ImageItem('assets/images/classic4.jpeg', 405,
+      'Classic: Elegant, structured, neutral.', ''),
+  ImageItem(
+      'assets/images/casual1.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem(
+      'assets/images/casual2.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem(
+      'assets/images/casual3.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem(
+      'assets/images/casual4.jpeg', 411, 'Casual: Relaxed, easy, simple.', ''),
+  ImageItem('assets/images/bohemian1.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/bohemian2.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/bohemian3.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.', ''),
+  ImageItem('assets/images/bohemian4.jpeg', 404,
+      'Bohemian (Boho): Artistic, textured, earthy.', ''),
   ImageItem('assets/images/rock1.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
   ImageItem('assets/images/rock2.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
   ImageItem('assets/images/rock3.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
   ImageItem('assets/images/rock4.jpeg', 406, 'Rock: Bold, edgy, leather.', ''),
-  ImageItem('assets/images/eclectic1.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
-  ImageItem('assets/images/eclectic2.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
-  ImageItem('assets/images/eclectic3.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
-  ImageItem('assets/images/eclectic4.jpeg', 408, 'Eclectic: Diverse, mixed, unique.', ''),
-  ImageItem('assets/images/feminine1.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
-  ImageItem('assets/images/feminine2.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
-  ImageItem('assets/images/feminine3.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
-  ImageItem('assets/images/feminine4.jpeg', 402, 'Feminine: Soft, ruffled, flowing.', ''),
-  ImageItem('assets/images/minimal1.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
-  ImageItem('assets/images/minimal2.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
-  ImageItem('assets/images/minimal3.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
-  ImageItem('assets/images/minimal4.jpeg', 401, 'Minimal: Sleek, simple, monochromatic.', ''),
-  ImageItem('assets/images/tomboy1.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
-  ImageItem('assets/images/tomboy2.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
-  ImageItem('assets/images/tomboy3.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
-  ImageItem('assets/images/tomboy4.jpeg', 409, 'Tomboy: Masculine, practical, denim.', ''),
-  ImageItem('assets/images/vintage1.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
-  ImageItem('assets/images/vintage2.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
-  ImageItem('assets/images/vintage3.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
-  ImageItem('assets/images/vintage4.jpeg', 414, 'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/eclectic1.jpeg', 408,
+      'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/eclectic2.jpeg', 408,
+      'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/eclectic3.jpeg', 408,
+      'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/eclectic4.jpeg', 408,
+      'Eclectic: Diverse, mixed, unique.', ''),
+  ImageItem('assets/images/feminine1.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine2.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine3.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine4.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/minimal1.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/minimal2.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/minimal3.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/minimal4.jpeg', 401,
+      'Minimal: Sleek, simple, monochromatic.', ''),
+  ImageItem('assets/images/tomboy1.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/tomboy2.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/tomboy3.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/tomboy4.jpeg', 409,
+      'Tomboy: Masculine, practical, denim.', ''),
+  ImageItem('assets/images/vintage1.jpeg', 414,
+      'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/vintage2.jpeg', 414,
+      'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/vintage3.jpeg', 414,
+      'Vintage: Retro, classic, timeless.', ''),
+  ImageItem('assets/images/vintage4.jpeg', 414,
+      'Vintage: Retro, classic, timeless.', ''),
 ];
 
 final List<ImageItem> bodyTypes = [
@@ -295,9 +328,12 @@ final List<ImageItem> occasionWear = [
   ImageItem('assets/images/neutral.jpg', 201, 'Evening Out', 'خروج مسائي'),
   ImageItem('assets/images/dark.jpg', 203, 'Holiday', 'عطلة'),
   ImageItem('assets/images/bright.jpg', 204, 'Weekend', 'عطلة نهاية الأسبوع'),
-  ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal', 'ملابس العمل - رسمي'),
-  ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual', 'ملابس العمل - كاجوال أنيق'),
-  ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual', 'ملابس العمل - كاجوال'),
+  ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal',
+      'ملابس العمل - رسمي'),
+  ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual',
+      'ملابس العمل - كاجوال أنيق'),
+  ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual',
+      'ملابس العمل - كاجوال'),
 ];
 
 final List<ImageItem> seasonalStyle = [
@@ -308,14 +344,16 @@ final List<ImageItem> seasonalStyle = [
 ];
 
 final List<ImageItem> clothingPreferences = [
-  ImageItem('assets/images/dark.jpg', 701, 'Mostly dresses and skirts', 'غالبًا فساتين وتنانير'),
-  ImageItem('assets/images/bright.jpg', 702, 'Mostly jeans and pants', 'غالبًا جينز وبنطلونات'),
+  ImageItem('assets/images/dark.jpg', 701, 'Mostly dresses and skirts',
+      'غالبًا فساتين وتنانير'),
+  ImageItem('assets/images/bright.jpg', 702, 'Mostly jeans and pants',
+      'غالبًا جينز وبنطلونات'),
 ];
 
 final List<ImageItem> hijabPreferences = [
-  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles', 'أنماط تناسب الحجاب'),
+  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles',
+      'أنماط تناسب الحجاب'),
 ];
-
 
 class ImageItem {
   final String path;
@@ -356,22 +394,28 @@ Future<void> saveSelections({
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   // Fetch and parse existing selections
-  List<int> existingStyleSelections = _parseIdsFromString(prefs.getString('styleSelections'));
-  List<int> existingBodyTypeSelections = _parseIdsFromString(prefs.getString('bodyTypeSelections'));
-  List<int> existingColorToneSelections = _parseIdsFromString(prefs.getString('colorToneSelections'));
+  List<int> existingStyleSelections =
+      _parseIdsFromString(prefs.getString('styleSelections'));
+  List<int> existingBodyTypeSelections =
+      _parseIdsFromString(prefs.getString('bodyTypeSelections'));
+  List<int> existingColorToneSelections =
+      _parseIdsFromString(prefs.getString('colorToneSelections'));
 
   // Merge existing with new and remove duplicates by converting to set and back to list
-  List<int> updatedStyleSelections = {...existingStyleSelections, ...?styleSelections}.toList();
-  List<int> updatedBodyTypeSelections = {...existingBodyTypeSelections, ...?bodyTypeSelections}.toList();
-  List<int> updatedColorToneSelections = {...existingColorToneSelections, ...?colorToneSelections}.toList();
+  List<int> updatedStyleSelections =
+      {...existingStyleSelections, ...?styleSelections}.toList();
+  List<int> updatedBodyTypeSelections =
+      {...existingBodyTypeSelections, ...?bodyTypeSelections}.toList();
+  List<int> updatedColorToneSelections =
+      {...existingColorToneSelections, ...?colorToneSelections}.toList();
 
   // Save merged and deduplicated selections
   await prefs.setString('styleSelections', updatedStyleSelections.join(','));
-  await prefs.setString('bodyTypeSelections', updatedBodyTypeSelections.join(','));
-  await prefs.setString('colorToneSelections', updatedColorToneSelections.join(','));
+  await prefs.setString(
+      'bodyTypeSelections', updatedBodyTypeSelections.join(','));
+  await prefs.setString(
+      'colorToneSelections', updatedColorToneSelections.join(','));
 }
-
-
 
 Future<List<int>> getSelectedIds() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -392,7 +436,8 @@ List<int> _parseIdsFromString(String? idsString) {
     return [];
   }
 
-  return idsString.split(',')
+  return idsString
+      .split(',')
       .map((id) => int.tryParse(id))
       .where((id) => id != null)
       .cast<int>()
@@ -401,4 +446,167 @@ List<int> _parseIdsFromString(String? idsString) {
 
 bool _isNumeric(String s) {
   return int.tryParse(s) != null;
+}
+
+class DislikeOverlay extends StatefulWidget {
+  final Function(String option) onOptionSelected;
+  final VoidCallback onCancel;
+
+  const DislikeOverlay({
+    Key? key,
+    required this.onOptionSelected,
+    required this.onCancel,
+  }) : super(key: key);
+
+  @override
+  State<DislikeOverlay> createState() => _DislikeOverlayState();
+}
+
+class _DislikeOverlayState extends State<DislikeOverlay> {
+  String? selectedReason;
+  bool dontAskAgain = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Colors.black54, // Semi-transparent overlay color
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppLocalizations.of(context).translate('dislike_title'),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: widget.onCancel,
+                    child: Text(
+                        AppLocalizations.of(context).translate('undo_bu'),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                children: [
+                  _optionTile(context,
+                      AppLocalizations.of(context).translate('style_choice')),
+                  _optionTile(context,
+                      AppLocalizations.of(context).translate('color_choice')),
+                  _optionTile(context,
+                      AppLocalizations.of(context).translate('body_choice')),
+                  // Add more options here if needed
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: TextButton(
+                onPressed: selectedReason != null
+                    ? () => widget.onOptionSelected(selectedReason!)
+                    : null,
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: selectedReason != null
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.grey.withOpacity(0.1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context).translate('send_bu'),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Gap(100),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: dontAskAgain,
+                    onChanged: (bool? value) {
+                      if (value != null) {
+                        setState(() {
+                          dontAskAgain = value;
+                        });
+                        setNoShowPreference(value);
+                      }
+                    },
+                    checkColor: Colors.black,
+                    activeColor: Colors.white,
+                    side: BorderSide(color: Colors.white), // border color
+                  ),
+                  Text(
+                    AppLocalizations.of(context).translate('dont_show'),
+                    style: TextStyle(color: Colors.white),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _optionTile(BuildContext context, String option) {
+    return ListTile(
+      title: Text(
+        option,
+        style: TextStyle(color: Colors.white),
+      ),
+      leading: Radio<String>(
+        value: option,
+        groupValue: selectedReason,
+        onChanged: (String? value) {
+          setState(() {
+            selectedReason = value;
+            print('Selected reason: $value');
+          });
+        },
+        activeColor: Colors.white,
+        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.selected)) {
+            return Colors.white; // Color when selected
+          }
+          return Colors.white; // Color when not selected
+        }),
+      ),
+    );
+  }
+}
+
+Future<void> setNoShowPreference(bool dontShowAgain) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('dontShowDislikeDialog', dontShowAgain);
+}
+
+Future<bool> getNoShowPreference() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('dontShowDislikeDialog') ?? false;
+}
+
+String replaceNumbersInUrl(String url) {
+  String updatedUrl = url;
+  try {
+    RegExp pattern = RegExp(r'\d+x');
+    updatedUrl = url.replaceAll(pattern, '564x');
+  } catch (e) {
+    return updatedUrl;
+  }
+  return updatedUrl;
 }

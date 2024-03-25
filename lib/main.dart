@@ -43,14 +43,22 @@ class MyApp extends StatelessWidget {
         const Locale('ar', ''), // Arabic
       ],
       theme: ThemeData(
-        fontFamily: 'centrale',
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red,
+        ),
+        fontFamily: 'centrale',
       ),
+
       darkTheme: ThemeData(
-        fontFamily: 'centrale',
         useMaterial3: true,
-        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red,
+          brightness: Brightness.dark,
+        ),
+        fontFamily: 'centrale',
       ),
+
       builder: (context, child) {
         var locale = Localizations.localeOf(context);
         if (locale.languageCode == 'ar') {
@@ -65,7 +73,7 @@ class MyApp extends StatelessWidget {
         }
         return child!;
       },
-      home: SplashWithVideo(),
+      home:     SplashSimple(imagePath: "assets/images/splash1.jpg"),
       debugShowCheckedModeBanner: false,
     );
   }

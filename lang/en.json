@@ -25,5 +25,16 @@
   "hijab_preferences": "Hijab Preferences",
   "splash_title": "This journey is all about YOU. \nTell us more about yourself.",
   "google_login": "Continue with Google",
-  "alternatives": "Alternatives"
+  "alternatives": "Alternatives",
+  "like_snackbar_title": "Preference noted for more spot-on suggestions.",
+  "dislike_snackbar_title": "We've taken this suggestion off your list.",
+  "dislike_title": "Thanks! Your feedback helps StyleSensei tailor better styles for you.",
+  "undo_bu": "Undo",
+  "style_choice": "Style",
+  "color_choice": "Color tone",
+  "body_choice": "Body type",
+  "send_bu": "Send",
+  "dont_show": "Don't show this again",
+  "collection_detail": "Collection details",
+  "suitable_for": "Who it's Best For?"
 }

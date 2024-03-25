@@ -144,7 +144,7 @@ class _DetailState extends State<Detail> {
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return CachedNetworkImage(
-                          imageUrl: widget.collection.image ?? '',
+                          imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
                           fit: BoxFit.cover,
                         );
                       } else if (index == 1) {
@@ -157,7 +157,7 @@ class _DetailState extends State<Detail> {
                                 children: [
                                   Gap(40),
                                   Text(
-                                    'Who it’s Best For?',
+                                    AppLocalizations.of(context).translate('suitable_for'),
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge
@@ -243,7 +243,7 @@ class _DetailState extends State<Detail> {
               Padding(
                 padding: EdgeInsets.only(left: 10.0, top: 2),
                 child: Text(
-                  'Collection details',
+                  AppLocalizations.of(context).translate('collection_detail'),
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -270,7 +270,7 @@ class _DetailState extends State<Detail> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          '${items[index].products?.length ?? ' '}' + AppLocalizations.of(context).translate('alternatives'),
+                          '${items[index].products?.length ?? ' '}' + '  ' + AppLocalizations.of(context).translate('alternatives'),
                           style: Theme.of(context).textTheme.labelSmall,
                         )
                       ],
