@@ -46,9 +46,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Color(0xFFDC4D28),
-          primary: Color(0xFFDC4D28)
+          primary: Color(0xFFDC4D28),
+          background: Colors.white
         ),
         fontFamily: 'centrale',
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: Colors.white,
+          elevation: 0, // Remove elevation to prevent overlay color
+        ),
+
       ),
 
       darkTheme: ThemeData(
@@ -114,9 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: _screens[currentPageIndex],
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(
-            // This will change the background color of the NavigationBar
-            // no matter what theme you are using.
-            // If you are using material3, you might need to set the color scheme
+
           ),
           child: NavigationBar(
             labelBehavior: labelBehavior,
