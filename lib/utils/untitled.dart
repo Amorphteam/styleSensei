@@ -218,7 +218,7 @@ class _InteractiveTileState extends State<InteractiveTile> {
       onTap: () {
         setState(() {
           if (color == _defaultColor) {
-            color = Colors.red;
+            color = Theme.of(context).primaryColor;
           } else {
             color = _defaultColor;
           }
@@ -393,6 +393,11 @@ Future<void> saveSelections({
 }) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
+
+  print('styleSelection $styleSelections');
+  print('bodyTypeSelections $bodyTypeSelections');
+  print('colorToneSelections $colorToneSelections');
+
   // Fetch and parse existing selections
   List<int> existingStyleSelections =
       _parseIdsFromString(prefs.getString('styleSelections'));
@@ -401,7 +406,6 @@ Future<void> saveSelections({
   List<int> existingColorToneSelections =
       _parseIdsFromString(prefs.getString('colorToneSelections'));
 
-  // Merge existing with new and remove duplicates by converting to set and back to list
   List<int> updatedStyleSelections =
       {...existingStyleSelections, ...?styleSelections}.toList();
   List<int> updatedBodyTypeSelections =
@@ -409,7 +413,6 @@ Future<void> saveSelections({
   List<int> updatedColorToneSelections =
       {...existingColorToneSelections, ...?colorToneSelections}.toList();
 
-  // Save merged and deduplicated selections
   await prefs.setString('styleSelections', updatedStyleSelections.join(','));
   await prefs.setString(
       'bodyTypeSelections', updatedBodyTypeSelections.join(','));
@@ -417,7 +420,7 @@ Future<void> saveSelections({
       'colorToneSelections', updatedColorToneSelections.join(','));
 }
 
-Future<List<int>> getSelectedIds() async {
+Future<List<List<int>>>  getSelectedIds() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String? styleSelectionsString = prefs.getString('styleSelections');
   String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
@@ -428,7 +431,7 @@ Future<List<int>> getSelectedIds() async {
   List<int> colorToneSelections =
       _parseIdsFromString(colorToneSelectionsString);
 
-  return [...styleSelections, ...bodyTypeSelections, ...colorToneSelections];
+  return [styleSelections, bodyTypeSelections, colorToneSelections];
 }
 
 List<int> _parseIdsFromString(String? idsString) {
@@ -519,8 +522,7 @@ class _DislikeOverlayState extends State<DislikeOverlay> {
                     ? () => widget.onOptionSelected(selectedReason!)
                     : null,
                 style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: selectedReason != null
+                  foregroundColor: Colors.white, backgroundColor: selectedReason != null
                       ? Colors.white.withOpacity(0.4)
                       : Colors.grey.withOpacity(0.1),
                   shape: const RoundedRectangleBorder(

@@ -78,11 +78,10 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
               child: Center(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white, backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100.0),
                     ),
-                    primary: Colors.white,
                     padding: EdgeInsets.symmetric(vertical: 12.0), // Adjust vertical padding as needed
                   ),
                   onPressed: () async {

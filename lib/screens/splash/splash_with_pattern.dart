@@ -56,7 +56,7 @@ class SplashPageWithPattern extends StatelessWidget {
                         TextSpan(
                           text: 'I',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

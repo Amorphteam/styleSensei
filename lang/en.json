@@ -7,8 +7,8 @@
   "color_tone_title": "Choose your favorite color tones.",
   "style_title": "Pick 4 or more styles you like",
   "style_des": "By understanding your preferences, \n we can offer you tailored recommendations.",
-  "pick": "pick",
-  "more": "more",
+  "pick": "pick ",
+  "more": " more",
   "recommendation": "Get Recommendations",
   "home_title": "Here are your personalized picks",
   "home_des": "We refine your collection with each like and dislike.",
@@ -36,5 +36,6 @@
   "send_bu": "Send",
   "dont_show": "Don't show this again",
   "collection_detail": "Collection details",
-  "suitable_for": "Who it's Best For?"
+  "suitable_for": "Who it's Best For?",
+  "next": "Next"
 }

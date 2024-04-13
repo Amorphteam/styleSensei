@@ -59,7 +59,7 @@ class ErrorPage extends StatelessWidget {
                 child: Text(
                   'Refresh',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Colors.red,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                     // Add other text styling properties if needed
                   ),

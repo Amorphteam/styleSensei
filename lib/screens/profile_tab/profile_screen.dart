@@ -30,10 +30,6 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Image.asset(
-                    'assets/images/large_text_logo.png',
-                    width: 12,
-                  )
                 ],
               )),
           Padding(
@@ -124,7 +120,7 @@ class ProfileScreen extends StatelessWidget {
                 child: TextButton(
               child: Text('Edit Profile',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Colors.red,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
                       )),
               onPressed: () async {

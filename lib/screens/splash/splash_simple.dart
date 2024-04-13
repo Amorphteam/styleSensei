@@ -41,11 +41,10 @@ class SplashSimple extends StatelessWidget {
               child: Center(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white, backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100.0),
                     ),
-                    primary: Colors.white,
                   ),
                   onPressed: () {
                     openStyleScreen(context);

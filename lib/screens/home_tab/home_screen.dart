@@ -17,7 +17,7 @@ import 'widgets/tab_bar_widget.dart';
 
 class HomeTab extends StatefulWidget {
   final HomeCubit homeCubit;
-  List<int> collectionTags;
+  List<List<int>> collectionTags;
 
 
 
@@ -35,28 +35,22 @@ class _HomeTabState extends State<HomeTab> {
   List<int> selectedTags = [];
   Map<String, ImageItem> selectedChoices = {};
 
-
-
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getData(widget.collectionTags);
     });
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
     styleDescriptions = getDesStyle();
-    selectedTags = List.from(widget.collectionTags);
-
-    super.initState();
+    selectedTags = widget.collectionTags.expand((i) => i).toList();
   }
 
-  void getData(List<int> tags) {
-    Set<int> uniqueTags = Set.from(widget.collectionTags)..addAll(tags);
-
-    // Assign the unique set back to collectionTags
-    widget.collectionTags = uniqueTags.toList();
-
-    // Fetch data with the unique set of tags
+  void getData(List<List<int>> tags) {
+    // Set<int> uniqueTags = Set.from(widget.collectionTags.expand((i) => i));
+    // uniqueTags.addAll(tags.expand((i) => i));
+    // widget.collectionTags = [uniqueTags.toList()];
     widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
   }
 
@@ -80,7 +74,7 @@ class _HomeTabState extends State<HomeTab> {
                     setState(() {
                       selectedChoices[title] = option;
                     });
-                    getData(getSelectedOptionIds());
+                    // getData(getSelectedOptionIds());
                     Navigator.pop(context);
                   },
                 );
@@ -326,7 +320,7 @@ class _HomeTabState extends State<HomeTab> {
                           setState(() {
                             selectedChoices.remove(title);
                           });
-                          getData(getSelectedOptionIds());
+                          // getData(getSelectedOptionIds());
 
                         }
                             : null,
@@ -367,47 +361,44 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   List<ImageItem> searchingTag() {
-    List<ImageItem> results =
-        []; // Initialize an empty list to store the results
-
-    for (int searchId in widget.collectionTags) {
-      results.addAll(images.where((item) => item.tag == searchId));
+    List<ImageItem> results = [];
+    for (List<int> group in widget.collectionTags) {
+      for (int searchId in group) {
+        results.addAll(images.where((item) => item.tag == searchId));
+      }
     }
-    return results; // Return the aggregated results
+    return results;
   }
 
   String getStyleName() {
-    Set<String> uniqueResults = Set(); // Use a set to store unique results.
-
-    for (int searchId in widget.collectionTags) {
-      for (var item in images.where((item) => item.tag == searchId)) {
-        // Use a regular expression to remove numbers before .jpeg and add the processed path to the set.
-        String pathWithoutNumber =
-            item.path.replaceAll(RegExp(r'\d+\.jpeg$'), '.jpeg');
-        uniqueResults.add(pathWithoutNumber
-            .replaceAll('assets/images/', '')
-            .replaceAll('.jpeg', ''));
+    Set<String> uniqueResults = Set();
+    for (List<int> group in widget.collectionTags) {
+      for (int searchId in group) {
+        for (var item in images.where((item) => item.tag == searchId)) {
+          String pathWithoutNumber = item.path.replaceAll(RegExp(r'\d+\.jpeg$'), '.jpeg');
+          uniqueResults.add(pathWithoutNumber
+              .replaceAll('assets/images/', '')
+              .replaceAll('.jpeg', ''));
+        }
       }
     }
-
-    // Join all the unique results into a string, separated by a comma and a space.
     return uniqueResults.join(', ');
   }
 
-  List<String> getDesStyle() {
-    List<String> results = []; // Initialize an empty list to store the results
 
-    for (int searchId in widget.collectionTags) {
-      for (var item in images.where((item) => item.tag == searchId)) {
-        results.add(item.des);
+  List<String> getDesStyle() {
+    List<String> results = [];
+    for (List<int> group in widget.collectionTags) {
+      for (int searchId in group) {
+        for (var item in images.where((item) => item.tag == searchId)) {
+          results.add(item.des);
+        }
       }
     }
-
-    // Remove duplicates by converting the list to a set and back to a list
     results = results.toSet().toList();
-
-    return results; // Return the aggregated results without duplicates
+    return results;
   }
+
 
 
 }

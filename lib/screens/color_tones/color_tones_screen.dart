@@ -66,7 +66,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                           ),
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Checkbox(
@@ -104,8 +104,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
               color: Theme.of(context).colorScheme.surface,
               padding: EdgeInsets.all(8),
               child:  ElevatedButton(
-              onPressed: selectedColorTones.isNotEmpty
-                  ? () {
+              onPressed: () {
                 saveSelections(colorToneSelections: selectedColorTones);
                 final imageSelectionCubit = ImageSelectionCubit();
                 Navigator.push(
@@ -117,20 +116,19 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                     ),
                   ),
                 );
-              }
-                  : null,
+              },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                     if (states.contains(MaterialState.disabled)) {
                       return Colors.grey; // Disabled color
                     }
-                    return selectedColorTones.isEmpty ? Colors.grey : Colors.black; // Enable color changes
+                    return  Colors.black; // Enable color changes
                   },
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context).translate('pick_1'),
+                AppLocalizations.of(context).translate('next'),
                 style: TextStyle(color: Colors.white),
               ),
             ),

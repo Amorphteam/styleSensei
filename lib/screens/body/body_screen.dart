@@ -49,10 +49,6 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                         ],
                       ),
                     ),
-                    Image.asset(
-                      'assets/images/large_text_logo.png',
-                      width: 12,
-                    )
                   ],
                 )),
             SizedBox(height: 8),

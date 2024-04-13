@@ -15,7 +15,7 @@ class _CirclePainter extends BoxPainter {
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final Rect rect = offset & configuration.size!;
     final Paint paint = Paint();
-    paint.color = Colors.red; // Customize the circle color here
+    paint.color = Color(0xFFDC4D28); // Customize the circle color here
     canvas.drawCircle(Offset(rect.center.dx, rect.center.dy*1.6), 2.0, paint);
   }
 }

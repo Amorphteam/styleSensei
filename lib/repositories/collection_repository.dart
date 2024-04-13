@@ -10,19 +10,23 @@ import '../new_models/collection_item.dart';
 class CollectionRepository {
   final String apiUrl = 'http://stylesensei.net:8282/api/v1/';
 
-  Future<CollectionModel> fetchCollectionModel(List<int> collectionTags) async {
-    String tagsQuery = collectionTags.join(',');
-    print('collectionTages = $tagsQuery');
-    String pathUrl = 'collection?limit=300&tags=$tagsQuery';
-    final response = await http.get(Uri.parse(apiUrl+pathUrl));
+  Future<CollectionModel> fetchCollectionModel(List<List<int>> collectionTags) async {
+    String apiUrl = 'http://stylesensei.net:8282/api/v1';
+    String pathUrl = '$apiUrl/collection/list?limit=300&offset=20';
+    var headers = {'Content-Type': 'application/json'};
+    var body = json.encode({"tags": collectionTags});
+
+    print('fetchCollectionModel: $body');
+    final response = await http.post(Uri.parse(pathUrl), headers: headers, body: body);
 
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);
       return CollectionModel.fromJson(jsonMap);
     } else {
-      throw Exception('Failed to fetch data');
+      throw Exception('Failed to fetch data: ${response.statusCode} ${response.reasonPhrase}');
     }
   }
+
 
   Future<ProductsModel> fetchProductModel(int collectionId) async {
     String pathUrl = 'collection/view/$collectionId';

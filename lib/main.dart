@@ -45,7 +45,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red,
+          seedColor: Color(0xFFDC4D28),
+          primary: Color(0xFFDC4D28)
         ),
         fontFamily: 'centrale',
       ),
@@ -53,7 +54,8 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red,
+          seedColor: Color(0xFFDC4D28),
+          primary: Color(0xFFDC4D28),
           brightness: Brightness.dark,
         ),
         fontFamily: 'centrale',
@@ -80,7 +82,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  final List<int> collectionTags;
+  final List<List<int>> collectionTags;
 
   const MyHomePage({super.key, required this.collectionTags});
 

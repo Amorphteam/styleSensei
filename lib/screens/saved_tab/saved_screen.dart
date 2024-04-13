@@ -70,10 +70,6 @@ class _SavedScreenState extends State<SavedScreen> {
                         ),
                       ],
                     ),
-                    Image.asset(
-                      'assets/images/large_text_logo.png',
-                      width: 12,
-                    )
                   ],
                 )),
             BlocBuilder<SavedCubit, SavedState>(

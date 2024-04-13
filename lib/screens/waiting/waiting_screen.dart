@@ -48,8 +48,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _fetchAndNavigate() async {
-    List<int> selectedIds = await getSelectedIds();
-    print("Selected IDs: $selectedIds");
+    List<List<int>> selectedIds = await getSelectedIds();
     Future.delayed(Duration(seconds: 2), () {
       final homeCubit = HomeCubit(); // Create an instance of HomeCubit
 
