@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -39,7 +40,7 @@ class _HomeTabState extends State<HomeTab> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getData(widget.collectionTags);
+      getData();
     });
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
@@ -47,12 +48,22 @@ class _HomeTabState extends State<HomeTab> {
     selectedTags = widget.collectionTags.expand((i) => i).toList();
   }
 
-  void getData(List<List<int>> tags) {
+  void getData() {
     // Set<int> uniqueTags = Set.from(widget.collectionTags.expand((i) => i));
     // uniqueTags.addAll(tags.expand((i) => i));
     // widget.collectionTags = [uniqueTags.toList()];
+    widget.collectionTags.removeWhere((tags) => tags.isEmpty);
     widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
   }
+
+  void addTags(List<int> newTags) {
+    setState(() {
+      widget.collectionTags.add(newTags);
+    });
+    getData();
+  }
+
+
 
 
   void _showOptions(BuildContext context, String title, List<ImageItem> options) {
@@ -60,6 +71,7 @@ class _HomeTabState extends State<HomeTab> {
     bool isArabic = locale.languageCode == 'ar';
 
     showModalBottomSheet(
+       backgroundColor: Colors.white,
       context: context,
       builder: (BuildContext context) {
         return SingleChildScrollView(
@@ -74,7 +86,7 @@ class _HomeTabState extends State<HomeTab> {
                     setState(() {
                       selectedChoices[title] = option;
                     });
-                    // getData(getSelectedOptionIds());
+                    addTags(getSelectedOptionIds());
                     Navigator.pop(context);
                   },
                 );
@@ -284,11 +296,8 @@ class _HomeTabState extends State<HomeTab> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  {'title': AppLocalizations.of(context).translate('color_tone'), 'options': colorTones},
                   {'title': AppLocalizations.of(context).translate('occasion_wear'), 'options': occasionWear},
-                  {'title': AppLocalizations.of(context).translate('body_types'), 'options': bodyTypes},
                   {'title': AppLocalizations.of(context).translate('seasonal_style'), 'options': seasonalStyle},
-                  {'title': AppLocalizations.of(context).translate('clothing_preferences'), 'options': clothingPreferences},
                   {'title': AppLocalizations.of(context).translate('hijab_preferences'), 'options': hijabPreferences},
                 ].map((Map<String, dynamic> filter) {
                   String title = filter['title'];
@@ -318,10 +327,13 @@ class _HomeTabState extends State<HomeTab> {
                         onDeleted: isSelected
                             ? () {
                           setState(() {
+                            int tagToRemove = selectedChoices[title]!.tag;
                             selectedChoices.remove(title);
+                            widget.collectionTags = widget.collectionTags.map((tagsList) {
+                              return tagsList.where((tag) => tag != tagToRemove).toList();
+                            }).where((tagsList) => tagsList.isNotEmpty).toList(); // Remove empty lists
                           });
-                          // getData(getSelectedOptionIds());
-
+                          getData();
                         }
                             : null,
                         side: BorderSide.none,

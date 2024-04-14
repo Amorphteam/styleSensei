@@ -208,7 +208,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                                   AppLocalizations.of(context).translate('shopping_bu'),
                                                   style: TextStyle(
                                                     fontSize: 11,
-                                                    color: Colors.blue,
+                                                    color: Colors.blueAccent,
                                                     fontWeight: FontWeight
                                                         .bold, // You can choose the color that fits your design
                                                   ),

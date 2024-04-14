@@ -185,13 +185,28 @@ class _DetailState extends State<Detail> {
                       } else {
                         return Container(
                           color: Color(0xFFC6C2B8),
-                          child: Center(
-                            child: Text(
-                              'Third Slide Content',
-                              style: TextStyle(color: Colors.white, fontSize: 24),
+                          child: Padding(
+                            padding: const EdgeInsets.all(30.0),
+                            child: Column(
+                              children: [
+                                Gap(40),
+                                Text(
+                                  AppLocalizations.of(context).translate('when_were'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                Gap(20),
+                                Text(
+                                  getSuitationText(collectionDetail?.collection?.description, (isArabic)?'ar':'en'),
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ],
                             ),
                           ),
                         );
+
                       }
                     },
                   ),
@@ -365,26 +380,32 @@ class _DetailState extends State<Detail> {
                                               maxLines: 1,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 12.0),
-                                            child: Text(
-                                              productItem.name!,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
+                                          Container(
+                                            width:                                                         MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                0.40,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 12.0),
+                                              child: Text(
+                                                productItem.name!,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelSmall,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
                                             ),
                                           ),
                                           TextButton(
-                                            onPressed: () => _openSourceWebsite(
+                                            onPressed: () => showPopupOnce(context,
                                                 productItem.corresponding_url!),
                                             child: Text(
                                               AppLocalizations.of(context).translate('shopping_bu'),
                                               style: TextStyle(
                                                 fontSize: 11,
-                                                color: Theme.of(context).colorScheme.inversePrimary,
+                                                color: Colors.blueAccent,
                                                 fontWeight: FontWeight
                                                     .bold, // You can choose the color that fits your design
                                               ),
@@ -466,6 +487,50 @@ class _DetailState extends State<Detail> {
     });
   }
 
+  Future<void> showPopupOnce(BuildContext context, String url) async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
+
+    if (!hasShownPopup) {
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // User must tap button
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Column(
+              children: [
+                SizedBox(height: 20,),
+                SvgPicture.asset('assets/images/door.svg'),
+                SizedBox(height: 40,),
+                Text('Proceed to the Store'),
+              ],
+            ),
+            content: Text(
+                'You are about to leave the app to view more details and purchase options on the store\'s website. Would you like to continue?'),
+            actionsAlignment: MainAxisAlignment.center, // Center the actions horizontally
+            actions: <Widget>[
+              TextButton(
+                child: Text('Continue', style: TextStyle(color: Colors.white)), // Set the text color to white
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.black, // Set the button's background color
+                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16), // Adjust padding, make the button bigger
+                ),
+                onPressed: () {
+                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                  _openSourceWebsite(url); // Replace with actual URL
+                },
+              ),
+            ],
+          );
+        },
+      );
+      await prefs.setBool('hasShownPopup', true);
+    }else{
+      _openSourceWebsite(url); // Replace with actual URL
+    }
+  }
+
   Future<void> _openSourceWebsite(String url) async {
     final Uri _url = Uri.parse(url);
     if (!await launchUrl(_url)) {
@@ -491,6 +556,19 @@ class _DetailState extends State<Detail> {
       try {
         Map<String, dynamic> jsonData = json.decode(jsonString);
         String bodyShapeEn = jsonData['body_shape'][language];
+        return bodyShapeEn;
+      } catch (error) {
+        return jsonString;
+      }
+    }
+    return '';
+  }
+
+  String getSuitationText(String? jsonString, String language) {
+    if (jsonString != null) {
+      try {
+        Map<String, dynamic> jsonData = json.decode(jsonString);
+        String bodyShapeEn = jsonData['situation'][language];
         return bodyShapeEn;
       } catch (error) {
         return jsonString;

@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
           primary: Color(0xFFDC4D28),
           background: Colors.white
         ),
+
         fontFamily: 'centrale',
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: Colors.white,
