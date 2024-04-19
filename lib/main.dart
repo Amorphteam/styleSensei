@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
         }
         return child!;
       },
-      home:     SplashSimple(imagePath: "assets/images/splash1.jpg"),
+      home: SplashWithVideo(),
       debugShowCheckedModeBanner: false,
     );
   }
