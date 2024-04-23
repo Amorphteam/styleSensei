@@ -129,8 +129,16 @@ class _HomeTabState extends State<HomeTab> {
 
 
   List<int> getSelectedOptionIds() {
-    return selectedChoices.values.map((item) => item.tag).toList();
+    List<int> flattenedTags = widget.collectionTags.expand((sublist) => sublist).toList();
+    List<int> filteredTags = selectedChoices.values.where((item) {
+      return !flattenedTags.contains(item.tag);
+    }).map((item) {
+      return item.tag;
+    }).toList();
+
+    return filteredTags;
   }
+
 
   void _handleChipSelection(int tag, bool isSelected) {
     setState(() {
