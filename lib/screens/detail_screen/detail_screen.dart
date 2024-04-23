@@ -12,7 +12,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/models/ProductsModel.dart';
 
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
-import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/single_item_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
@@ -467,17 +467,11 @@ class _DetailState extends State<Detail> {
   }
 
   void showImagePopup(BuildContext context, Product product) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ImagePopupDialog(
-          product: product,
-          bookmarkedItems: bookmarkedItems,
-          loadBookmarkedItems: loadBookmarkedItems,
-          saveBookmarkedItems: saveBookmarkedItems,
-          onBookmarkUpdated: updateBookmark,
-        );
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SingleItemScreen(product: product, bookmarkedItems: bookmarkedItems, loadBookmarkedItems: loadBookmarkedItems, saveBookmarkedItems: saveBookmarkedItems, onBookmarkUpdated: updateBookmark),
+      ),
     );
   }
 
