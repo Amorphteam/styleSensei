@@ -401,24 +401,23 @@ Future<void> saveSelections({
 
   // Fetch and parse existing selections
   List<int> existingStyleSelections =
-      _parseIdsFromString(prefs.getString('styleSelections'));
+      parseIdsFromString(prefs.getString('styleSelections'));
   List<int> existingBodyTypeSelections =
-      _parseIdsFromString(prefs.getString('bodyTypeSelections'));
+      parseIdsFromString(prefs.getString('bodyTypeSelections'));
   List<int> existingColorToneSelections =
-      _parseIdsFromString(prefs.getString('colorToneSelections'));
+      parseIdsFromString(prefs.getString('colorToneSelections'));
 
-  List<int> updatedStyleSelections =
-      {...existingStyleSelections, ...?styleSelections}.toList();
-  List<int> updatedBodyTypeSelections =
-      {...existingBodyTypeSelections, ...?bodyTypeSelections}.toList();
-  List<int> updatedColorToneSelections =
-      {...existingColorToneSelections, ...?colorToneSelections}.toList();
+  // Replace the existing selections in SharedPreferences directly with the new selections
+  if (styleSelections != null) {
+    await prefs.setString('styleSelections', styleSelections.join(','));
+  }
+  if (bodyTypeSelections != null) {
+    await prefs.setString('bodyTypeSelections', bodyTypeSelections.join(','));
+  }
+  if (colorToneSelections != null) {
+    await prefs.setString('colorToneSelections', colorToneSelections.join(','));
+  }
 
-  await prefs.setString('styleSelections', updatedStyleSelections.join(','));
-  await prefs.setString(
-      'bodyTypeSelections', updatedBodyTypeSelections.join(','));
-  await prefs.setString(
-      'colorToneSelections', updatedColorToneSelections.join(','));
 }
 
 Future<List<List<int>>>  getSelectedIds() async {
@@ -427,15 +426,15 @@ Future<List<List<int>>>  getSelectedIds() async {
   String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
   String? colorToneSelectionsString = prefs.getString('colorToneSelections');
 
-  List<int> styleSelections = _parseIdsFromString(styleSelectionsString);
-  List<int> bodyTypeSelections = _parseIdsFromString(bodyTypeSelectionsString);
+  List<int> styleSelections = parseIdsFromString(styleSelectionsString);
+  List<int> bodyTypeSelections = parseIdsFromString(bodyTypeSelectionsString);
   List<int> colorToneSelections =
-      _parseIdsFromString(colorToneSelectionsString);
+      parseIdsFromString(colorToneSelectionsString);
 
   return [styleSelections, bodyTypeSelections, colorToneSelections];
 }
 
-List<int> _parseIdsFromString(String? idsString) {
+List<int> parseIdsFromString(String? idsString) {
   if (idsString == null || idsString.isEmpty) {
     return [];
   }
@@ -675,3 +674,37 @@ Future<void> openSourceWebsite(String url) async {
     throw Exception('Could not launch $_url');
   }
 }
+
+void showSnackbar(BuildContext context, String message, {int seconds = 2}) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    duration: Duration(seconds: (seconds)),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
+
+
+
+Map<int, String> buildLookupTable(List<List<ImageItem>> allItems) {
+  Map<int, String> lookupTable = {};
+  for (var itemList in allItems) {
+    for (var item in itemList) {
+      lookupTable[item.tag] = item.des;
+    }
+  }
+  return lookupTable;
+}
+
+List<String> getDescriptionsFromCodes(List<int> codes, Map<int, String> lookupTable) {
+  List<String> descriptions = [];
+  for (var code in codes) {
+    if (lookupTable.containsKey(code)) {
+      descriptions.add(lookupTable[code]!);  // The '!' is used because we know the key exists
+    } else {
+      descriptions.add("Description not found");  // Handling the case where the code isn't found
+    }
+  }
+  return descriptions;
+}
+

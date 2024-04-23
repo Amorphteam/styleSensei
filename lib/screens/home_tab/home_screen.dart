@@ -35,6 +35,7 @@ class _HomeTabState extends State<HomeTab> {
   List<String> styleDescriptions = [];
   List<int> selectedTags = [];
   Map<String, ImageItem> selectedChoices = {};
+  String selectedTagsString = '';
 
   @override
   void initState() {
@@ -53,7 +54,35 @@ class _HomeTabState extends State<HomeTab> {
     // uniqueTags.addAll(tags.expand((i) => i));
     // widget.collectionTags = [uniqueTags.toList()];
     widget.collectionTags.removeWhere((tags) => tags.isEmpty);
+    searchForTagName();
     widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
+  }
+
+  void searchForTagName() {
+    List<List<ImageItem>> allItems = [
+      images,
+      bodyTypes,
+      colorTones,
+      occasionWear,
+      seasonalStyle,
+      clothingPreferences,
+      hijabPreferences
+    ];
+    Map<int, String> lookupTable = buildLookupTable(allItems);
+    List<int> codesToLookup = widget.collectionTags.expand((i) => i).toList();
+    List<String> descriptions = getDescriptionsFromCodes(codesToLookup, lookupTable);
+
+    String finalDescription = descriptions
+        .map((desc) {
+      int colonIndex = desc.indexOf(':');
+      return colonIndex != -1 ? desc.substring(0, colonIndex) : desc;
+    })
+        .join('\n');
+
+    setState(() {
+      selectedTagsString = finalDescription;
+    });
+
   }
 
   void addTags(List<int> newTags) {
@@ -71,7 +100,7 @@ class _HomeTabState extends State<HomeTab> {
     bool isArabic = locale.languageCode == 'ar';
 
     showModalBottomSheet(
-       backgroundColor: Colors.white,
+       backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
       builder: (BuildContext context) {
         return SingleChildScrollView(
@@ -287,6 +316,7 @@ class _HomeTabState extends State<HomeTab> {
                       .titleSmall
                       ?.copyWith(fontWeight: FontWeight.normal),
                 ),
+                Text(selectedTagsString, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4))),
               ],
             ),
           ),

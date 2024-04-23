@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../../utils/untitled.dart';
@@ -12,7 +13,19 @@ class BodyTypeSelectionScreen extends StatefulWidget {
 }
 
 class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
-  int selectedBodyType = -1; // To track the selected body type
+  int selectedBodyType = -1;
+  @override
+  void initState()  {
+    getBodyTypeSelections().then((value) {
+      if (value != null) {
+        setState(() {
+          selectedBodyType = value[0];
+        });
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +135,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
             color: Theme.of(context).colorScheme.surface,
             padding: EdgeInsets.all(8),
             child: ElevatedButton(
-              onPressed: selectedBodyType != -1
+              onPressed: selectedBodyType > 0
                   ? () {
                       List<int> selectedBodyTypes = [];
                       selectedBodyTypes.add(selectedBodyType);
@@ -141,7 +154,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                     if (states.contains(MaterialState.disabled)) {
                       return Colors.grey; // Disabled color
                     }
-                    return selectedBodyType == -1
+                    return selectedBodyType <= 0
                         ? Colors.grey
                         : Colors.black; // Enable color changes
                   },
@@ -158,5 +171,14 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
         )
       ]),
     );
+  }
+
+  Future<List<int>?> getBodyTypeSelections() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
+    if (bodyTypeSelectionsString == null){
+      return null;
+    }
+    return parseIdsFromString(bodyTypeSelectionsString);
   }
 }
