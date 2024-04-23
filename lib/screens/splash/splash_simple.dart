@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:style_sensei/screens/style/style_screen.dart';
+import 'package:style_sensei/screens/waiting/waiting_screen.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../body/body_screen.dart';
+import '../color_tones/color_tones_screen.dart';
 
 class SplashSimple extends StatelessWidget {
   final String imagePath;
@@ -72,11 +76,22 @@ class SplashSimple extends StatelessWidget {
     );
   }
 
-  void openStyleScreen(BuildContext context) {
+  Future<void> openStyleScreen(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? styleSelectionsString = prefs.getString('styleSelections');
+    String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
+    String? colorToneSelectionsString = prefs.getString('colorToneSelections');
+
+
+    Widget screen = WaitingScreen();
+     if (styleSelectionsString == null) {
+      screen = StyleScreen();
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BodyTypeSelectionScreen(),
+        builder: (context) => screen,
       ),
     );
   }
