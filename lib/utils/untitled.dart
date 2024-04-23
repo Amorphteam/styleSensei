@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -611,4 +612,54 @@ String replaceNumbersInUrl(String url) {
     return updatedUrl;
   }
   return updatedUrl;
+}
+
+
+Future<void> showPopupOnce(BuildContext context, String url) async {
+  final prefs = await SharedPreferences.getInstance();
+  final hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
+
+  if (!hasShownPopup) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              SizedBox(height: 20,),
+              SvgPicture.asset('assets/images/door.svg'),
+              SizedBox(height: 40,),
+              Text(AppLocalizations.of(context).translate('shopping_bu'), )],
+          ),
+          content: Text(AppLocalizations.of(context).translate('leave_app_title'), ),
+          actionsAlignment: MainAxisAlignment.center, // Center the actions horizontally
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text(
+                AppLocalizations.of(context).translate('continue'),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.white, // Choose color that contrasts with the button color
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
+                openSourceWebsite(url); // Replace with actual URL
+              },
+            ),
+          ],
+        );
+      },
+    );
+    await prefs.setBool('hasShownPopup', true);
+  }else{
+    openSourceWebsite(url); // Replace with actual URL
+  }
+}
+
+Future<void> openSourceWebsite(String url) async {
+  final Uri _url = Uri.parse(url);
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
 }

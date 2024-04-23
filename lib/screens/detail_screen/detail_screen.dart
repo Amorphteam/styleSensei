@@ -12,7 +12,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/models/ProductsModel.dart';
 
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
-import 'package:style_sensei/screens/detail_screen/widgets/image_popup_dialog.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/single_item_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
@@ -467,17 +467,11 @@ class _DetailState extends State<Detail> {
   }
 
   void showImagePopup(BuildContext context, Product product) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ImagePopupDialog(
-          product: product,
-          bookmarkedItems: bookmarkedItems,
-          loadBookmarkedItems: loadBookmarkedItems,
-          saveBookmarkedItems: saveBookmarkedItems,
-          onBookmarkUpdated: updateBookmark,
-        );
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SingleItemScreen(product: product, bookmarkedItems: bookmarkedItems, loadBookmarkedItems: loadBookmarkedItems, saveBookmarkedItems: saveBookmarkedItems, onBookmarkUpdated: updateBookmark),
+      ),
     );
   }
 
@@ -487,56 +481,6 @@ class _DetailState extends State<Detail> {
     });
   }
 
-  Future<void> showPopupOnce(BuildContext context, String url) async {
-    final prefs = await SharedPreferences.getInstance();
-    final hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
-
-    if (!hasShownPopup) {
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // User must tap button
-        builder: (BuildContext dialogContext) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Column(
-              children: [
-                SizedBox(height: 20,),
-                SvgPicture.asset('assets/images/door.svg'),
-                SizedBox(height: 40,),
-                Text('Proceed to the Store'),
-              ],
-            ),
-            content: Text(
-                'You are about to leave the app to view more details and purchase options on the store\'s website. Would you like to continue?'),
-            actionsAlignment: MainAxisAlignment.center, // Center the actions horizontally
-            actions: <Widget>[
-              TextButton(
-                child: Text('Continue', style: TextStyle(color: Colors.white)), // Set the text color to white
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.black, // Set the button's background color
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16), // Adjust padding, make the button bigger
-                ),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-                  _openSourceWebsite(url); // Replace with actual URL
-                },
-              ),
-            ],
-          );
-        },
-      );
-      await prefs.setBool('hasShownPopup', true);
-    }else{
-      _openSourceWebsite(url); // Replace with actual URL
-    }
-  }
-
-  Future<void> _openSourceWebsite(String url) async {
-    final Uri _url = Uri.parse(url);
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
-    }
-  }
 
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {

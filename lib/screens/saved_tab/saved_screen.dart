@@ -15,7 +15,7 @@ import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
-import '../detail_screen/widgets/image_popup_dialog.dart';
+import '../detail_screen/widgets/single_item_screen.dart';
 
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
@@ -289,7 +289,7 @@ class _SavedScreenState extends State<SavedScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ImagePopupDialog(
+        return SingleItemScreen(
           product: product,
           bookmarkedItems: bookmarkedItems,
           loadBookmarkedItems: loadBookmarkedItems,
