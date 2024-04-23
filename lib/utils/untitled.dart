@@ -628,24 +628,36 @@ Future<void> showPopupOnce(BuildContext context, String url) async {
           title: Column(
             children: [
               SizedBox(height: 20,),
-              SvgPicture.asset('assets/images/door.svg'),
+              SvgPicture.asset('assets/images/door.svg', color: Theme.of(context).colorScheme.onBackground,),
               SizedBox(height: 40,),
               Text(AppLocalizations.of(context).translate('shopping_bu'), )],
           ),
           content: Text(AppLocalizations.of(context).translate('leave_app_title'), ),
           actionsAlignment: MainAxisAlignment.center, // Center the actions horizontally
           actions: <Widget>[
-            ElevatedButton(
-              child: Text(
-                AppLocalizations.of(context).translate('continue'),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white, // Choose color that contrasts with the button color
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.0),
                 ),
               ),
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Dismiss alert dialog
-                openSourceWebsite(url); // Replace with actual URL
+                Navigator.of(dialogContext).pop();
+                openSourceWebsite(url);
               },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.5,
+                child:  Center(
+                  child: Text(
+                    AppLocalizations.of(context).translate('continue'),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white, // Choose color that contrasts with the button color
+                    ),
+                  ),
+                ),
+
+              ),
             ),
           ],
         );
