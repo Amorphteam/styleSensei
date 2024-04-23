@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gap/gap.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../new_models/attribute.dart';
@@ -195,7 +196,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
           Padding(
             padding: const EdgeInsets.all(26.0),
             child: ElevatedButton(
-              onPressed: () => _openSourceWebsite(widget.product.corresponding_url!),
+              onPressed: () => showPopupOnce(context, widget.product.corresponding_url!),
               child: Text(
                 AppLocalizations.of(context).translate('shopping_bu'),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -223,11 +224,5 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
     return 'Unknown'; // Default value in case the brand name is not found
   }
 
-  // Function to launch a URL
-  Future<void> _openSourceWebsite(String url) async {
-    final Uri _url = Uri.parse(url);
-    if (!await launchUrl(_url)) {
-      throw 'Could not launch $_url';
-    }
-  }
+
 }
