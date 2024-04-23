@@ -1,19 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
-import 'package:style_sensei/screens/home_tab/home_screen.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../main.dart';
 import '../../utils/untitled.dart';
 
 class WaitingScreen extends StatefulWidget {
-
-
   WaitingScreen();
 
   @override
@@ -21,22 +14,33 @@ class WaitingScreen extends StatefulWidget {
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
-
   VideoPlayerController? _controller;
   String? _error;
-
+  bool _isControllerInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeVideoPlayer();
     _fetchAndNavigate();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isControllerInitialized) {
+      _initializeVideoPlayer();
+    }
+  }
+
   void _initializeVideoPlayer() {
-    _controller = VideoPlayerController.asset('assets/video/waiting.mp4')
+    String videoPath = (Theme.of(context).brightness == Brightness.dark)
+        ? 'assets/video/waiting_dark.mp4'
+        : 'assets/video/waiting.mp4';
+
+    _controller = VideoPlayerController.asset(videoPath)
       ..initialize().then((_) {
         setState(() {
+          _isControllerInitialized = true;
           _controller!.play();
           _controller!.setLooping(true);
         });
@@ -110,6 +114,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
             : CircularProgressIndicator(),
       ),
     );
+  }
 
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 }

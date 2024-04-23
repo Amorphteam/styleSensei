@@ -12,7 +12,7 @@ class CollectionRepository {
 
   Future<CollectionModel> fetchCollectionModel(List<List<int>> collectionTags) async {
     String apiUrl = 'http://stylesensei.net:8282/api/v1';
-    String pathUrl = '$apiUrl/collection/list?limit=300&offset=20';
+    String pathUrl = '$apiUrl/collection/list?limit=300&offset=0';
     var headers = {'Content-Type': 'application/json'};
     var body = json.encode({"tags": collectionTags});
 

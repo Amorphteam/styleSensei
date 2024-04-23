@@ -6,6 +6,7 @@ import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utils/untitled.dart';
 import '../color_tones/color_tones_screen.dart';
 import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
@@ -150,13 +151,7 @@ class ProfileScreen extends StatelessWidget {
     }
   }
 
-  void showSnackbar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: 3), // you can change the duration as needed
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+
 }
 
 ///          Container(

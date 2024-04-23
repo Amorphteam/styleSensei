@@ -70,11 +70,11 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
             icon: widget.bookmarkedItems[widget.product.id.toString()]!
                 ? SvgPicture.asset(
                     'assets/images/bookmarked.svg',
-                    color: Colors.white, // Path to your SVG file
+                    color: Theme.of(context).colorScheme.onBackground, // Path to your SVG file
                   )
                 : SvgPicture.asset(
                     'assets/images/bookmark.svg', // Path to your SVG file
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
             onPressed: () {
               setState(() {
@@ -195,13 +195,27 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(26.0),
-            child: ElevatedButton(
-              onPressed: () => showPopupOnce(context, widget.product.corresponding_url!),
-              child: Text(
-                AppLocalizations.of(context).translate('shopping_bu'),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white, // Choose color that contrasts with the button color
+            child:             TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.0),
                 ),
+              ),
+              onPressed: () {
+                showPopupOnce(context, widget.product.corresponding_url!);
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.5,
+                child:  Center(
+                  child: Text(
+                    AppLocalizations.of(context).translate('shopping_bu'),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white, // Choose color that contrasts with the button color
+                    ),
+                  ),
+                ),
+
               ),
             ),
           )

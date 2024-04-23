@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
@@ -13,7 +14,18 @@ class ColorTonesScreen extends StatefulWidget {
 
 class _ColorTonesScreenState extends State<ColorTonesScreen> {
   List<int> selectedColorTones = [];
+  @override
+  void initState()  {
+    getColorTonesSelected().then((value) {
+      if (value != null) {
+        setState(() {
+          selectedColorTones = value;
+        });
+      }
+    });
 
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     // Determine if the current locale is Arabic
@@ -137,5 +149,14 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
         ]
       ),
     );
+  }
+
+  Future<List<int>?> getColorTonesSelected() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? bodyTypeSelectionsString = prefs.getString('colorToneSelections');
+    if (bodyTypeSelectionsString == null){
+      return null;
+    }
+    return parseIdsFromString(bodyTypeSelectionsString);
   }
 }
