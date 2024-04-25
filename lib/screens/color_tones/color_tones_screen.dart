@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:style_sensei/screens/profile_tab/profile_screen.dart';
 
 import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
@@ -18,8 +17,10 @@ class ColorTonesScreen extends StatefulWidget {
 
 class _ColorTonesScreenState extends State<ColorTonesScreen> {
   List<int> selectedColorTones = [];
+
   @override
-  void initState()  {
+  void initState() {
+    super.initState();
     getColorTonesSelected().then((value) {
       if (value != null) {
         setState(() {
@@ -27,91 +28,92 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
         });
       }
     });
-
-    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    // Determine if the current locale is Arabic
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       body: Stack(
-        children: [ListView(
-          children: [
-            SizedBox(height: 8),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                AppLocalizations.of(context).translate('color_tone_title'),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 68.0),
-              child: GridView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 40,
-                  childAspectRatio: 1.5,
+        children: [
+          ListView(
+            children: [
+              SizedBox(height: 8),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  AppLocalizations.of(context).translate('color_tone_title'),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                itemCount: colorTones.length,
-                itemBuilder: (context, index) {
-                  // Choose the description based on the current language
-                  String description = isArabic ? colorTones[index].arDes : colorTones[index].des;
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (selectedColorTones.contains(colorTones[index].tag)) {
-                          selectedColorTones.remove(colorTones[index].tag);
-                        } else {
-                          selectedColorTones.add(colorTones[index].tag);
-                        }
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Image.asset(
-                            colorTones[index].path,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Checkbox(
-                              value: selectedColorTones.contains(colorTones[index].tag),
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  if (value == true) {
-                                    selectedColorTones.add(colorTones[index].tag);
-                                  } else {
-                                    selectedColorTones.remove(colorTones[index].tag);
-                                  }
-                                });
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: Text(description),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                  );
-                },
               ),
-            ),
-          ],
-        ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 68.0),
+                child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 40,
+                    childAspectRatio: 1.5,
+                  ),
+                  itemCount: colorTones.length,
+                  itemBuilder: (context, index) {
+                    bool isSelected = selectedColorTones.contains(colorTones[index].tag);
+                    String description = isArabic ? colorTones[index].arDes : colorTones[index].des;
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedColorTones.remove(colorTones[index].tag);
+                          } else {
+                            selectedColorTones.add(colorTones[index].tag);
+                          }
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Image.asset(
+                              colorTones[index].path,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+                                  color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedColorTones.remove(colorTones[index].tag);
+                                    } else {
+                                      selectedColorTones.add(colorTones[index].tag);
+                                    }
+                                  });
+                                },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(description),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
           Positioned(
             bottom: 0,
             right: 0,
@@ -119,7 +121,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
             child: Container(
               color: Theme.of(context).colorScheme.surface,
               padding: EdgeInsets.all(8),
-              child:  ElevatedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   saveSelections(colorToneSelections: selectedColorTones);
                   final imageSelectionCubit = ImageSelectionCubit();
@@ -138,27 +140,26 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                     );
                   }
                 },
-
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
-                      return Colors.grey; // Disabled color
-                    }
-                    return  Colors.black; // Enable color changes
-                  },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.disabled)) {
+                        return Colors.grey; // Disabled color
+                      }
+                      return Colors.black; // Enable color changes
+                    },
+                  ),
                 ),
-              ),
-              child: Text(
-                widget.isFromSettings == true
-                    ? AppLocalizations.of(context).translate('save')
-                    : AppLocalizations.of(context).translate('next'),
-                style: TextStyle(color: Colors.white),
+                child: Text(
+                  widget.isFromSettings == true
+                      ? AppLocalizations.of(context).translate('save')
+                      : AppLocalizations.of(context).translate('next'),
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
-          )
-        ]
+        ],
       ),
     );
   }
@@ -166,7 +167,7 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
   Future<List<int>?> getColorTonesSelected() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? bodyTypeSelectionsString = prefs.getString('colorToneSelections');
-    if (bodyTypeSelectionsString == null){
+    if (bodyTypeSelectionsString == null) {
       return null;
     }
     return parseIdsFromString(bodyTypeSelectionsString);
