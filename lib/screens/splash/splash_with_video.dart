@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
 import 'package:style_sensei/screens/splash/splash_simple.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../utils/user_controller.dart';
+import '../waiting/waiting_screen.dart';
 
 class SplashWithVideo extends StatefulWidget {
   final String? title;
@@ -122,16 +124,23 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
     try {
       final user = await UserController.loginWithGoogle();
       if (user != null && mounted) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? styleSelectionsString = prefs.getString('styleSelections');
+        if (styleSelectionsString == null) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => SplashSimple(imagePath: "assets/images/splash1.jpg"),
-        ));
+          ));
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => WaitingScreen(),
+          ));
+        }
       }
-
-    } on FirebaseAuthException catch (error){
+    } on FirebaseAuthException catch (error) {
       debugPrint(error.message);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? "Something went wrong",)));
-    } catch (error){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString(),)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? "Something went wrong")));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 

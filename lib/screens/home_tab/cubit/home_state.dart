@@ -11,8 +11,14 @@ class HomeErrorState extends HomeState {
   HomeErrorState(this.error);
 }
 
+class SelectedTagLoadedState extends HomeState {
+  final List<List<int>> selectedTags;
+  SelectedTagLoadedState(this.selectedTags);
+}
+
 class CollectionListLoadedState extends HomeState {
   final CollectionModel collectionModel;
 
   CollectionListLoadedState(this.collectionModel);
+
 }

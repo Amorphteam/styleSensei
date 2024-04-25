@@ -52,7 +52,6 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   void _fetchAndNavigate() async {
-    List<List<int>> selectedIds = await getSelectedIds();
     Future.delayed(Duration(seconds: 2), () {
       final homeCubit = HomeCubit(); // Create an instance of HomeCubit
 
@@ -63,7 +62,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
             opacity: animation,
             child: BlocProvider(
               create: (context) => homeCubit,
-              child: MyHomePage(collectionTags: selectedIds),
+              child: MyHomePage(),
             ),
           ),
           transitionDuration: Duration(milliseconds: 1000),

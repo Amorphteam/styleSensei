@@ -18,18 +18,15 @@ import 'widgets/tab_bar_widget.dart';
 
 class HomeTab extends StatefulWidget {
   final HomeCubit homeCubit;
-  List<List<int>> collectionTags;
 
-
-
-  HomeTab({Key? key, required this.homeCubit, required this.collectionTags})
-      : super(key: key);
+  HomeTab({Key? key, required this.homeCubit}) : super(key: key);
 
   @override
   State<HomeTab> createState() => _HomeTabState();
 }
 
 class _HomeTabState extends State<HomeTab> {
+  List<List<int>> collectionTags = [];
   List<ImageItem> imageAssetsUrl = [];
   String styleName = '';
   List<String> styleDescriptions = [];
@@ -46,16 +43,10 @@ class _HomeTabState extends State<HomeTab> {
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
     styleDescriptions = getDesStyle();
-    selectedTags = widget.collectionTags.expand((i) => i).toList();
   }
 
   void getData() {
-    // Set<int> uniqueTags = Set.from(widget.collectionTags.expand((i) => i));
-    // uniqueTags.addAll(tags.expand((i) => i));
-    // widget.collectionTags = [uniqueTags.toList()];
-    widget.collectionTags.removeWhere((tags) => tags.isEmpty);
-    searchForTagName();
-    widget.homeCubit.fetchData(CollectionRepository(), widget.collectionTags);
+    widget.homeCubit.fetchData(CollectionRepository());
   }
 
   void searchForTagName() {
@@ -69,38 +60,34 @@ class _HomeTabState extends State<HomeTab> {
       hijabPreferences
     ];
     Map<int, String> lookupTable = buildLookupTable(allItems);
-    List<int> codesToLookup = widget.collectionTags.expand((i) => i).toList();
-    List<String> descriptions = getDescriptionsFromCodes(codesToLookup, lookupTable);
+    List<int> codesToLookup = collectionTags.expand((i) => i).toList();
+    List<String> descriptions =
+        getDescriptionsFromCodes(codesToLookup, lookupTable);
 
-    String finalDescription = descriptions
-        .map((desc) {
+    String finalDescription = descriptions.map((desc) {
       int colonIndex = desc.indexOf(':');
       return colonIndex != -1 ? desc.substring(0, colonIndex) : desc;
-    })
-        .join('\n');
+    }).join('\n');
 
     setState(() {
       selectedTagsString = finalDescription;
     });
-
   }
 
   void addTags(List<int> newTags) {
     setState(() {
-      widget.collectionTags.add(newTags);
+      collectionTags.add(newTags);
     });
     getData();
   }
 
-
-
-
-  void _showOptions(BuildContext context, String title, List<ImageItem> options) {
+  void _showOptions(
+      BuildContext context, String title, List<ImageItem> options) {
     Locale locale = Localizations.localeOf(context);
     bool isArabic = locale.languageCode == 'ar';
 
     showModalBottomSheet(
-       backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
       builder: (BuildContext context) {
         return SingleChildScrollView(
@@ -127,9 +114,9 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-
   List<int> getSelectedOptionIds() {
-    List<int> flattenedTags = widget.collectionTags.expand((sublist) => sublist).toList();
+    List<int> flattenedTags =
+        collectionTags.expand((sublist) => sublist).toList();
     List<int> filteredTags = selectedChoices.values.where((item) {
       return !flattenedTags.contains(item.tag);
     }).map((item) {
@@ -138,7 +125,6 @@ class _HomeTabState extends State<HomeTab> {
 
     return filteredTags;
   }
-
 
   void _handleChipSelection(int tag, bool isSelected) {
     setState(() {
@@ -154,7 +140,6 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
-
     imageAssetsUrl.shuffle();
     return Container(
       child: ListView(
@@ -315,7 +300,8 @@ class _HomeTabState extends State<HomeTab> {
                   AppLocalizations.of(context).translate('home_title'),
                   style: Theme.of(context)
                       .textTheme
-                      .titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      .titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   AppLocalizations.of(context).translate('home_des'),
@@ -324,7 +310,12 @@ class _HomeTabState extends State<HomeTab> {
                       .titleSmall
                       ?.copyWith(fontWeight: FontWeight.normal),
                 ),
-                Text(selectedTagsString, style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4))),
+                Text(selectedTagsString,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.4))),
               ],
             ),
           ),
@@ -334,9 +325,21 @@ class _HomeTabState extends State<HomeTab> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  {'title': AppLocalizations.of(context).translate('occasion_wear'), 'options': occasionWear},
-                  {'title': AppLocalizations.of(context).translate('seasonal_style'), 'options': seasonalStyle},
-                  {'title': AppLocalizations.of(context).translate('hijab_preferences'), 'options': hijabPreferences},
+                  {
+                    'title':
+                        AppLocalizations.of(context).translate('occasion_wear'),
+                    'options': occasionWear
+                  },
+                  {
+                    'title': AppLocalizations.of(context)
+                        .translate('seasonal_style'),
+                    'options': seasonalStyle
+                  },
+                  {
+                    'title': AppLocalizations.of(context)
+                        .translate('hijab_preferences'),
+                    'options': hijabPreferences
+                  },
                 ].map((Map<String, dynamic> filter) {
                   String title = filter['title'];
                   List<ImageItem> options = filter['options'];
@@ -345,12 +348,12 @@ class _HomeTabState extends State<HomeTab> {
                   Widget chipLabel = isSelected
                       ? Text(selectedChoices[title]!.des)
                       : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(title),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  );
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(title),
+                            Icon(Icons.arrow_drop_down),
+                          ],
+                        );
 
                   return GestureDetector(
                     onTap: () => _showOptions(context, title, options),
@@ -361,18 +364,28 @@ class _HomeTabState extends State<HomeTab> {
                         backgroundColor: isSelected
                             ? Theme.of(context).colorScheme.inversePrimary
                             : Theme.of(context).colorScheme.onInverseSurface,
-                        deleteIcon: isSelected ? Icon(Icons.close, size: 16,) : null,
+                        deleteIcon: isSelected
+                            ? Icon(
+                                Icons.close,
+                                size: 16,
+                              )
+                            : null,
                         onDeleted: isSelected
                             ? () {
-                          setState(() {
-                            int tagToRemove = selectedChoices[title]!.tag;
-                            selectedChoices.remove(title);
-                            widget.collectionTags = widget.collectionTags.map((tagsList) {
-                              return tagsList.where((tag) => tag != tagToRemove).toList();
-                            }).where((tagsList) => tagsList.isNotEmpty).toList(); // Remove empty lists
-                          });
-                          getData();
-                        }
+                                setState(() {
+                                  int tagToRemove = selectedChoices[title]!.tag;
+                                  selectedChoices.remove(title);
+                                  collectionTags = collectionTags
+                                      .map((tagsList) {
+                                        return tagsList
+                                            .where((tag) => tag != tagToRemove)
+                                            .toList();
+                                      })
+                                      .where((tagsList) => tagsList.isNotEmpty)
+                                      .toList(); // Remove empty lists
+                                });
+                                getData();
+                              }
                             : null,
                         side: BorderSide.none,
                       ),
@@ -383,17 +396,29 @@ class _HomeTabState extends State<HomeTab> {
             ),
           ),
           SizedBox(height: 8),
-          BlocBuilder<HomeCubit, HomeState>(
-            builder: (context, state) {
-              if (state is CollectionListLoadedState) {
-                List<Collections> collections =
-                    state.collectionModel.collections;
-                return StaggeredGridView(collections: collections);
-              } else if (state is HomeErrorState) {
-                return Text('error is ${state.error}');
-              } else {
-                return Text('');
+          BlocConsumer<HomeCubit, HomeState>(
+            listener: (context, state) {
+              if (state is SelectedTagLoadedState) {
+                collectionTags = state.selectedTags;
+                selectedTags = collectionTags.expand((i) => i).toList();
+                searchForTagName();
+                print('collectionTags: $collectionTags');
               }
+            },
+            builder: (context, state) {
+              return BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) {
+                  if (state is CollectionListLoadedState) {
+                    List<Collections> collections =
+                        state.collectionModel.collections;
+                    return StaggeredGridView(collections: collections);
+                  } else if (state is HomeErrorState) {
+                    return Text('error is ${state.error}');
+                  } else {
+                    return Text('');
+                  }
+                },
+              );
             },
           ),
           // SizedBox(height: 8),
@@ -412,7 +437,7 @@ class _HomeTabState extends State<HomeTab> {
 
   List<ImageItem> searchingTag() {
     List<ImageItem> results = [];
-    for (List<int> group in widget.collectionTags) {
+    for (List<int> group in collectionTags) {
       for (int searchId in group) {
         results.addAll(images.where((item) => item.tag == searchId));
       }
@@ -422,10 +447,11 @@ class _HomeTabState extends State<HomeTab> {
 
   String getStyleName() {
     Set<String> uniqueResults = Set();
-    for (List<int> group in widget.collectionTags) {
+    for (List<int> group in collectionTags) {
       for (int searchId in group) {
         for (var item in images.where((item) => item.tag == searchId)) {
-          String pathWithoutNumber = item.path.replaceAll(RegExp(r'\d+\.jpeg$'), '.jpeg');
+          String pathWithoutNumber =
+              item.path.replaceAll(RegExp(r'\d+\.jpeg$'), '.jpeg');
           uniqueResults.add(pathWithoutNumber
               .replaceAll('assets/images/', '')
               .replaceAll('.jpeg', ''));
@@ -435,10 +461,9 @@ class _HomeTabState extends State<HomeTab> {
     return uniqueResults.join(', ');
   }
 
-
   List<String> getDesStyle() {
     List<String> results = [];
-    for (List<int> group in widget.collectionTags) {
+    for (List<int> group in collectionTags) {
       for (int searchId in group) {
         for (var item in images.where((item) => item.tag == searchId)) {
           results.add(item.des);
@@ -448,7 +473,4 @@ class _HomeTabState extends State<HomeTab> {
     results = results.toSet().toList();
     return results;
   }
-
-
-
 }

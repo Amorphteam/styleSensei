@@ -9,11 +9,10 @@ import '../../utils/untitled.dart';
 import '../home_tab/cubit/home_cubit.dart';
 import '../home_tab/home_screen.dart';
 
-
-
-
-
 class StyleScreen extends StatefulWidget {
+  final bool isFromSettings;
+
+  StyleScreen({super.key, this.isFromSettings = false});
 
   @override
   _StyleScreenState createState() => _StyleScreenState();
@@ -21,6 +20,7 @@ class StyleScreen extends StatefulWidget {
 
 class _StyleScreenState extends State<StyleScreen> {
   Set<int> selectedIndexes = {};
+
   @override
   void initState() {
     super.initState();
@@ -29,7 +29,6 @@ class _StyleScreenState extends State<StyleScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(
       children: [
         Container(
@@ -57,8 +56,10 @@ class _StyleScreenState extends State<StyleScreen> {
                   )),
               SizedBox(height: 8),
               GridView.builder(
-                physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-                shrinkWrap: true, // You won't see infinite size error
+                physics: NeverScrollableScrollPhysics(),
+                // to disable GridView's scrolling
+                shrinkWrap: true,
+                // You won't see infinite size error
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 2,
@@ -80,28 +81,34 @@ class _StyleScreenState extends State<StyleScreen> {
                     },
                     child: GridTile(
                       child: Stack(
-                        fit: StackFit.expand, // Ensure the stack fills the parent
+                        fit: StackFit.expand,
+                        // Ensure the stack fills the parent
                         children: [
                           // Image.asset widget with BoxFit.cover should cover the entire grid tile.
                           Image.asset(
                             images[index].path,
-                            fit: BoxFit.cover, // This will cover the entire grid area
+                            fit: BoxFit
+                                .cover, // This will cover the entire grid area
                           ),
-                          if (isSelected) Container(color: Colors.black54), // Semi-transparent overlay
+                          if (isSelected) Container(color: Colors.black54),
+                          // Semi-transparent overlay
                         ],
                       ),
                       footer: GridTileBar(
-                        title: Text(''), // Empty text widget for alignment purposes
+                        title: Text(''),
+                        // Empty text widget for alignment purposes
                         trailing: isSelected
-                            ? Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary)
-                            : Icon(Icons.radio_button_off,),
+                            ? Icon(Icons.check_circle,
+                                color: Theme.of(context).colorScheme.primary)
+                            : Icon(
+                                Icons.radio_button_off,
+                              ),
                       ),
                     ),
                   );
                 },
               ),
               SizedBox(height: 60),
-
             ],
           ),
         ),
@@ -115,48 +122,51 @@ class _StyleScreenState extends State<StyleScreen> {
             child: ElevatedButton(
               onPressed: selectedIndexes.length >= 4
                   ? () {
-                List<int> collectionTags = getTagsSelected();
-                saveSelections(styleSelections: collectionTags);
-                final waitingCubit =
-                WaitingCubit(); // Create an instance of HomeCubit
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => waitingCubit,
-                      child: WaitingScreen(),
-                    ),
-                  ),
-                      (Route<dynamic> route) => false, // No route will allow return
+                      List<int> collectionTags = getTagsSelected();
+                      saveSelections(styleSelections: collectionTags);
+                      final waitingCubit =
+                          WaitingCubit(); // Create an instance of HomeCubit
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => waitingCubit,
+                            child: WaitingScreen(),
+                          ),
+                        ),
+                        (Route<dynamic> route) =>
+                            false, // No route will allow return
+                      );
 
-                );
-
-                // Your navigation logic here
-              }
-                  : null, // Button is disabled if less than 4 items are selected
+                      // Your navigation logic here
+                    }
+                  : null,
+              // Button is disabled if less than 4 items are selected
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                  (Set<MaterialState> states) {
                     if (states.contains(MaterialState.disabled)) {
                       return Colors.grey; // Disabled color
                     }
-                    return selectedIndexes.length < 4 ? Colors.grey : Colors.black; // Enable color changes
+                    return selectedIndexes.length < 4
+                        ? Colors.grey
+                        : Colors.black; // Enable color changes
                   },
                 ),
               ),
               child: Text(
                 selectedIndexes.length < 4
-                    ? AppLocalizations.of(context).translate('pick') +'${4 - selectedIndexes.length}' +AppLocalizations.of(context).translate('more')
+                    ? AppLocalizations.of(context).translate('pick') +
+                        '${4 - selectedIndexes.length}' +
+                        AppLocalizations.of(context).translate('more')
                     : AppLocalizations.of(context).translate('recommendation'),
                 style: TextStyle(
                   color: Colors.white, // Change color conditionally
                 ),
               ),
-
             ),
           ),
         ),
-
       ],
     );
   }
@@ -164,8 +174,8 @@ class _StyleScreenState extends State<StyleScreen> {
   List<int> getTagsSelected() {
     List<int> collectionTags = [];
     for (var index in selectedIndexes) {
-      if (!collectionTags.contains(images[index].tag)){
-      collectionTags.add(images[index].tag);
+      if (!collectionTags.contains(images[index].tag)) {
+        collectionTags.add(images[index].tag);
       }
     }
     return collectionTags;

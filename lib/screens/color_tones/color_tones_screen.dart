@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:style_sensei/screens/profile_tab/profile_screen.dart';
 
 import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
@@ -8,6 +9,9 @@ import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
 
 class ColorTonesScreen extends StatefulWidget {
+  final bool isFromSettings;
+  ColorTonesScreen({super.key, this.isFromSettings = false});
+
   @override
   _ColorTonesScreenState createState() => _ColorTonesScreenState();
 }
@@ -116,19 +120,25 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
               color: Theme.of(context).colorScheme.surface,
               padding: EdgeInsets.all(8),
               child:  ElevatedButton(
-              onPressed: () {
-                saveSelections(colorToneSelections: selectedColorTones);
-                final imageSelectionCubit = ImageSelectionCubit();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      create: (context) => imageSelectionCubit,
-                      child: StyleScreen(),
-                    ),
-                  ),
-                );
-              },
+                onPressed: () {
+                  saveSelections(colorToneSelections: selectedColorTones);
+                  final imageSelectionCubit = ImageSelectionCubit();
+
+                  if (widget.isFromSettings) {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                          create: (context) => imageSelectionCubit,
+                          child: StyleScreen(),
+                        ),
+                      ),
+                    );
+                  }
+                },
+
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
@@ -140,7 +150,9 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context).translate('next'),
+                widget.isFromSettings == true
+                    ? AppLocalizations.of(context).translate('save')
+                    : AppLocalizations.of(context).translate('next'),
                 style: TextStyle(color: Colors.white),
               ),
             ),

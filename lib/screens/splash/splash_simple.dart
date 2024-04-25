@@ -51,7 +51,7 @@ class SplashSimple extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    openStyleScreen(context);
+                    openBodyTypeScreen(context);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.5,
@@ -76,22 +76,11 @@ class SplashSimple extends StatelessWidget {
     );
   }
 
-  Future<void> openStyleScreen(BuildContext context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? styleSelectionsString = prefs.getString('styleSelections');
-    String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
-    String? colorToneSelectionsString = prefs.getString('colorToneSelections');
-
-
-    Widget screen = WaitingScreen();
-     if (styleSelectionsString == null) {
-      screen = StyleScreen();
-    }
-
+  Future<void> openBodyTypeScreen(BuildContext context) async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => screen,
+        builder: (context) => BodyTypeSelectionScreen(),
       ),
     );
   }

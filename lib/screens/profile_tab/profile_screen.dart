@@ -57,12 +57,12 @@ class ProfileScreen extends StatelessWidget {
         children: <Widget>[
           CircleAvatar(
             radius: 50.0,
-            backgroundImage: NetworkImage(UserController.user?.photoURL ??
+            backgroundImage: NetworkImage(UserController.currentUser?.photoURL ??
                 'https://via.placeholder.com/150'),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(UserController.user?.displayName ?? '',
+            child: Text(UserController.currentUser?.displayName ?? '',
                 style: Theme.of(context).textTheme.titleLarge),
           ),
         ],
@@ -103,11 +103,11 @@ class ProfileScreen extends StatelessWidget {
     String? error = null;
     switch (title) {
       case 'Body type':
-        screen = BodyTypeSelectionScreen();
+        screen = BodyTypeSelectionScreen(isFromSettings: true,);
       case 'Color tone':
-        screen = ColorTonesScreen();
+        screen = ColorTonesScreen(isFromSettings: true,);
       case 'Styles':
-        screen = StyleScreen();
+        screen = StyleScreen(isFromSettings: true,);
       case 'Licences':
         url = 'https://amorphteam.com/stylesensei/licences.html';
       case 'Privacy Policy':

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/firebase_options.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/home_tab/home_screen.dart';
@@ -15,6 +16,7 @@ import 'package:style_sensei/screens/splash/cubit/splash_cubit.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
 import 'package:style_sensei/screens/splash/splash_simple.dart';
 import 'package:style_sensei/screens/splash/splash_with_video.dart';
+import 'package:style_sensei/screens/waiting/waiting_screen.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/AppLocalizationsDelegate.dart';
 import 'package:style_sensei/utils/user_controller.dart';
@@ -82,16 +84,52 @@ class MyApp extends StatelessWidget {
         }
         return child!;
       },
-      home: SplashSimple(imagePath: "assets/images/splash1.jpg"),
+      home: checkUserState(),
       debugShowCheckedModeBanner: false,
+    );
+  }
+
+  Widget checkUserState() {
+    return FutureBuilder<bool>(
+      future: UserController.isUserLoggedIn(),
+      builder: (context, snapshot) {
+        // Check if the future has completed
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data == true) { // User is logged in
+            // Fetch SharedPreferences to check for 'styleSelections'
+            return FutureBuilder<SharedPreferences>(
+              future: SharedPreferences.getInstance(),
+              builder: (context, prefSnapshot) {
+                if (prefSnapshot.connectionState == ConnectionState.done) {
+                  // Get the 'styleSelections' string
+                  String? styleSelectionsString = prefSnapshot.data?.getString('styleSelections');
+                  // Check if a style has been selected
+                  if (styleSelectionsString == null) {
+                    // No style selected, show simple splash
+                    return SplashSimple(imagePath: 'assets/images/splash1.jpg');
+                  } else {
+                    // Style selected, proceed to waiting screen
+                    return WaitingScreen();
+                  }
+                }
+                // While SharedPreferences is loading, show a loading indicator
+                return CircularProgressIndicator();
+              },
+            );
+          } else { // User is not logged in
+            // Directly show the splash screen with video
+            return SplashWithVideo();
+          }
+        }
+        // While checking login status, show a loading indicator
+        return CircularProgressIndicator();
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  final List<List<int>> collectionTags;
-
-  const MyHomePage({super.key, required this.collectionTags});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -107,7 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Widget> _screens = [
       HomeTab(
         homeCubit: context.read<HomeCubit>(),
-        collectionTags: widget.collectionTags,
       ),
       // Pass the HomeCubit to the first screen
       BlocProvider(

@@ -7,6 +7,9 @@ import '../../utils/untitled.dart';
 import '../color_tones/color_tones_screen.dart';
 
 class BodyTypeSelectionScreen extends StatefulWidget {
+  final bool isFromSettings;
+
+  BodyTypeSelectionScreen({super.key, this.isFromSettings = false});
   @override
   _BodyTypeSelectionScreenState createState() =>
       _BodyTypeSelectionScreenState();
@@ -135,11 +138,18 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
             color: Theme.of(context).colorScheme.surface,
             padding: EdgeInsets.all(8),
             child: ElevatedButton(
+
+
               onPressed: selectedBodyType > 0
                   ? () {
+
                       List<int> selectedBodyTypes = [];
                       selectedBodyTypes.add(selectedBodyType);
                       saveSelections(bodyTypeSelections: selectedBodyTypes);
+                      if (widget.isFromSettings) {
+                        Navigator.pop(context);
+                        return;
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -161,11 +171,14 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                 ),
               ),
               child: Text(
-                AppLocalizations.of(context).translate('pick_1'),
+                widget.isFromSettings == true
+                    ? AppLocalizations.of(context).translate('save')
+                    : AppLocalizations.of(context).translate('pick_1'),
                 style: TextStyle(
-                  color: Colors.white, // Change color conditionally
+                  color: Colors.white, // The color is always white as per your current setup
                 ),
               ),
+
             ),
           ),
         )
