@@ -276,8 +276,18 @@ class _SavedScreenState extends State<SavedScreen> {
                 } else if (state is SavedErrorState) {
                   return Text('error is ${state.error}');
                 } else {
-                  return Lottie.asset('assets/json/large_loading.json',
-                      repeat: false);
+                  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+                  // Choose the Lottie animation JSON based on the theme brightness
+                  final String lottieJson = isDarkMode
+                      ? 'assets/json/large_loading_dark.json'
+                      : 'assets/json/large_loading.json';
+
+                  return Lottie.asset(
+                    lottieJson,
+                    repeat: false,
+                  );
+
                 }
               },
             )

@@ -303,7 +303,7 @@ class _DetailState extends State<Detail> {
                               bookmarkedItems[productItem.id.toString()] ??=
                                   false;
                               return Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.only(left: 2, right: 2, top: 8.0, bottom: 8.0),
                                 child: Stack(
                                   children: [
                                     Container(
