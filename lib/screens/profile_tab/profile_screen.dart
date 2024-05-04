@@ -41,8 +41,6 @@ class ProfileScreen extends StatelessWidget {
               title: 'Dislikes', icon: Icons.thumb_down, context: context),
           _buildSectionTitle(context, 'About'),
           _buildListTile(
-              title: 'Licences', icon: Icons.description, context: context),
-          _buildListTile(
               title: 'Privacy Policy',
               icon: Icons.privacy_tip,
               context: context),
@@ -108,10 +106,8 @@ class ProfileScreen extends StatelessWidget {
         screen = ColorTonesScreen(isFromSettings: true,);
       case 'Styles':
         screen = StyleScreen(isFromSettings: true,);
-      case 'Licences':
-        url = 'https://amorphteam.com/stylesensei/licences.html';
       case 'Privacy Policy':
-        url = 'https://amorphteam.com/stylesensei/privacy_policy.html';
+        url = 'https://amorphteam.com/style_sensei/privacy_policy.html';
       case 'Likes':
         showSnackbar(
           context,

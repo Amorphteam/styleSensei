@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/models/Collections.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/untitled.dart';
@@ -20,11 +21,38 @@ class StaggeredGridView extends StatefulWidget {
 }
 
 class _StaggeredGridViewState extends State<StaggeredGridView> {
-  int? dislikedIndex; // Holds the index of the disliked image
+  int? dislikedIndex;
+  List<Collections> mutableCollections = [];
+  Set<String> likedCollections = {};
+  Set<String> dislikedCollections = {};
+
+
+  @override
+  void initState() {
+    super.initState();
+    mutableCollections = List.from(widget.collections);
+    loadPreferences();
+  }
+
+
+  void loadPreferences() async {
+    likedCollections = (await getLikedCollectionIds()).toSet();
+    dislikedCollections = (await getDesLikedCollectionIds()).toSet();
+    if (dislikedCollections.isNotEmpty) {
+      setState(() {
+        mutableCollections = mutableCollections
+            .where((collection) => !dislikedCollections.contains(collection.id.toString()))
+            .toList();
+      });
+
+    }
+  }
+
+
 
   void showDislikeOverlay(int index) {
     setState(() {
-      dislikedIndex = index; // Set the disliked image index
+      dislikedIndex = index;
     });
   }
 
@@ -55,15 +83,19 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
       // You won't see infinite size error
       childrenDelegate: SliverChildBuilderDelegate(
         (context, index) {
+          final collection = mutableCollections[index];
+          final isLiked = likedCollections.contains(collection.id.toString());
+
+
           bool showOverlay = index == dislikedIndex;
 
-          if (index < widget.collections.length) {
+          if (index < mutableCollections.length) {
             return Stack(
               children: [Column(
                 children: [
                   Expanded(
                     child: ImageTile(
-                      collections: widget.collections,
+                      collections: mutableCollections,
                       index: index,
                       hasSeeDetail: true,
                     ),
@@ -74,7 +106,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(parseTitle(widget.collections[index].title, (isArabic)?'ar':'en'),
+                          child: Text(parseTitle(mutableCollections[index].title, (isArabic)?'ar':'en'),
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium
@@ -87,9 +119,9 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                         Theme.of(context).colorScheme.onSurface,
                         BlendMode.srcIn,
                         ),
-                        child: SvgPicture.asset('assets/images/like.svg')),
+                        child: SvgPicture.asset((isLiked)?'assets/images/like_full.svg':'assets/images/like.svg')),
                           onPressed: () {
-                            showSnackbar(context, AppLocalizations.of(context).translate('like_snackbar_title'));
+                            toggleLike(collection.id);
                           }),
                       IconButton(
                           icon: ColorFiltered(
@@ -99,7 +131,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                         ),
                         child: SvgPicture.asset('assets/images/dislike.svg')),
                           onPressed: () {
-                            checkToShowDislikeOverlay(index);
+                            checkToShowDislikeOverlay(index, collection.id);
                           }),
                       Gap(10),
                     ],
@@ -111,7 +143,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                   Positioned.fill(
                     child: DislikeOverlay(
                       onOptionSelected: (String option) {
-                        showSnackbar(context, AppLocalizations.of(context).translate('dislike_snackbar_title'));
+                        _deleteCollection(index, collection.id);
                         hideDislikeOverlay();
                       },
                       onCancel: hideDislikeOverlay,
@@ -124,7 +156,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
           }
         },
         // Set the childCount to the totalImages
-        childCount: widget.collections.length,
+        childCount: mutableCollections.length,
       ),
     );
   }
@@ -146,20 +178,40 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
           return decoded[language];
         }
       } catch (e) {
-        // If json.decode throws an error, title is not a JSON string.
         return title;
       }
     }
-    return title; // Return the original title if it's not a JSON string
+    return title;
   }
 
-  void checkToShowDislikeOverlay(int index) async {
+  void checkToShowDislikeOverlay(int index, int deslikedId) async {
     bool dontShowDialog = await getNoShowPreference();
     if (!dontShowDialog) {
       showDislikeOverlay(index);
     } else {
-      showSnackbar(context, AppLocalizations.of(context).translate('dislike_snackbar_title'));
+      _deleteCollection(index, deslikedId);
     }
+  }
+
+    void toggleLike(int id) {
+      final idStr = id.toString();
+      setState(() {
+        if (likedCollections.contains(idStr)) {
+          likedCollections.remove(idStr);
+        } else {
+          likedCollections.add(idStr);
+        }
+        saveLikedCollectionId(idStr);
+      });
+
+  }
+
+  void _deleteCollection( int index, int deslikedId) {
+    saveDesLikedCollectionId(deslikedId.toString());
+    setState(() {
+      mutableCollections.removeAt(index);
+    });
+    showSnackbar(context, AppLocalizations.of(context).translate('dislike_snackbar_title'));
   }
 
 }

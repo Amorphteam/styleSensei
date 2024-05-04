@@ -417,7 +417,35 @@ Future<void> saveSelections({
   if (colorToneSelections != null) {
     await prefs.setString('colorToneSelections', colorToneSelections.join(','));
   }
+}
 
+
+Future<void> saveLikedCollectionId(String id) async {
+  final prefs = await SharedPreferences.getInstance();
+  List<String> allLikedIds = prefs.getStringList('likedCollections') ?? [];
+  if (!allLikedIds.contains(id)) {
+    allLikedIds.add(id);
+    await prefs.setStringList('likedCollections', allLikedIds);
+  }
+}
+
+Future<List<String>> getLikedCollectionIds() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getStringList('likedCollections') ?? [];
+}
+
+
+Future<void> saveDesLikedCollectionId(String id) async {
+  final prefs = await SharedPreferences.getInstance();
+  List<String> allDesLikedIds = prefs.getStringList('DislikedCollections') ?? [];
+    allDesLikedIds.add(id);
+    await prefs.setStringList('DislikedCollections', allDesLikedIds);
+
+}
+
+Future<List<String>> getDesLikedCollectionIds() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getStringList('DislikedCollections') ?? [];
 }
 
 Future<List<List<int>>>  getSelectedIds() async {
