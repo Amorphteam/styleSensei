@@ -11,13 +11,15 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
 
-  Future<void> fetchData(CollectionRepository? collectionRepository) async{
+  Future<void> fetchData(CollectionRepository? collectionRepository, {List<List<int>>? tags = null}) async{
     emit(HomeLoadingState());
+    List<List<int>> collectionTags = tags ?? [];
     try {
-      final collectionTags = await getSelectedIds();
+      if (collectionTags.isEmpty) {
+        collectionTags = await getSelectedIds();
+      }
       collectionTags.removeWhere((tags) => tags.isEmpty);
       emit(SelectedTagLoadedState(collectionTags));
-
       final collection = await collectionRepository?.fetchCollectionModel(collectionTags);
       if (collection != null) {
         emit(CollectionListLoadedState(collection));

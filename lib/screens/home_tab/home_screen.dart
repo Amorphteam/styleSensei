@@ -48,7 +48,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void getData() {
-    widget.homeCubit.fetchData(CollectionRepository());
+    widget.homeCubit.fetchData(CollectionRepository(), tags: collectionTags);
   }
 
   void searchForTagName() {
@@ -314,12 +314,7 @@ class _HomeTabState extends State<HomeTab> {
                         .titleSmall
                         ?.copyWith(fontWeight: FontWeight.normal),
                   ),
-                  Text(selectedTagsString,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.4))),
+
                 ],
               ),
             ),
@@ -482,9 +477,7 @@ class _HomeTabState extends State<HomeTab> {
 
   Future<void> _handleRefresh() async {
     await Future.delayed(Duration(seconds: 1)); // Simulate a delay
-    setState(() {
-      widget.homeCubit.fetchData(CollectionRepository()); // Refresh data
-    });
+    getData();
   }
 
 }
