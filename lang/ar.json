@@ -18,7 +18,7 @@
   "saved": "المفضلة",
   "shopping_bu": "المتابعة إلى المتجر",
   "color_tone": "درجات الألوان",
-  "occasion_wear": "ملابس المناسبات",
+  "occasion_wear": "المناسبات",
   "body_types": "أنواع الجسم",
   "seasonal_style": "الأنماط الموسمية",
   "clothing_preferences": "تفضيلات الملابس",
@@ -43,6 +43,15 @@
   "description": "الوصف",
   "continue": "استمرار",
   "leave_app_title": "أنت على وشك مغادرة التطبيق لعرض المزيد من التفاصيل وخيارات الشراء على موقع المتجر. هل ترغب في الاستمرار؟",
-  "save": "حفظ"
-
+  "save": "حفظ",
+  "appearance_preferences": "المظهر والتفضيلات",
+  "body_type": "نوع الجسم",
+  "styles": "الأنماط",
+  "comfort_zone": "منطقة الراحة",
+  "activity": "النشاط",
+  "likes": "المفضلة",
+  "dislikes": "غير المفضلة",
+  "about": "حول",
+  "privacy_policy": "سياسة الخصوصية",
+  "error": "عذراً، حدث خطأ ما!"
 }

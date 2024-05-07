@@ -101,7 +101,8 @@ class _DetailState extends State<Detail> {
         } else if (state is DetailErrorState) {
           return Scaffold(
             body: Center(
-              child: Text('Error is ${state.error}'),
+              child: Text(AppLocalizations.of(context).translate('error')),
+
             ),
           );
         } else {
@@ -242,6 +243,8 @@ class _DetailState extends State<Detail> {
   }
 
   Widget buildWidget(List<CollectionItem> items) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return Column(
       children: [
         Padding(
@@ -256,7 +259,7 @@ class _DetailState extends State<Detail> {
         ),
         child: SvgPicture.asset('assets/images/collection.svg')),
               Padding(
-                padding: EdgeInsets.only(left: 10.0, top: 2),
+                padding: EdgeInsets.only(left: 10.0, top: 2, right: 10.0),
                 child: Text(
                   AppLocalizations.of(context).translate('collection_detail'),
                   style: Theme.of(context)
@@ -365,7 +368,7 @@ class _DetailState extends State<Detail> {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(
-                                                left: 12.0),
+                                                left: 12.0, right: 12.0),
                                             child: Text(
                                               getBrandName(
                                                       productItem.attributes) ??
@@ -381,14 +384,14 @@ class _DetailState extends State<Detail> {
                                             ),
                                           ),
                                           Container(
-                                            width:                                                         MediaQuery.of(context)
+                                            width: MediaQuery.of(context)
                                                 .size
                                                 .width *
                                                 0.40,
                                             child: Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 12.0),
-                                              child: Text(
+                                                  left: 12.0, right: 12.0),
+                                              child: Text( isArabic ? productItem.arabic_name!:
                                                 productItem.name!,
                                                 style: Theme.of(context)
                                                     .textTheme

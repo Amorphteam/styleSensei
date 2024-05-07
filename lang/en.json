@@ -43,5 +43,15 @@
   "description": "Description",
   "continue": "Continue",
   "leave_app_title": "You are about to leave the app to view more details and purchase options on the store\\'s website. Would you like to continue?",
-  "save": "Save"
+  "save": "Save",
+  "appearance_preferences": "Appearance and Preferences",
+  "body_type": "Body type",
+  "styles": "Styles",
+  "comfort_zone": "Comfort zone",
+  "activity": "Activity",
+  "likes": "Likes",
+  "dislikes": "Dislikes",
+  "about": "About",
+  "privacy_policy": "Privacy Policy",
+  "error": "Something went wrong!"
 }

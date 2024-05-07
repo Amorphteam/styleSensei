@@ -49,6 +49,7 @@ class _SavedScreenState extends State<SavedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Container(
         child: ListView(
           children: [
@@ -192,8 +193,8 @@ class _SavedScreenState extends State<SavedScreen> {
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 12.0),
-                                                child: Text(
-                                                  productItem.name!,
+                                                child: Text( isArabic ? productItem.arabic_name!:
+                                                productItem.name!,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .labelSmall,
@@ -274,7 +275,7 @@ class _SavedScreenState extends State<SavedScreen> {
                         child: Lottie.asset('assets/json/loading.json')),
                   );
                 } else if (state is SavedErrorState) {
-                  return Text('error is ${state.error}');
+                  return Text(AppLocalizations.of(context).translate('error'));
                 } else {
                   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 

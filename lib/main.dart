@@ -76,7 +76,10 @@ class MyApp extends StatelessWidget {
           return Theme(
             data: ThemeData(
               useMaterial3: true,
-              // Define the font for Arabic text
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Color(0xFFDC4D28),
+                primary: Color(0xFFDC4D28),
+              ),
               fontFamily: 'tajawal',
             ),
             child: child!,

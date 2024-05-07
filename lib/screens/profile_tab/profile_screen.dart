@@ -24,24 +24,24 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(
             height: 16,
           ),
-          _buildSectionTitle(context, 'Appearance and Preferences'),
+          _buildSectionTitle(context, AppLocalizations.of(context).translate('appearance_preferences')),
           _buildListTile(
-              title: 'Body type', icon: Icons.accessibility, context: context),
+              title: AppLocalizations.of(context).translate('body_type'), icon: Icons.accessibility, context: context),
           _buildListTile(
-              title: 'Color tone', icon: Icons.palette, context: context),
-          _buildListTile(title: 'Styles', icon: Icons.style, context: context),
+              title: AppLocalizations.of(context).translate('color_tone'), icon: Icons.palette, context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('styles'), icon: Icons.style, context: context),
           _buildListTile(
-              title: 'Comfort zone',
+              title: AppLocalizations.of(context).translate('comfort_zone'),
               icon: Icons.view_comfortable,
               context: context),
-          _buildSectionTitle(context, 'Activity'),
+          _buildSectionTitle(context, AppLocalizations.of(context).translate('activity')),
           _buildListTile(
-              title: 'Likes', icon: Icons.thumb_up, context: context),
+              title: AppLocalizations.of(context).translate('likes'), icon: Icons.thumb_up, context: context),
           _buildListTile(
-              title: 'Dislikes', icon: Icons.thumb_down, context: context),
-          _buildSectionTitle(context, 'About'),
+              title: AppLocalizations.of(context).translate('dislikes'), icon: Icons.thumb_down, context: context),
+          _buildSectionTitle(context, AppLocalizations.of(context).translate('about')),
           _buildListTile(
-              title: 'Privacy Policy',
+              title: AppLocalizations.of(context).translate('privacy_policy'),
               icon: Icons.privacy_tip,
               context: context),
         ],
@@ -96,48 +96,25 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _openScreen(String title, BuildContext context) {
-    Widget? screen = null;
-    String? url = null;
-    String? error = null;
-    switch (title) {
-      case 'Body type':
-        screen = BodyTypeSelectionScreen(isFromSettings: true,);
-      case 'Color tone':
-        screen = ColorTonesScreen(isFromSettings: true,);
-      case 'Styles':
-        screen = StyleScreen(isFromSettings: true,);
-      case 'Privacy Policy':
-        url = 'https://amorphteam.com/style_sensei/privacy_policy.html';
-      case 'Likes':
-        showSnackbar(
-          context,
-          AppLocalizations.of(context).translate('feature_error'),
-        );
-      case 'Dislikes':
-        showSnackbar(
-          context,
-          AppLocalizations.of(context).translate('feature_error'),
-        );
-      case 'Comfort zone':
-        showSnackbar(
-          context,
-          AppLocalizations.of(context).translate('feature_error'),
-        );
-    }
+    final screens = {
+      AppLocalizations.of(context).translate('body_type'): BodyTypeSelectionScreen(isFromSettings: true),
+      AppLocalizations.of(context).translate('color_tone'): ColorTonesScreen(isFromSettings: true),
+      AppLocalizations.of(context).translate('styles'): StyleScreen(isFromSettings: true),
+      AppLocalizations.of(context).translate('privacy_policy'): 'https://amorphteam.com/style_sensei/privacy_policy.html',
+    };
 
-    if (screen != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => screen!,
-        ),
-      );
-    }
-
-    if (url != null) {
-      _launchURL(url);
+    final screen = screens[title];
+    if (screen is Widget) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+    } else if (screen is String) {
+      _launchURL(screen);
+    } else {
+      showSnackbar(context, AppLocalizations.of(context).translate('feature_error'));
     }
   }
+}
+
+
 
   Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
@@ -148,7 +125,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
 
-}
+
 
 ///          Container(
 //               margin: EdgeInsets.all(16),

@@ -35,6 +35,8 @@ class _HomeTabState extends State<HomeTab> {
   List<int> selectedTags = [];
   Map<String, ImageItem> selectedChoices = {};
   String selectedTagsString = '';
+  ScrollController _scrollController = ScrollController();
+
 
   @override
   void initState() {
@@ -128,6 +130,17 @@ class _HomeTabState extends State<HomeTab> {
     return filteredTags;
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void scrollToTop() {
+    _scrollController.animateTo(0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+
   void _handleChipSelection(int tag, bool isSelected) {
     setState(() {
       if (isSelected) {
@@ -147,6 +160,7 @@ class _HomeTabState extends State<HomeTab> {
       onRefresh: _handleRefresh,
       child: Container(
         child: ListView(
+          controller: _scrollController,
           children: [
             SizedBox(height: 8),
             // Center(
@@ -413,8 +427,8 @@ class _HomeTabState extends State<HomeTab> {
                       collections.shuffle(Random());
                       return StaggeredGridView(collections: collections);
                     } else if (state is HomeErrorState) {
-                      return Text('error is ${state.error}');
-                    } else {
+                      return Text(AppLocalizations.of(context).translate('error'));
+                          } else {
                       return Text('');
                     }
                   },

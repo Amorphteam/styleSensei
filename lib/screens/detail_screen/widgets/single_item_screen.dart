@@ -37,6 +37,8 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     List<String>? imageUrls = widget.product.pictures?.split(',');
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +62,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width * 1,
-                  child: Text(widget.product.name ?? '',
+                  child: Text( isArabic ? widget.product.arabic_name ?? '' : widget.product.name ?? '',
                       style: Theme.of(context).textTheme.labelMedium),
                 ),
               ],
@@ -186,7 +188,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Gap(8),
-                Text(
+                Text( isArabic ? widget.product.arabic_description ?? widget.product.description ?? '' :
                   widget.product.description ?? '',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
