@@ -1,4 +1,6 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -23,7 +25,12 @@ import 'package:style_sensei/utils/user_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+// Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Enable Firebase Crashlytics
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
   runApp(const MyApp());
 }
 
@@ -32,6 +39,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
     return MaterialApp(
       title: 'Style Sensei',
       localizationsDelegates: [
@@ -88,6 +97,9 @@ class MyApp extends StatelessWidget {
         return child!;
       },
       home: checkUserState(),
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
+      ], // Setup Firebase Analytics observer for route tracking
       debugShowCheckedModeBanner: false,
     );
   }
@@ -119,13 +131,29 @@ class MyApp extends StatelessWidget {
                 return CircularProgressIndicator();
               },
             );
-          } else { // User is not logged in
-            // Directly show the splash screen with video
-            return SplashWithVideo();
           }
+
         }
+        return FutureBuilder<SharedPreferences>(
+          future: SharedPreferences.getInstance(),
+          builder: (context, prefSnapshot) {
+            if (prefSnapshot.connectionState == ConnectionState.done) {
+              // Get the 'styleSelections' string
+              String? styleSelectionsString = prefSnapshot.data?.getString('styleSelections');
+              // Check if a style has been selected
+              if (styleSelectionsString == null) {
+                // No style selected, show simple splash
+                return SplashSimple(imagePath: 'assets/images/splash1.jpg');
+              } else {
+                // Style selected, proceed to waiting screen
+                return WaitingScreen();
+              }
+            }
+            // While SharedPreferences is loading, show a loading indicator
+            return CircularProgressIndicator();
+          },
+        );
         // While checking login status, show a loading indicator
-        return CircularProgressIndicator();
       },
     );
   }
