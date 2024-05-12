@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -127,22 +128,14 @@ class _ImageTileState extends State<ImageTile> {
       },
       child: CachedNetworkImage(
         imageUrl: replaceNumbersInUrl(widget.collections[widget.index].image),
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-          // Light grey color for the base
-          highlightColor:
-              Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-          // Lighter grey color for the highlight
-          child: Container(
-            color: Colors.white,
-          ),
-        ),
+        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
         errorWidget: (context, url, error) {
           print(error); // This will print the error to the console
           return Icon(Icons.error);
         },
+        fit: BoxFit.cover, // Ensures the image covers the clip area
       ),
+
     );
   }
 
@@ -500,94 +493,76 @@ class _DislikeOverlayState extends State<DislikeOverlay> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.black54, // Semi-transparent overlay color
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      AppLocalizations.of(context).translate('dislike_title'),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).translate('dislike_title'),
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ),
+                TextButton(
+                  onPressed: widget.onCancel,
+                  child: Text(
+                      AppLocalizations.of(context).translate('undo_bu'),
+            ),
+                ),
+              ],
+            ),
+            Gap(20),
+            Column(
+              children: [
+                _optionTile(context,
+                    AppLocalizations.of(context).translate('style_choice')),
+                _optionTile(context,
+                    AppLocalizations.of(context).translate('color_choice')),
+                _optionTile(context,
+                    AppLocalizations.of(context).translate('body_choice')),
+                // Add more options here if needed
+              ],
+            ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: dontAskAgain,
+                        onChanged: (bool? value) {
+                          if (value != null) {
+                            setState(() {
+                              dontAskAgain = value;
+                            });
+                            setNoShowPreference(value);
+                          }
+                        },
+                      ),
+                      Text(
+                        AppLocalizations.of(context).translate('dont_show'), style: Theme.of(context).textTheme.labelSmall,
+                      )
+                    ],
+                  ),
+                ),
+
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TextButton(
+                      onPressed: selectedReason != null
+                          ? () => widget.onOptionSelected(selectedReason!)
+                          : null,
+                      child: Text(
+                        AppLocalizations.of(context).translate('send_bu'),
+                      ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: widget.onCancel,
-                    child: Text(
-                        AppLocalizations.of(context).translate('undo_bu'),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Column(
-                children: [
-                  _optionTile(context,
-                      AppLocalizations.of(context).translate('style_choice')),
-                  _optionTile(context,
-                      AppLocalizations.of(context).translate('color_choice')),
-                  _optionTile(context,
-                      AppLocalizations.of(context).translate('body_choice')),
-                  // Add more options here if needed
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: TextButton(
-                onPressed: selectedReason != null
-                    ? () => widget.onOptionSelected(selectedReason!)
-                    : null,
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: selectedReason != null
-                      ? Colors.white.withOpacity(0.4)
-                      : Colors.grey.withOpacity(0.1),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                  ),
                 ),
-                child: Text(
-                  AppLocalizations.of(context).translate('send_bu'),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-            Gap(100),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: dontAskAgain,
-                    onChanged: (bool? value) {
-                      if (value != null) {
-                        setState(() {
-                          dontAskAgain = value;
-                        });
-                        setNoShowPreference(value);
-                      }
-                    },
-                    checkColor: Colors.black,
-                    activeColor: Colors.white,
-                    side: BorderSide(color: Colors.white), // border color
-                  ),
-                  Text(
-                    AppLocalizations.of(context).translate('dont_show'),
-                    style: TextStyle(color: Colors.white),
-                  )
-                ],
-              ),
+
+              ],
             ),
           ],
         ));
@@ -597,7 +572,6 @@ class _DislikeOverlayState extends State<DislikeOverlay> {
     return ListTile(
       title: Text(
         option,
-        style: TextStyle(color: Colors.white),
       ),
       leading: Radio<String>(
         value: option,
@@ -608,13 +582,7 @@ class _DislikeOverlayState extends State<DislikeOverlay> {
             print('Selected reason: $value');
           });
         },
-        activeColor: Colors.white,
-        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected)) {
-            return Colors.white; // Color when selected
-          }
-          return Colors.white; // Color when not selected
-        }),
+
       ),
     );
   }

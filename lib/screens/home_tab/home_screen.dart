@@ -1,8 +1,12 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
@@ -159,10 +163,10 @@ class _HomeTabState extends State<HomeTab> {
     return RefreshIndicator(
       onRefresh: _handleRefresh,
       child: Container(
+        height: double.infinity,
         child: ListView(
           controller: _scrollController,
           children: [
-            SizedBox(height: 8),
             // Center(
             //   child: Container(
             //     color: Colors.white,
@@ -308,9 +312,8 @@ class _HomeTabState extends State<HomeTab> {
             //     ),
             //   ),
             // ),
-            SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -359,14 +362,16 @@ class _HomeTabState extends State<HomeTab> {
                     bool isSelected = selectedChoices.containsKey(title);
 
                     Widget chipLabel = isSelected
-                        ? Text(selectedChoices[title]!.des)
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(title),
-                              Icon(Icons.arrow_drop_down),
-                            ],
-                          );
+                        ? Text(selectedChoices[title]!.des, style: Theme.of(context).textTheme.labelSmall,)
+                        : Container(
+                          child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(title, style: Theme.of(context).textTheme.labelSmall,),
+                                Icon(Icons.arrow_drop_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
+                              ],
+                            ),
+                        );
 
                     return GestureDetector(
                       onTap: () => _showOptions(context, title, options),
@@ -375,8 +380,8 @@ class _HomeTabState extends State<HomeTab> {
                         child: Chip(
                           label: chipLabel,
                           backgroundColor: isSelected
-                              ? Theme.of(context).colorScheme.inversePrimary
-                              : Theme.of(context).colorScheme.onInverseSurface,
+                              ? Theme.of(context).colorScheme.inversePrimary.withOpacity(0.4)
+                              : Theme.of(context).colorScheme.onInverseSurface.withOpacity(0.3),
                           deleteIcon: isSelected
                               ? Icon(
                                   Icons.close,
@@ -408,42 +413,35 @@ class _HomeTabState extends State<HomeTab> {
                 ),
               ),
             ),
-            SizedBox(height: 8),
-            BlocConsumer<HomeCubit, HomeState>(
-              listener: (context, state) {
-                if (state is SelectedTagLoadedState) {
-                  collectionTags = state.selectedTags;
-                  selectedTags = collectionTags.expand((i) => i).toList();
-                  searchForTagName();
-                  print('collectionTags: $collectionTags');
-                }
-              },
-              builder: (context, state) {
-                return BlocBuilder<HomeCubit, HomeState>(
-                  builder: (context, state) {
-                    if (state is CollectionListLoadedState) {
-                      List<Collections> collections =
-                          state.collectionModel.collections;
-                      collections.shuffle(Random());
-                      return StaggeredGridView(collections: collections);
-                    } else if (state is HomeErrorState) {
-                      return Text(AppLocalizations.of(context).translate('error'));
-                          } else {
-                      return Text('');
-                    }
-                  },
-                );
-              },
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: BlocConsumer<HomeCubit, HomeState>(
+                listener: (context, state) {
+                  if (state is SelectedTagLoadedState) {
+                    collectionTags = state.selectedTags;
+                    selectedTags = collectionTags.expand((i) => i).toList();
+                    searchForTagName();
+                    print('collectionTags: $collectionTags');
+                  }
+                },
+                builder: (context, state) {
+                  return BlocBuilder<HomeCubit, HomeState>(
+                    builder: (context, state) {
+                      if (state is CollectionListLoadedState) {
+                        List<Collections> collections =
+                            state.collectionModel.collections;
+                        collections.shuffle(Random());
+                        return StaggeredGridView(collections: collections);
+                      } else if (state is HomeErrorState) {
+                        return Text(AppLocalizations.of(context).translate('error'));
+                            } else {
+                        return Text('');
+                      }
+                    },
+                  );
+                },
+              ),
             ),
-            // SizedBox(height: 8),
-            // Image.network(
-            //     'https://marketplace.canva.com/EAFWecuevFk/1/0/1600w/canva-grey-brown-minimalist-summer-season-collections-banner-landscape-VXEmg9V800o.jpg'),
-            // SizedBox(height: 28),
-            // StaggeredGridView2(),
-            // SizedBox(height: 28),
-            // TabBarItemBased(),
-            // SizedBox(height: 28),
-            // StaggeredGridView2(),
           ],
         ),
       ),
