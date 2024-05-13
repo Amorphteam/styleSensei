@@ -41,6 +41,7 @@ class _HomeTabState extends State<HomeTab> {
   String selectedTagsString = '';
   ScrollController _scrollController = ScrollController();
   bool _twoColumn = true;
+  bool isArabic = false;
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _HomeTabState extends State<HomeTab> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getData();
     });
+
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
     styleDescriptions = getDesStyle();
@@ -91,8 +93,7 @@ class _HomeTabState extends State<HomeTab> {
 
   void _showOptions(
       BuildContext context, String title, List<ImageItem> options) {
-    Locale locale = Localizations.localeOf(context);
-    bool isArabic = locale.languageCode == 'ar';
+
 
     showModalBottomSheet(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -105,7 +106,7 @@ class _HomeTabState extends State<HomeTab> {
               children: options.map((ImageItem option) {
                 String displayText = isArabic ? option.arDes : option.des;
                 return ListTile(
-                  title: Text(displayText),
+                  title: Text(displayText, style: Theme.of(context).textTheme.titleSmall,),
                   onTap: () {
                     setState(() {
                       selectedChoices[title] = option;
@@ -159,12 +160,15 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    Locale locale = Localizations.localeOf(context);
+    isArabic = locale.languageCode == 'ar';
     imageAssetsUrl.shuffle();
     return RefreshIndicator(
       onRefresh: _handleRefresh,
       child: Container(
         height: double.infinity,
         child: ListView(
+          physics: NeverScrollableScrollPhysics(),
           controller: _scrollController,
           children: [
             // Center(
@@ -314,7 +318,7 @@ class _HomeTabState extends State<HomeTab> {
             // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Padding(
@@ -380,7 +384,7 @@ class _HomeTabState extends State<HomeTab> {
                     bool isSelected = selectedChoices.containsKey(title);
 
                     Widget chipLabel = isSelected
-                        ? Text(selectedChoices[title]!.des, style: Theme.of(context).textTheme.labelSmall,)
+                        ? Text((isArabic)?selectedChoices[title]!.arDes:selectedChoices[title]!.des, style: Theme.of(context).textTheme.labelSmall,)
                         : Container(
                           child: Row(
                               mainAxisSize: MainAxisSize.min,

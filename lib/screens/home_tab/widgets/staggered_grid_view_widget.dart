@@ -115,7 +115,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
     if (!widget.twoColumn){
       padding = 16.0;
       imageSize = 24.0;
-      style = Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.normal);
+      style = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.normal);
     }
 
     bool showOverlay = index == dislikedIndex;
@@ -144,7 +144,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                   child: Padding(
                     padding: EdgeInsets.only(right: padding, left: padding),
                     child: Text(parseTitle(mutableCollections[index].title, (isArabic)?'ar':'en'),
-                        textAlign: TextAlign.left,
+                        textAlign: (isArabic)?TextAlign.right:TextAlign.left,
                         style: style),
                   ),
                 ),

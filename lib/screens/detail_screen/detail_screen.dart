@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -41,6 +42,7 @@ class _DetailState extends State<Detail> {
   int _currentPage = 0;
   VideoPlayerController? _videoController;
   bool _isVideoPlayed = false; // Track if the video has been played
+  bool _showChips = false;  // State to track visibility of chips
 
   @override
   void initState() {
@@ -102,7 +104,6 @@ class _DetailState extends State<Detail> {
           return Scaffold(
             body: Center(
               child: Text(AppLocalizations.of(context).translate('error')),
-
             ),
           );
         } else {
@@ -115,7 +116,6 @@ class _DetailState extends State<Detail> {
     );
   }
 
-
   Widget buildUi(BuildContext context, List<CollectionItem> collection,
       ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
@@ -127,50 +127,74 @@ class _DetailState extends State<Detail> {
               expandedHeight: 600.0,
               floating: false,
               pinned: true,
-              title: innerBoxIsScrolled ? Text(getTitle(collectionDetail?.collection?.title, (isArabic)?'ar':'en')) : null,
+              title: innerBoxIsScrolled
+                  ? Text(getTitle(collectionDetail?.collection?.title,
+                      (isArabic) ? 'ar' : 'en'))
+                  : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
-              imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
-              fit: BoxFit.cover,
-            ),
+                  imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ];
         },
-        body: buildWidget(collection),
+        body: buildWidget(collection, collectionDetail),
       ),
     );
   }
 
-  Widget buildWidget(List<CollectionItem> items) {
+  Widget buildWidget(
+      List<CollectionItem> items, ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 16.0, top: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-          ColorFiltered(
-          colorFilter: ColorFilter.mode(
-          Theme.of(context).colorScheme.onSurface,
-          BlendMode.srcIn,
-        ),
-        child: SvgPicture.asset('assets/images/collection.svg')),
-              Padding(
-                padding: EdgeInsets.only(left: 10.0, top: 2, right: 10.0),
-                child: Text(
-                  AppLocalizations.of(context).translate('collection_detail'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
+        ListTile(
+          leading: Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
+                    child: SvgPicture.asset('assets/images/cat.svg')),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0, top: 2, right: 10.0),
+                  child: Text(
+                    AppLocalizations.of(context).translate('collection_detail'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-            ],
+                Icon(
+                  _showChips
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  color: Theme.of(context).colorScheme.onSurface,),
+              ],
+            ),
           ),
+
+          onTap: () {
+            setState(() {
+              _showChips = !_showChips;  // Toggle the visibility of chips
+            });
+          },
         ),
+        if (_showChips)  // Conditionally display chips
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: listOfChips(collectionDetail),
+            ),
+          ),
         Expanded(
           child: ListView.builder(
             itemCount: items.length,
@@ -188,7 +212,10 @@ class _DetailState extends State<Detail> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
-                          '${items[index].products?.length ?? ' '}' + '  ' + AppLocalizations.of(context).translate('alternatives'),
+                          '${items[index].products?.length ?? ' '}' +
+                              '  ' +
+                              AppLocalizations.of(context)
+                                  .translate('alternatives'),
                           style: Theme.of(context).textTheme.labelSmall,
                         )
                       ],
@@ -206,11 +233,15 @@ class _DetailState extends State<Detail> {
                               bookmarkedItems[productItem.id.toString()] ??=
                                   false;
                               return Padding(
-                                padding: const EdgeInsets.only(left: 2, right: 2, top: 8.0, bottom: 8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 2, right: 2, top: 8.0, bottom: 8.0),
                                 child: Stack(
                                   children: [
                                     Container(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.1),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -235,10 +266,16 @@ class _DetailState extends State<Detail> {
                                                     0.44,
                                                 placeholder: (context, url) =>
                                                     Shimmer.fromColors(
-                                                  baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                                                  baseColor: Theme.of(context)
+                                                      .colorScheme
+                                                      .surface
+                                                      .withOpacity(0.5),
                                                   // Light grey color for the base
                                                   highlightColor:
-                                                  Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .onSurface
+                                                          .withOpacity(0.2),
                                                   // Lighter grey color for the highlight
                                                   child: Container(
                                                     height:
@@ -285,14 +322,16 @@ class _DetailState extends State<Detail> {
                                           ),
                                           Container(
                                             width: MediaQuery.of(context)
-                                                .size
-                                                .width *
+                                                    .size
+                                                    .width *
                                                 0.40,
                                             child: Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 12.0, right: 12.0),
-                                              child: Text( isArabic ? productItem.arabic_name!:
-                                                productItem.name!,
+                                              child: Text(
+                                                isArabic
+                                                    ? productItem.arabic_name!
+                                                    : productItem.name!,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .labelSmall,
@@ -302,10 +341,12 @@ class _DetailState extends State<Detail> {
                                             ),
                                           ),
                                           TextButton(
-                                            onPressed: () => showPopupOnce(context,
+                                            onPressed: () => showPopupOnce(
+                                                context,
                                                 productItem.corresponding_url!),
                                             child: Text(
-                                              AppLocalizations.of(context).translate('shopping_bu'),
+                                              AppLocalizations.of(context)
+                                                  .translate('shopping_bu'),
                                               style: TextStyle(
                                                 fontSize: 11,
                                                 color: Colors.blueAccent,
@@ -324,7 +365,10 @@ class _DetailState extends State<Detail> {
                                           width: 30.0,
                                           height: 30.0,
                                           decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.surface.withOpacity(0.2),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surface
+                                                .withOpacity(0.2),
                                             shape: BoxShape.circle,
                                             // Circular shape
                                           ),
@@ -373,7 +417,12 @@ class _DetailState extends State<Detail> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SingleItemScreen(product: product, bookmarkedItems: bookmarkedItems, loadBookmarkedItems: loadBookmarkedItems, saveBookmarkedItems: saveBookmarkedItems, onBookmarkUpdated: updateBookmark),
+        builder: (context) => SingleItemScreen(
+            product: product,
+            bookmarkedItems: bookmarkedItems,
+            loadBookmarkedItems: loadBookmarkedItems,
+            saveBookmarkedItems: saveBookmarkedItems,
+            onBookmarkUpdated: updateBookmark),
       ),
     );
   }
@@ -383,7 +432,6 @@ class _DetailState extends State<Detail> {
       bookmarkedItems[productId] = isBookmarked;
     });
   }
-
 
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
@@ -435,6 +483,51 @@ class _DetailState extends State<Detail> {
       }
     }
     return '';
+  }
+
+  List<Widget> listOfChips(ProductsModel? collectionDetail) {
+    List<Widget> tagWidgets = [];
+
+    if (collectionDetail?.collection?.tags != null) {
+      collectionDetail!.collection!.tags!.forEach((key, value) {
+        List<dynamic> tagValues = value;
+        List<Widget> chips = tagValues
+            .map((tag) => Chip(
+          label: Text(tag.toString(), style: Theme.of(context).textTheme.labelSmall,),
+          backgroundColor: Theme.of(context)
+              .colorScheme
+              .inversePrimary
+              .withOpacity(0.1),
+          side: BorderSide.none,
+        ))
+            .toList();
+
+        // Create a row for the category name and its tags
+        Widget tagRow = Padding(
+          padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(key, style: Theme.of(context).textTheme.labelMedium),
+              ),
+              Expanded(
+                flex: 2,
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 0.0,
+                  children: chips,
+                ),
+              ),
+            ],
+          ),
+        );
+        tagWidgets.add(tagRow);
+      });
+    }
+
+    return tagWidgets;
   }
 
 // Method to load bookmarked item IDs from SharedPreferences
