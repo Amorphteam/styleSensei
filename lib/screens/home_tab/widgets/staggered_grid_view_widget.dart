@@ -14,8 +14,8 @@ import 'package:style_sensei/utils/untitled.dart';
 
 class StaggeredGridView extends StatefulWidget {
   final List<Collections> collections;
-
-  const StaggeredGridView({Key? key, required this.collections})
+  final bool twoColumn;
+  const StaggeredGridView({Key? key, required this.collections, required this.twoColumn})
       : super(key: key);
 
   @override
@@ -83,7 +83,14 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
   @override
   Widget build(BuildContext context) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    if (widget.twoColumn) {
+      return buildMasonryGrid(isArabic);
+    } else {
+      return buildStaggeredGrid(isArabic);
+    }
+  }
 
+  Padding buildMasonryGrid(bool isArabic) {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: MasonryGridView.count(
@@ -102,7 +109,14 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
   Widget buildGridItem(int index, bool isArabic, BuildContext context) {
     final collection = mutableCollections[index];
     final isLiked = likedCollections.contains(collection.id.toString());
-
+    double padding = 4.0;
+    double imageSize = 16.0;
+    var style = Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal);
+    if (!widget.twoColumn){
+      padding = 16.0;
+      imageSize = 24.0;
+      style = Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.normal);
+    }
 
     bool showOverlay = index == dislikedIndex;
 
@@ -112,6 +126,13 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            (!widget.twoColumn)?Expanded(
+              child: ImageTile(
+                collections: mutableCollections,
+                index: index,
+                hasSeeDetail: true,
+              ),
+            ):
             ImageTile(
               collections: mutableCollections,
               index: index,
@@ -121,13 +142,10 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 4.0, left: 4.0),
+                    padding: EdgeInsets.only(right: padding, left: padding),
                     child: Text(parseTitle(mutableCollections[index].title, (isArabic)?'ar':'en'),
                         textAlign: TextAlign.left,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelSmall
-                            ?.copyWith(fontWeight: FontWeight.normal)),
+                        style: style),
                   ),
                 ),
                 IconButton(
@@ -136,7 +154,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                           Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                           BlendMode.srcIn,
                         ),
-                        child: SvgPicture.asset((isLiked)?'assets/images/like_full.svg':'assets/images/like.svg' , width: 16,)),
+                        child: SvgPicture.asset((isLiked)?'assets/images/like_full.svg':'assets/images/like.svg' , width: imageSize,)),
                     onPressed: () {
                       toggleLike(collection.id);
                     }),
@@ -147,13 +165,13 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
                           BlendMode.srcIn,
                         ),
 
-                        child: SvgPicture.asset('assets/images/dislike.svg', width: 16,)),
+                        child: SvgPicture.asset('assets/images/dislike.svg', width: imageSize,)),
                     onPressed: () {
                       checkToShowDislikeOverlay(index, collection.id);
                     }),
               ],
             ),
-            Gap(0)
+            Gap(imageSize)
           ],
         ),
 
@@ -217,6 +235,28 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
       mutableCollections.removeAt(index);
     });
     showSnackbar(context, AppLocalizations.of(context).translate('dislike_snackbar_title'));
+  }
+
+  Widget buildStaggeredGrid(bool isArabic) {
+    return GridView.custom(
+      gridDelegate: SliverQuiltedGridDelegate(
+        crossAxisCount: 1,
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        repeatPattern: QuiltedGridRepeatPattern.same,
+        pattern: [
+          QuiltedGridTile(2, 1),
+        ],
+      ),
+      childrenDelegate: SliverChildBuilderDelegate(
+            (context, index) {
+          return buildGridItem(index, isArabic, context);
+        },
+        // Set the childCount to the totalImages
+        childCount: mutableCollections.length,
+      ),
+    );
+
   }
 
 }

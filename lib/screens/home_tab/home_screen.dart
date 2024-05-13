@@ -40,7 +40,7 @@ class _HomeTabState extends State<HomeTab> {
   Map<String, ImageItem> selectedChoices = {};
   String selectedTagsString = '';
   ScrollController _scrollController = ScrollController();
-
+  bool _twoColumn = true;
 
   @override
   void initState() {
@@ -312,28 +312,46 @@ class _HomeTabState extends State<HomeTab> {
             //     ),
             //   ),
             // ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context).translate('home_title'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                  padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context).translate('home_title'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        AppLocalizations.of(context).translate('home_des'),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium
+                            ?.copyWith(fontWeight: FontWeight.normal),
+                      ),
+                  
+                    ],
                   ),
-                  Text(
-                    AppLocalizations.of(context).translate('home_des'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(fontWeight: FontWeight.normal),
-                  ),
+                                ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0, left: 16.0, top: 16.0),
+                  child: IconButton(onPressed: (){
+                    setState(() {
+                      _twoColumn = !_twoColumn;
+                    });
 
-                ],
-              ),
+                  }, icon: SvgPicture.asset(_twoColumn ? 'assets/images/cat.svg' : 'assets/images/full.svg')),
+                ),
+
+              ]
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -431,7 +449,7 @@ class _HomeTabState extends State<HomeTab> {
                         List<Collections> collections =
                             state.collectionModel.collections;
                         collections.shuffle(Random());
-                        return StaggeredGridView(collections: collections);
+                        return StaggeredGridView(collections: collections, twoColumn: _twoColumn,);
                       } else if (state is HomeErrorState) {
                         return Text(AppLocalizations.of(context).translate('error'));
                             } else {

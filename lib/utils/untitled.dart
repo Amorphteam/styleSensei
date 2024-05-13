@@ -128,6 +128,7 @@ class _ImageTileState extends State<ImageTile> {
       },
       child: CachedNetworkImage(
         imageUrl: replaceNumbersInUrl(widget.collections[widget.index].image),
+
         placeholder: (context, url) => Center(child: CircularProgressIndicator()),
         errorWidget: (context, url, error) {
           print(error); // This will print the error to the console

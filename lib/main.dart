@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
           primary: Color(0xFFDC4D28),
           brightness: Brightness.dark,
         ),
-        fontFamily: 'centrale',
+        fontFamily: 'tajawal',
       ),
 
       builder: (context, child) {
