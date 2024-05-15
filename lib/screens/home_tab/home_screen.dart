@@ -373,11 +373,11 @@ class _HomeTabState extends State<HomeTab> {
                           .translate('seasonal_style'),
                       'options': seasonalStyle
                     },
-                    {
-                      'title': AppLocalizations.of(context)
-                          .translate('hijab_preferences'),
-                      'options': hijabPreferences
-                    },
+                    // {
+                    //   'title': AppLocalizations.of(context)
+                    //       .translate('hijab_preferences'),
+                    //   'options': hijabPreferences
+                    // },
                   ].map((Map<String, dynamic> filter) {
                     String title = filter['title'];
                     List<ImageItem> options = filter['options'];
