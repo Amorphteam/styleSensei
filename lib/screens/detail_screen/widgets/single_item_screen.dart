@@ -132,7 +132,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                       child: Stack(
                         children: [
                           CachedNetworkImage(
-                            imageUrl: imageUrls[index],
+                            imageUrl: getSmallImageUrl(imageUrls[index]),
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Shimmer.fromColors(
                               baseColor: Theme.of(context)
@@ -239,6 +239,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
     }
     return 'Unknown'; // Default value in case the brand name is not found
   }
+
 
 
 }

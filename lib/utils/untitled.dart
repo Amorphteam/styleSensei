@@ -129,7 +129,7 @@ class _ImageTileState extends State<ImageTile> {
       child: CachedNetworkImage(
         imageUrl: replaceNumbersInUrl(widget.collections[widget.index].image),
 
-        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+        placeholder: (context, url) => Container(height: 280, color: Colors.transparent,child: Center(child: CircularProgressIndicator())),
         errorWidget: (context, url, error) {
           print(error); // This will print the error to the console
           return Icon(Icons.error);
@@ -613,6 +613,10 @@ String replaceNumbersInUrl(String url) {
     return updatedUrl;
   }
   return updatedUrl;
+}
+
+String getSmallImageUrl(String url) {
+  return url.replaceAll('desktop.jpg', 'mobile.jpg');
 }
 
 

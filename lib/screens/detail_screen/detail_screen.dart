@@ -11,7 +11,6 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/models/ProductsModel.dart';
-
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/single_item_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
@@ -19,6 +18,8 @@ import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_d
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart'; // Import the visibility_detector package
+
 import '../../models/Collections.dart';
 import '../../new_models/attribute.dart';
 import '../../new_models/collection_item.dart';
@@ -43,6 +44,8 @@ class _DetailState extends State<Detail> {
   VideoPlayerController? _videoController;
   bool _isVideoPlayed = false; // Track if the video has been played
   bool _showChips = false;  // State to track visibility of chips
+  Map<int, bool> visibilityMap = {}; // Track visibility of items
+  Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
 
   @override
   void initState() {
@@ -60,7 +63,7 @@ class _DetailState extends State<Detail> {
         // Video finished playing
         setState(() {
           _isVideoPlayed =
-              true; // Mark video as played to show the text instead
+          true; // Mark video as played to show the text instead
         });
       }
     });
@@ -129,7 +132,7 @@ class _DetailState extends State<Detail> {
               pinned: true,
               title: innerBoxIsScrolled
                   ? Text(getTitle(collectionDetail?.collection?.title,
-                      (isArabic) ? 'ar' : 'en'))
+                  (isArabic) ? 'ar' : 'en'))
                   : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
@@ -199,187 +202,18 @@ class _DetailState extends State<Detail> {
           child: ListView.builder(
             itemCount: items.length,
             itemBuilder: (BuildContext context, int index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          items[index].category!.name ?? 'Default Name',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Text(
-                          '${items[index].products?.length ?? ' '}' +
-                              '  ' +
-                              AppLocalizations.of(context)
-                                  .translate('alternatives'),
-                          style: Theme.of(context).textTheme.labelSmall,
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.40,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          if (items[index].products != null)
-                            ...items[index].products!.map((productItem) {
-                              // Initialize the bookmark state for this item if it has not been done yet
-                              bookmarkedItems[productItem.id.toString()] ??=
-                                  false;
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 2, right: 2, top: 8.0, bottom: 8.0),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withOpacity(0.1),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                showImagePopup(
-                                                    context, productItem);
-                                              },
-                                              child: CachedNetworkImage(
-                                                imageUrl: productItem.pictures!
-                                                    .split(',')[0],
-                                                fit: BoxFit.cover,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.34,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.44,
-                                                placeholder: (context, url) =>
-                                                    Center(child: CircularProgressIndicator()),
-                                                errorWidget:
-                                                    (context, url, error) {
-                                                  print(
-                                                      error); // This will print the error to the console
-                                                  return Icon(Icons.error);
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 8,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 12.0, right: 12.0),
-                                            child: Text(
-                                              getBrandName(
-                                                      productItem.attributes) ??
-                                                  'Unknown',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.40,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 12.0, right: 12.0),
-                                              child: Text(
-                                                isArabic
-                                                    ? productItem.arabic_name!
-                                                    : productItem.name!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelSmall,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              ),
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () => showPopupOnce(
-                                                context,
-                                                productItem.corresponding_url!),
-                                            child: Text(
-                                              AppLocalizations.of(context)
-                                                  .translate('shopping_bu'),
-                                              style: TextStyle(
-                                                fontSize: 11,
-                                                color: Colors.blueAccent,
-                                                fontWeight: FontWeight
-                                                    .bold, // You can choose the color that fits your design
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                        top: 8,
-                                        right: 16,
-                                        child: Container(
-                                          width: 30.0,
-                                          height: 30.0,
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .surface
-                                                .withOpacity(0.2),
-                                            shape: BoxShape.circle,
-                                            // Circular shape
-                                          ),
-                                          child: IconButton(
-                                            icon: bookmarkedItems[
-                                                    productItem.id.toString()]!
-                                                ? SvgPicture.asset(
-                                                    'assets/images/bookmarked.svg', // Path to your SVG file
-                                                  )
-                                                : SvgPicture.asset(
-                                                    'assets/images/bookmark.svg', // Path to your SVG file
-                                                  ),
-                                            onPressed: () {
-                                              setState(() {
-                                                // Toggle the bookmark state
-                                                bookmarkedItems[productItem.id
-                                                        .toString()] =
-                                                    !bookmarkedItems[productItem
-                                                        .id
-                                                        .toString()]!;
-                                                // Save bookmarked items to SharedPreferences
-                                                saveBookmarkedItems(
-                                                    bookmarkedItems);
-                                              });
-                                            },
-                                          ),
-                                        )),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
+              return VisibilityDetector(
+                key: Key(index.toString()),
+                onVisibilityChanged: (VisibilityInfo info) {
+                  if (info.visibleFraction > 0.5) {
+                    setState(() {
+                      visibilityMap[index] = true;
+                    });
+                  }
+                },
+                child: visibilityMap[index] == true
+                    ? buildCollectionItem(context, items[index], isArabic, index)
+                    : Container(height: 200, color: Colors.transparent), // Placeholder
               );
             },
           ),
@@ -388,16 +222,222 @@ class _DetailState extends State<Detail> {
     );
   }
 
+  Widget buildCollectionItem(BuildContext context, CollectionItem item, bool isArabic, int parentIndex) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                item.category?.name ?? 'Default Name',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Text(
+                '${item.products?.length ?? ' '}' +
+                    '  ' +
+                    AppLocalizations.of(context).translate('alternatives'),
+                style: Theme.of(context).textTheme.labelSmall,
+              )
+            ],
+          ),
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.40,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: item.products?.length ?? 0,
+            itemBuilder: (BuildContext context, int index) {
+              int key = parentIndex * 1000 + index; // Generate unique key for each horizontal item
+              return VisibilityDetector(
+                key: Key(key.toString()),
+                onVisibilityChanged: (VisibilityInfo info) {
+                  if (info.visibleFraction > 0.5) {
+                    setState(() {
+                      horizontalVisibilityMap[key] = true;
+                    });
+                  }
+                },
+                child: horizontalVisibilityMap[key] == true
+                    ? buildProductItem(context, item.products![index], isArabic)
+                    : Container(width: 100, color: Colors.transparent), // Placeholder
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildProductItem(BuildContext context, Product productItem, bool isArabic) {
+    bookmarkedItems[productItem.id.toString()] ??= false;
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 2, right: 2, top: 8.0, bottom: 8.0),
+      child: Stack(
+        children: [
+          Container(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      showImagePopup(context, productItem);
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: getSmallImageUrl(productItem.pictures!
+                          .split(',')[0]),
+                      fit: BoxFit.cover,
+                      height: MediaQuery.of(context).size.height * 0.34,
+                      width: MediaQuery.of(context).size.width * 0.44,
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) {
+                        print(error);
+                        return Icon(Icons.error);
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: Text(
+                    getBrandName(productItem.attributes) ?? 'Unknown',
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.40,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                    child: Text(
+                      isArabic ? productItem.arabic_name! : productItem.name!,
+                      style: Theme.of(context).textTheme.labelSmall,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => showPopupOnce(context, productItem.corresponding_url!),
+                  child: Text(
+                    AppLocalizations.of(context).translate('shopping_bu'),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Positioned(
+            top: 8,
+            right: 16,
+            child: Container(
+              width: 30.0,
+              height: 30.0,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: bookmarkedItems[productItem.id.toString()]!
+                    ? SvgPicture.asset(
+                  'assets/images/bookmarked.svg',
+                )
+                    : SvgPicture.asset(
+                  'assets/images/bookmark.svg',
+                ),
+                onPressed: () {
+                  setState(() {
+                    bookmarkedItems[productItem.id.toString()] =
+                    !bookmarkedItems[productItem.id.toString()]!;
+                    saveBookmarkedItems(bookmarkedItems);
+                  });
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Map<String, bool>> loadBookmarkedItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, bool> bookmarkedItems = {};
+    if (prefs.containsKey('bookmarkedItems')) {
+      bookmarkedItems = Map<String, bool>.from(
+          json.decode(prefs.getString('bookmarkedItems')!));
+    }
+    return bookmarkedItems;
+  }
+
+  Future<void> saveBookmarkedItems(Map<String, bool> bookmarkedItems) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('bookmarkedItems', json.encode(bookmarkedItems));
+  }
+
+  String? getBrandName(List<Attribute>? attributes) {
+    if (attributes == null) {
+      return 'Unknown';
+    }
+
+    for (var attribute in attributes) {
+      if (attribute.attribute?.name == 'Brand name') {
+        return attribute.value;
+      }
+    }
+    return 'Unknown';
+  }
+
+  String getTitle(String? titleJson, String language) {
+    if (titleJson != null) {
+      titleJson = titleJson.replaceAll("@", "");
+
+      try {
+        Map<String, dynamic> jsonData = json.decode(titleJson);
+        return jsonData[language];
+      } catch (error) {
+        return titleJson;
+      }
+    }
+    return '';
+  }
+
+
+
+  void showPopupOnce(BuildContext context, String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   void showImagePopup(BuildContext context, Product product) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => SingleItemScreen(
-            product: product,
-            bookmarkedItems: bookmarkedItems,
-            loadBookmarkedItems: loadBookmarkedItems,
-            saveBookmarkedItems: saveBookmarkedItems,
-            onBookmarkUpdated: updateBookmark),
+          product: product,
+          bookmarkedItems: bookmarkedItems,
+          loadBookmarkedItems: loadBookmarkedItems,
+          saveBookmarkedItems: saveBookmarkedItems,
+          onBookmarkUpdated: updateBookmark,
+        ),
       ),
     );
   }
@@ -407,61 +447,6 @@ class _DetailState extends State<Detail> {
       bookmarkedItems[productId] = isBookmarked;
     });
   }
-
-  String? getBrandName(List<Attribute>? attributes) {
-    if (attributes == null) {
-      return 'Unknown'; // or any default value you want to return if attributes is null
-    }
-
-    for (var attribute in attributes) {
-      if (attribute.attribute?.name == 'Brand name') {
-        return attribute.value;
-      }
-    }
-    return 'Unknown'; // Default value in case the brand name is not found
-  }
-
-  String getBodyShapeText(String? jsonString, String language) {
-    if (jsonString != null) {
-      try {
-        Map<String, dynamic> jsonData = json.decode(jsonString);
-        String bodyShapeEn = jsonData['body_shape'][language];
-        return bodyShapeEn;
-      } catch (error) {
-        return jsonString;
-      }
-    }
-    return '';
-  }
-
-  String getSuitationText(String? jsonString, String language) {
-    if (jsonString != null) {
-      try {
-        Map<String, dynamic> jsonData = json.decode(jsonString);
-        String bodyShapeEn = jsonData['situation'][language];
-        return bodyShapeEn;
-      } catch (error) {
-        return jsonString;
-      }
-    }
-    return '';
-  }
-
-  String getTitle(String? titleJson, String language) {
-    if (titleJson != null) {
-      titleJson = titleJson.replaceAll("@", "");
-
-      try {
-        Map<String, dynamic> jsonData = json.decode(titleJson);
-        String enTitle = jsonData[language];
-        return enTitle;
-      } catch (error) {
-        return titleJson;
-      }
-    }
-    return '';
-  }
-
   List<Widget> listOfChips(ProductsModel? collectionDetail) {
     List<Widget> tagWidgets = [];
 
@@ -507,5 +492,4 @@ class _DetailState extends State<Detail> {
     return tagWidgets;
   }
 
-// Method to load bookmarked item IDs from SharedPreferences
 }
