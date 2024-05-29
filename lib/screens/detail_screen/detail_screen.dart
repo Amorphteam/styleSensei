@@ -265,32 +265,7 @@ class _DetailState extends State<Detail> {
                                                         .width *
                                                     0.44,
                                                 placeholder: (context, url) =>
-                                                    Shimmer.fromColors(
-                                                  baseColor: Theme.of(context)
-                                                      .colorScheme
-                                                      .surface
-                                                      .withOpacity(0.5),
-                                                  // Light grey color for the base
-                                                  highlightColor:
-                                                      Theme.of(context)
-                                                          .colorScheme
-                                                          .onSurface
-                                                          .withOpacity(0.2),
-                                                  // Lighter grey color for the highlight
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.29,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.33,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
+                                                    Center(child: CircularProgressIndicator()),
                                                 errorWidget:
                                                     (context, url, error) {
                                                   print(
@@ -474,6 +449,8 @@ class _DetailState extends State<Detail> {
 
   String getTitle(String? titleJson, String language) {
     if (titleJson != null) {
+      titleJson = titleJson.replaceAll("@", "");
+
       try {
         Map<String, dynamic> jsonData = json.decode(titleJson);
         String enTitle = jsonData[language];

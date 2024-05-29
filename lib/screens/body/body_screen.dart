@@ -89,7 +89,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                   crossAxisCount: 3,
                   crossAxisSpacing: 0,
                   mainAxisSpacing: 40,
-                  childAspectRatio: (0.4),
+                  childAspectRatio: (0.5),
                 ),
                 itemCount: bodyTypes.length,
                 itemBuilder: (context, index) {
