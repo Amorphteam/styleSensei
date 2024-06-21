@@ -266,14 +266,14 @@ List<ImageItem> images = [
       'Eclectic: Diverse, mixed, unique.', ''),
   ImageItem('assets/images/eclectic4.jpeg', 408,
       'Eclectic: Diverse, mixed, unique.', ''),
-  // ImageItem('assets/images/feminine1.jpeg', 402,
-  //     'Feminine: Soft, ruffled, flowing.', ''),
-  // ImageItem('assets/images/feminine2.jpeg', 402,
-  //     'Feminine: Soft, ruffled, flowing.', ''),
-  // ImageItem('assets/images/feminine3.jpeg', 402,
-  //     'Feminine: Soft, ruffled, flowing.', ''),
-  // ImageItem('assets/images/feminine4.jpeg', 402,
-  //     'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine1.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine2.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine3.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
+  ImageItem('assets/images/feminine4.jpeg', 402,
+      'Feminine: Soft, ruffled, flowing.', ''),
   ImageItem('assets/images/minimal1.jpeg', 401,
       'Minimal: Sleek, simple, monochromatic.', ''),
   ImageItem('assets/images/minimal2.jpeg', 401,
@@ -303,7 +303,7 @@ List<ImageItem> images = [
 final List<ImageItem> bodyTypes = [
   ImageItem('assets/images/fit.jpg', 805, 'Fit', 'رشيق'),
   ImageItem('assets/images/plus_size.jpg', 804, 'Plus Size', 'مقاس كبير'),
-  // ImageItem('assets/images/expecting.jpg', 806, 'Expecting', 'حامل'),
+  ImageItem('assets/images/expecting.jpg', 806, 'Expecting', 'حامل'),
   ImageItem('assets/images/curvy.jpg', 803, 'Curvy', 'ممتلئ'),
   ImageItem('assets/images/petite.jpg', 802, 'Petite', 'صغير الحجم'),
   ImageItem('assets/images/tall.jpg', 801, 'Tall', 'طويل'),
@@ -321,14 +321,14 @@ final List<ImageItem> occasionWear = [
   ImageItem('assets/images/bright.jpg', 202, 'Formal Event', 'حدث رسمي'),
   ImageItem('assets/images/pastel.jpg', 206, 'Wedding', 'زفاف'),
   ImageItem('assets/images/neutral.jpg', 201, 'Evening Out', 'خروج مسائي'),
-  // ImageItem('assets/images/dark.jpg', 203, 'Holiday', 'عطلة'),
+  ImageItem('assets/images/dark.jpg', 203, 'Holiday', 'عطلة'),
   ImageItem('assets/images/bright.jpg', 204, 'Weekend', 'عطلة نهاية الأسبوع'),
-  // ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal',
-  //     'ملابس العمل - رسمي'),
-  // ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual',
-  //     'ملابس العمل - كاجوال أنيق'),
-  // ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual',
-  //     'ملابس العمل - كاجوال'),
+  ImageItem('assets/images/pastel.jpg', 103, 'Work Attire - Formal',
+      'ملابس العمل - رسمي'),
+  ImageItem('assets/images/neutral.jpg', 102, 'Work Attire - Smart casual',
+      'ملابس العمل - كاجوال أنيق'),
+  ImageItem('assets/images/neutral.jpg', 101, 'Work Attire - Casual',
+      'ملابس العمل - كاجوال'),
 ];
 
 final List<ImageItem> seasonalStyle = [
@@ -351,8 +351,8 @@ Map<int, String> createTagDescriptionMap(List<ImageItem> items) {
 
 
 final List<ImageItem> hijabPreferences = [
-  // ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles',
-  //     'أنماط تناسب الحجاب'),
+  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles',
+      'أنماط تناسب الحجاب'),
 ];
 
 class ImageItem {

@@ -142,33 +142,33 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(right: padding, left: padding),
+                    padding: EdgeInsets.only(right: padding, left: padding, top: 8),
                     child: Text(parseTitle(mutableCollections[index].title, (isArabic)?'ar':'en'),
                         textAlign: (isArabic)?TextAlign.right:TextAlign.left,
                         style: style),
                   ),
                 ),
-                IconButton(
-                    icon: ColorFiltered(
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                          BlendMode.srcIn,
-                        ),
-                        child: SvgPicture.asset((isLiked)?'assets/images/like_full.svg':'assets/images/like.svg' , width: imageSize,)),
-                    onPressed: () {
-                      toggleLike(collection.id);
-                    }),
-                IconButton(
-                    icon: ColorFiltered(
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                          BlendMode.srcIn,
-                        ),
-
-                        child: SvgPicture.asset('assets/images/dislike.svg', width: imageSize,)),
-                    onPressed: () {
-                      checkToShowDislikeOverlay(index, collection.id);
-                    }),
+                // IconButton(
+                //     icon: ColorFiltered(
+                //         colorFilter: ColorFilter.mode(
+                //           Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                //           BlendMode.srcIn,
+                //         ),
+                //         child: SvgPicture.asset((isLiked)?'assets/images/like_full.svg':'assets/images/like.svg' , width: imageSize,)),
+                //     onPressed: () {
+                //       toggleLike(collection.id);
+                //     }),
+                // IconButton(
+                //     icon: ColorFiltered(
+                //         colorFilter: ColorFilter.mode(
+                //           Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                //           BlendMode.srcIn,
+                //         ),
+                //
+                //         child: SvgPicture.asset('assets/images/dislike.svg', width: imageSize,)),
+                //     onPressed: () {
+                //       checkToShowDislikeOverlay(index, collection.id);
+                //     }),
               ],
             ),
             Gap(imageSize)

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
@@ -43,9 +44,10 @@ class _DetailState extends State<Detail> {
   int _currentPage = 0;
   VideoPlayerController? _videoController;
   bool _isVideoPlayed = false; // Track if the video has been played
-  bool _showChips = false;  // State to track visibility of chips
+  bool _showChips = true; // State to track visibility of chips
   Map<int, bool> visibilityMap = {}; // Track visibility of items
-  Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
+  Map<int, bool> horizontalVisibilityMap =
+      {}; // Track visibility of horizontal items
 
   @override
   void initState() {
@@ -63,7 +65,7 @@ class _DetailState extends State<Detail> {
         // Video finished playing
         setState(() {
           _isVideoPlayed =
-          true; // Mark video as played to show the text instead
+              true; // Mark video as played to show the text instead
         });
       }
     });
@@ -132,7 +134,7 @@ class _DetailState extends State<Detail> {
               pinned: true,
               title: innerBoxIsScrolled
                   ? Text(getTitle(collectionDetail?.collection?.title,
-                  (isArabic) ? 'ar' : 'en'))
+                      (isArabic) ? 'ar' : 'en'))
                   : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
@@ -152,77 +154,84 @@ class _DetailState extends State<Detail> {
       List<CollectionItem> items, ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return Column(
-      children: [
-        ListTile(
-          leading: Container(
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          TabBar(
+            tabs: [
+              Tab(
+                  text: AppLocalizations.of(context)
+                      .translate('collection_detail')),
+              Tab(
+                  text: AppLocalizations.of(context)
+                      .translate('collection_items')),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
               children: [
-                ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.onSurface,
-                      BlendMode.srcIn,
-                    ),
-                    child: SvgPicture.asset('assets/images/cat.svg')),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.0, top: 2, right: 10.0),
-                  child: Text(
-                    AppLocalizations.of(context).translate('collection_detail'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Icon(
-                  _showChips
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  color: Theme.of(context).colorScheme.onSurface,),
+                buildTabContent1(items, collectionDetail, isArabic),
+                buildTabContent2(items, collectionDetail, isArabic),
               ],
             ),
           ),
-
-          onTap: () {
-            setState(() {
-              _showChips = !_showChips;  // Toggle the visibility of chips
-            });
-          },
-        ),
-        if (_showChips)  // Conditionally display chips
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: listOfChips(collectionDetail),
-            ),
-          ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (BuildContext context, int index) {
-              return VisibilityDetector(
-                key: Key(index.toString()),
-                onVisibilityChanged: (VisibilityInfo info) {
-                  if (info.visibleFraction > 0.5) {
-                    setState(() {
-                      visibilityMap[index] = true;
-                    });
-                  }
-                },
-                child: visibilityMap[index] == true
-                    ? buildCollectionItem(context, items[index], isArabic, index)
-                    : Container(height: 200, color: Colors.transparent), // Placeholder
-              );
-            },
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget buildCollectionItem(BuildContext context, CollectionItem item, bool isArabic, int parentIndex) {
+  Widget buildTabContent1(List<CollectionItem> items,
+      ProductsModel? collectionDetail, bool isArabic) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          Text(
+            collectionDetail?.collection?.title ?? 'Default Title',
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Gap(20),
+          Column(
+            children: listOfChips(collectionDetail),
+          ),
+          Gap(48),
+          ChatScreen()
+        ],
+      ),
+    );
+  }
+
+  Widget buildTabContent2(List<CollectionItem> items,
+      ProductsModel? collectionDetail, bool isArabic) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (BuildContext context, int index) {
+          return VisibilityDetector(
+            key: Key(index.toString()),
+            onVisibilityChanged: (VisibilityInfo info) {
+              if (info.visibleFraction > 0.5) {
+                setState(() {
+                  visibilityMap[index] = true;
+                });
+              }
+            },
+            child: visibilityMap[index] == true
+                ? buildCollectionItem(context, items[index], isArabic, index)
+                : Container(
+                    height: 200, color: Colors.transparent), // Placeholder
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildCollectionItem(BuildContext context, CollectionItem item,
+      bool isArabic, int parentIndex) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -250,7 +259,8 @@ class _DetailState extends State<Detail> {
             scrollDirection: Axis.horizontal,
             itemCount: item.products?.length ?? 0,
             itemBuilder: (BuildContext context, int index) {
-              int key = parentIndex * 1000 + index; // Generate unique key for each horizontal item
+              int key = parentIndex * 1000 +
+                  index; // Generate unique key for each horizontal item
               return VisibilityDetector(
                 key: Key(key.toString()),
                 onVisibilityChanged: (VisibilityInfo info) {
@@ -262,7 +272,8 @@ class _DetailState extends State<Detail> {
                 },
                 child: horizontalVisibilityMap[key] == true
                     ? buildProductItem(context, item.products![index], isArabic)
-                    : Container(width: 100, color: Colors.transparent), // Placeholder
+                    : Container(
+                        width: 100, color: Colors.transparent), // Placeholder
               );
             },
           ),
@@ -271,7 +282,8 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildProductItem(BuildContext context, Product productItem, bool isArabic) {
+  Widget buildProductItem(
+      BuildContext context, Product productItem, bool isArabic) {
     bookmarkedItems[productItem.id.toString()] ??= false;
 
     return Padding(
@@ -289,8 +301,8 @@ class _DetailState extends State<Detail> {
                       showImagePopup(context, productItem);
                     },
                     child: CachedNetworkImage(
-                      imageUrl: getSmallImageUrl(productItem.pictures!
-                          .split(',')[0]),
+                      imageUrl:
+                          getSmallImageUrl(productItem.pictures!.split(',')[0]),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.height * 0.34,
                       width: MediaQuery.of(context).size.width * 0.44,
@@ -329,7 +341,8 @@ class _DetailState extends State<Detail> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => showPopupOnce(context, productItem.corresponding_url!),
+                  onPressed: () =>
+                      showPopupOnce(context, productItem.corresponding_url!),
                   child: Text(
                     AppLocalizations.of(context).translate('shopping_bu'),
                     style: TextStyle(
@@ -355,15 +368,15 @@ class _DetailState extends State<Detail> {
               child: IconButton(
                 icon: bookmarkedItems[productItem.id.toString()]!
                     ? SvgPicture.asset(
-                  'assets/images/bookmarked.svg',
-                )
+                        'assets/images/bookmarked.svg',
+                      )
                     : SvgPicture.asset(
-                  'assets/images/bookmark.svg',
-                ),
+                        'assets/images/bookmark.svg',
+                      ),
                 onPressed: () {
                   setState(() {
                     bookmarkedItems[productItem.id.toString()] =
-                    !bookmarkedItems[productItem.id.toString()]!;
+                        !bookmarkedItems[productItem.id.toString()]!;
                     saveBookmarkedItems(bookmarkedItems);
                   });
                 },
@@ -417,8 +430,6 @@ class _DetailState extends State<Detail> {
     return '';
   }
 
-
-
   void showPopupOnce(BuildContext context, String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -447,6 +458,7 @@ class _DetailState extends State<Detail> {
       bookmarkedItems[productId] = isBookmarked;
     });
   }
+
   List<Widget> listOfChips(ProductsModel? collectionDetail) {
     List<Widget> tagWidgets = [];
 
@@ -455,24 +467,28 @@ class _DetailState extends State<Detail> {
         List<dynamic> tagValues = value;
         List<Widget> chips = tagValues
             .map((tag) => Chip(
-          label: Text(tag.toString(), style: Theme.of(context).textTheme.labelSmall,),
-          backgroundColor: Theme.of(context)
-              .colorScheme
-              .inversePrimary
-              .withOpacity(0.1),
-          side: BorderSide.none,
-        ))
+                  label: Text(
+                    tag.toString(),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .inversePrimary
+                      .withOpacity(0.1),
+                  side: BorderSide.none,
+                ))
             .toList();
 
         // Create a row for the category name and its tags
         Widget tagRow = Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+          padding: const EdgeInsets.only(right: 0.0, left: 0.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Expanded(
                 flex: 1,
-                child: Text(key, style: Theme.of(context).textTheme.labelMedium),
+                child:
+                    Text(key, style: Theme.of(context).textTheme.labelMedium),
               ),
               Expanded(
                 flex: 2,
@@ -491,5 +507,136 @@ class _DetailState extends State<Detail> {
 
     return tagWidgets;
   }
+}
 
+class ChatScreen extends StatefulWidget {
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _controller = TextEditingController();
+  bool _showSuggestions = false;
+  bool _showResponse = false;
+  String _selectedQuestion = "";
+
+  final List<String> _suggestions = [
+    "Is the material comfortable for everyday wear?",
+    "Can I wear these pieces to a formal event?",
+  ];
+
+  void _onTextChanged(String text) {
+    setState(() {
+      _showSuggestions = text.isNotEmpty;
+      _showResponse = false;
+    });
+  }
+
+  void _onSuggestionTapped(String suggestion) {
+    setState(() {
+      _controller.text = suggestion;
+      _showSuggestions = false;
+      _showResponse = true;
+      _selectedQuestion = suggestion;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          AppLocalizations.of(context).translate('ask_ai_title'),
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context).translate('ai_field_hint'),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                'assets/images/ai.svg',
+              ),
+            ),
+            suffixIcon: _controller.text.isNotEmpty
+                ? IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/images/arrow_top.svg',
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _showSuggestions = false;
+                        _showResponse = true;
+                        _selectedQuestion = _controller.text;
+                      });
+                    },
+                  )
+                : null,
+            filled: true,
+            fillColor: Colors.grey[300],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0), // Adjust this value to change the height
+
+          ),
+          onChanged: _onTextChanged,
+        ),
+        if (_showSuggestions) ...[
+          for (var suggestion in _suggestions)
+            GestureDetector(
+              onTap: () => _onSuggestionTapped(suggestion),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                margin: EdgeInsets.symmetric(vertical: 4),
+                color: Colors.grey[500],
+                child: Text(
+                  suggestion,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+        ],
+        if (_showResponse)
+          Container(
+            padding: EdgeInsets.all(16),
+            margin: EdgeInsets.only(top: 16),
+            color: Colors.grey[700],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedQuestion,
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          _showResponse = false;
+                          _controller.clear();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Yes, this collection is suitable for evening outings. The sleek, long black dress and chic combat boots create a sophisticated yet edgy look perfect for a night out.",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
 }

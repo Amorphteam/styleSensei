@@ -35,7 +35,7 @@
   "body_choice": "Body type",
   "send_bu": "Send",
   "dont_show": "Don't show this again",
-  "collection_detail": "Collection details",
+  "collection_detail": "Collection Details",
   "suitable_for": "Who it's Best For?",
   "next": "Next",
   "when_were": "When to Wear it?",
@@ -53,5 +53,8 @@
   "dislikes": "Dislikes",
   "about": "About",
   "privacy_policy": "Privacy Policy",
-  "error": "Something went wrong!"
+  "error": "Something went wrong!",
+  "collection_items": "Collection Items",
+  "ask_ai_title": "If you have any questions or need further assistance, feel free to ask our AI.",
+  "ai_field_hint": "Ask StyleSensei..."
 }
