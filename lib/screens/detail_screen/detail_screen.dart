@@ -22,6 +22,7 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart'; // Import the visibility_detector package
 
 import '../../models/Collections.dart';
+import '../../models/Rules.dart';
 import '../../new_models/attribute.dart';
 import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
@@ -184,19 +185,55 @@ class _DetailState extends State<Detail> {
   Widget buildTabContent1(List<CollectionItem> items,
       ProductsModel? collectionDetail, bool isArabic) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 16),
       child: ListView(
         children: [
           Text(
-            collectionDetail?.collection?.title ?? 'Default Title',
-            style: Theme.of(context)
+            getDesPart(collectionDetail?.collection?.description, 'desc',
+                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
                 .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold),
+                .titleSmall,
+          ),
+          Gap(30),
+          Text(
+            AppLocalizations.of(context).translate('des_title'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Column(
+            children: listOfChips(collectionDetail, context),
           ),
           Gap(20),
-          Column(
-            children: listOfChips(collectionDetail),
+          Text(
+            AppLocalizations.of(context).translate('body_shape_question'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            getDesPart(collectionDetail?.collection?.description, 'body_shape',
+                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+              .textTheme
+              .titleSmall,
+          ),
+          Gap(20),
+          Text(
+            AppLocalizations.of(context).translate('situation_question'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            getDesPart(collectionDetail?.collection?.description, 'situation',
+                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+              .textTheme
+              .titleSmall,
+          ),
+          Gap(20),
+          Text(
+            AppLocalizations.of(context).translate('design_question'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            getDesPart(collectionDetail?.collection?.description, 'design',
+                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+              .textTheme
+              .titleSmall,
           ),
           Gap(48),
           ChatScreen()
@@ -221,7 +258,7 @@ class _DetailState extends State<Detail> {
               }
             },
             child: visibilityMap[index] == true
-                ? buildCollectionItem(context, items[index], isArabic, index)
+                ? buildCollectionItem(context, items[index], collectionDetail, isArabic, index)
                 : Container(
                     height: 200, color: Colors.transparent), // Placeholder
           );
@@ -230,37 +267,79 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildCollectionItem(BuildContext context, CollectionItem item,
+  Widget buildCollectionItem(BuildContext context, CollectionItem item, ProductsModel? collectionDetail,
       bool isArabic, int parentIndex) {
+
+
+    // If products is not null, reorder them
+    List<Product> orderedProducts = item.products != null
+        ? reorderProducts(item.products!, item.match_count ?? {})
+        : [];
+
+    String? catName = AppLocalizations.of(context).translate('${item.category?.name}');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Gap(0),
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                item.category?.name ?? 'Default Name',
-                style: Theme.of(context).textTheme.titleMedium,
+                (catName.length > 3) ? catName : item.category?.name ?? 'Default',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
-                '${item.products?.length ?? ' '}' +
-                    '  ' +
-                    AppLocalizations.of(context).translate('alternatives'),
+                '${orderedProducts.length}' +
+                    '  ' + AppLocalizations.of(context).translate('alternatives'),
                 style: Theme.of(context).textTheme.labelSmall,
               )
             ],
+          ),
+        ),
+        Gap(20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            AppLocalizations.of(context).translate('attributes'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
+          child: buildAttributes(item.products?[parentIndex].attributes),
+        ),
+        Padding(
+            padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
+            child: Text(AppLocalizations.of(context).translate('products_suggestion_title'),
+                style: TextStyle(fontWeight: FontWeight.bold))
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
+          child: Opacity(
+            opacity: 0.4,
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/images/ai.svg',
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(AppLocalizations.of(context).translate('products_suggestion_des'),
+                    style: Theme.of(context).textTheme.labelSmall,),
+                ),
+              ],
+            ),
           ),
         ),
         Container(
           height: MediaQuery.of(context).size.height * 0.40,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: item.products?.length ?? 0,
+            itemCount: orderedProducts.length,
             itemBuilder: (BuildContext context, int index) {
-              int key = parentIndex * 1000 +
-                  index; // Generate unique key for each horizontal item
+              int key = parentIndex * 1000 + index; // Generate unique key for each horizontal item
               return VisibilityDetector(
                 key: Key(key.toString()),
                 onVisibilityChanged: (VisibilityInfo info) {
@@ -271,15 +350,28 @@ class _DetailState extends State<Detail> {
                   }
                 },
                 child: horizontalVisibilityMap[key] == true
-                    ? buildProductItem(context, item.products![index], isArabic)
+                    ? buildProductItem(context, orderedProducts[index], isArabic)
                     : Container(
-                        width: 100, color: Colors.transparent), // Placeholder
+                    width: 100, color: Colors.transparent), // Placeholder
               );
             },
           ),
         ),
+        Gap(40)
       ],
     );
+  }
+
+// Reorder products based on matchCount in descending order
+  List<Product> reorderProducts(List<Product> products, Map<String, int> matchCount) {
+    // Create a copy of the list to avoid modifying the original list
+    List<Product> productsCopy = List<Product>.from(products);
+    productsCopy.sort((a, b) {
+      int aMatch = matchCount[a.id.toString()] ?? 0;
+      int bMatch = matchCount[b.id.toString()] ?? 0;
+      return bMatch.compareTo(aMatch); // Descending order
+    });
+    return productsCopy;
   }
 
   Widget buildProductItem(
@@ -430,6 +522,23 @@ class _DetailState extends State<Detail> {
     return '';
   }
 
+  String getDesPart(String? desJson, String part, String language) {
+    if (desJson != null) {
+      desJson = desJson.replaceAll("**", "");
+      try {
+        Map<String, dynamic> jsonData = json.decode(desJson);
+        if (jsonData.containsKey(part) && jsonData[part].containsKey(language)) {
+          return jsonData[part][language];
+        }
+        return '$part not available in the specified language.';
+      } catch (error) {
+        return 'Error parsing JSON data: $error';
+      }
+    }
+    return '$part is empty.';
+  }
+
+
   void showPopupOnce(BuildContext context, String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -459,24 +568,30 @@ class _DetailState extends State<Detail> {
     });
   }
 
-  List<Widget> listOfChips(ProductsModel? collectionDetail) {
+  List<Widget> listOfChips(ProductsModel? collectionDetail, BuildContext context) {
     List<Widget> tagWidgets = [];
 
     if (collectionDetail?.collection?.tags != null) {
       collectionDetail!.collection!.tags!.forEach((key, value) {
         List<dynamic> tagValues = value;
         List<Widget> chips = tagValues
+            .where((tag) => tag.toString() != 'Hijab') // Exclude 'Hijab' tag
             .map((tag) => Chip(
-                  label: Text(
-                    tag.toString(),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                  backgroundColor: Theme.of(context)
-                      .colorScheme
-                      .inversePrimary
-                      .withOpacity(0.1),
-                  side: BorderSide.none,
-                ))
+          label: Text(
+              AppLocalizations.of(context).translate('${tag}'),
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+          backgroundColor: Theme.of(context)
+              .colorScheme
+              .inversePrimary
+              .withOpacity(0.0),
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.onBackground, // Color of the border
+              width: 0.5, // Width of the border
+            ),
+          ),
+        ))
             .toList();
 
         // Create a row for the category name and its tags
@@ -487,8 +602,7 @@ class _DetailState extends State<Detail> {
             children: [
               Expanded(
                 flex: 1,
-                child:
-                    Text(key, style: Theme.of(context).textTheme.labelMedium),
+                child: Text(AppLocalizations.of(context).translate('${key}'), style: Theme.of(context).textTheme.labelMedium),
               ),
               Expanded(
                 flex: 2,
@@ -507,6 +621,35 @@ class _DetailState extends State<Detail> {
 
     return tagWidgets;
   }
+  Widget buildAttributes(List<Attribute>? attributes) {
+
+    List<String> excludedAttributes = ['FromAi', 'ProductTag', 'Breadcrumbs', 'Brand name', 'ColorFamily'];
+    if (attributes != null)
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: attributes.where((attribute) => !excludedAttributes.contains(attribute.attribute?.name)).map((rule) {
+        String? ruleName = AppLocalizations.of(context).translate('${rule.attribute?.name}');
+        String? ruleValue = AppLocalizations.of(context).translate('${rule.value}');
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            children: [
+              Text( (ruleName.length>3) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
+                style: TextStyle(fontWeight: FontWeight.normal),
+              ),
+              Text('   ${rule.value} ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+    return Container();
+  }
+
 }
 
 class ChatScreen extends StatefulWidget {
@@ -548,13 +691,13 @@ class _ChatScreenState extends State<ChatScreen> {
         Text(
           AppLocalizations.of(context).translate('ask_ai_title'),
         ),
-        SizedBox(height: 10),
+        Gap(10),
         TextField(
           controller: _controller,
           decoration: InputDecoration(
             hintText: AppLocalizations.of(context).translate('ai_field_hint'),
             prefixIcon: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: SvgPicture.asset(
                 'assets/images/ai.svg',
               ),

@@ -23,6 +23,7 @@ mixin _$CollectionItem {
   String? get category_id => throw _privateConstructorUsedError;
   Category? get category => throw _privateConstructorUsedError;
   List<Product>? get products => throw _privateConstructorUsedError;
+  Map<String, int>? get match_count => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +37,11 @@ abstract class $CollectionItemCopyWith<$Res> {
           CollectionItem value, $Res Function(CollectionItem) then) =
       _$CollectionItemCopyWithImpl<$Res, CollectionItem>;
   @useResult
-  $Res call({String? category_id, Category? category, List<Product>? products});
+  $Res call(
+      {String? category_id,
+      Category? category,
+      List<Product>? products,
+      Map<String, int>? match_count});
 
   $CategoryCopyWith<$Res>? get category;
 }
@@ -57,6 +62,7 @@ class _$CollectionItemCopyWithImpl<$Res, $Val extends CollectionItem>
     Object? category_id = freezed,
     Object? category = freezed,
     Object? products = freezed,
+    Object? match_count = freezed,
   }) {
     return _then(_value.copyWith(
       category_id: freezed == category_id
@@ -71,6 +77,10 @@ class _$CollectionItemCopyWithImpl<$Res, $Val extends CollectionItem>
           ? _value.products
           : products // ignore: cast_nullable_to_non_nullable
               as List<Product>?,
+      match_count: freezed == match_count
+          ? _value.match_count
+          : match_count // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>?,
     ) as $Val);
   }
 
@@ -95,7 +105,11 @@ abstract class _$$CollectionItemImplCopyWith<$Res>
       __$$CollectionItemImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? category_id, Category? category, List<Product>? products});
+  $Res call(
+      {String? category_id,
+      Category? category,
+      List<Product>? products,
+      Map<String, int>? match_count});
 
   @override
   $CategoryCopyWith<$Res>? get category;
@@ -115,6 +129,7 @@ class __$$CollectionItemImplCopyWithImpl<$Res>
     Object? category_id = freezed,
     Object? category = freezed,
     Object? products = freezed,
+    Object? match_count = freezed,
   }) {
     return _then(_$CollectionItemImpl(
       category_id: freezed == category_id
@@ -129,6 +144,10 @@ class __$$CollectionItemImplCopyWithImpl<$Res>
           ? _value._products
           : products // ignore: cast_nullable_to_non_nullable
               as List<Product>?,
+      match_count: freezed == match_count
+          ? _value._match_count
+          : match_count // ignore: cast_nullable_to_non_nullable
+              as Map<String, int>?,
     ));
   }
 }
@@ -137,8 +156,12 @@ class __$$CollectionItemImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CollectionItemImpl implements _CollectionItem {
   const _$CollectionItemImpl(
-      {this.category_id, this.category, final List<Product>? products})
-      : _products = products;
+      {this.category_id,
+      this.category,
+      final List<Product>? products,
+      final Map<String, int>? match_count})
+      : _products = products,
+        _match_count = match_count;
 
   factory _$CollectionItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$CollectionItemImplFromJson(json);
@@ -157,9 +180,19 @@ class _$CollectionItemImpl implements _CollectionItem {
     return EqualUnmodifiableListView(value);
   }
 
+  final Map<String, int>? _match_count;
+  @override
+  Map<String, int>? get match_count {
+    final value = _match_count;
+    if (value == null) return null;
+    if (_match_count is EqualUnmodifiableMapView) return _match_count;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
   String toString() {
-    return 'CollectionItem(category_id: $category_id, category: $category, products: $products)';
+    return 'CollectionItem(category_id: $category_id, category: $category, products: $products, match_count: $match_count)';
   }
 
   @override
@@ -171,13 +204,19 @@ class _$CollectionItemImpl implements _CollectionItem {
                 other.category_id == category_id) &&
             (identical(other.category, category) ||
                 other.category == category) &&
-            const DeepCollectionEquality().equals(other._products, _products));
+            const DeepCollectionEquality().equals(other._products, _products) &&
+            const DeepCollectionEquality()
+                .equals(other._match_count, _match_count));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, category_id, category,
-      const DeepCollectionEquality().hash(_products));
+  int get hashCode => Object.hash(
+      runtimeType,
+      category_id,
+      category,
+      const DeepCollectionEquality().hash(_products),
+      const DeepCollectionEquality().hash(_match_count));
 
   @JsonKey(ignore: true)
   @override
@@ -198,7 +237,8 @@ abstract class _CollectionItem implements CollectionItem {
   const factory _CollectionItem(
       {final String? category_id,
       final Category? category,
-      final List<Product>? products}) = _$CollectionItemImpl;
+      final List<Product>? products,
+      final Map<String, int>? match_count}) = _$CollectionItemImpl;
 
   factory _CollectionItem.fromJson(Map<String, dynamic> json) =
       _$CollectionItemImpl.fromJson;
@@ -209,6 +249,8 @@ abstract class _CollectionItem implements CollectionItem {
   Category? get category;
   @override
   List<Product>? get products;
+  @override
+  Map<String, int>? get match_count;
   @override
   @JsonKey(ignore: true)
   _$$CollectionItemImplCopyWith<_$CollectionItemImpl> get copyWith =>

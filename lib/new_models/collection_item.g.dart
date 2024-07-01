@@ -15,6 +15,9 @@ _$CollectionItemImpl _$$CollectionItemImplFromJson(Map<String, dynamic> json) =>
       products: (json['products'] as List<dynamic>?)
           ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
           .toList(),
+      match_count: (json['match_count'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as int),
+      ),
     );
 
 Map<String, dynamic> _$$CollectionItemImplToJson(
@@ -23,4 +26,5 @@ Map<String, dynamic> _$$CollectionItemImplToJson(
       'category_id': instance.category_id,
       'category': instance.category,
       'products': instance.products,
+      'match_count': instance.match_count,
     };

@@ -12,6 +12,7 @@ class CollectionItem with _$CollectionItem {
     String? category_id,
     Category? category,
     List<Product>? products,
+    Map<String, int>? match_count,
   }) = _CollectionItem;
 
   factory CollectionItem.fromJson(Map<String, dynamic> json) => _$CollectionItemFromJson(json);
