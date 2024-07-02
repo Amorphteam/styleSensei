@@ -352,7 +352,8 @@ class _HomeTabState extends State<HomeTab> {
                       _twoColumn = !_twoColumn;
                     });
 
-                  }, icon: SvgPicture.asset(_twoColumn ? 'assets/images/cat.svg' : 'assets/images/full.svg')),
+                  }, icon: SvgPicture.asset(_twoColumn ? 'assets/images/cat.svg' : 'assets/images/full.svg', color: Theme.of(context).colorScheme.onSurface),
+                  ),
                 ),
 
               ]

@@ -693,13 +693,15 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         Gap(10),
         TextField(
+
           controller: _controller,
           decoration: InputDecoration(
             hintText: AppLocalizations.of(context).translate('ai_field_hint'),
+            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
             prefixIcon: Padding(
               padding: const EdgeInsets.all(12.0),
               child: SvgPicture.asset(
-                'assets/images/ai.svg',
+                'assets/images/ai.svg', color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
             suffixIcon: _controller.text.isNotEmpty
@@ -717,7 +719,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   )
                 : null,
             filled: true,
-            fillColor: Colors.grey[300],
+            fillColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide.none,

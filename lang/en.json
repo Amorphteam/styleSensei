@@ -1501,5 +1501,7 @@
 
   "Work Attire": "Work Attire",
   "Formal": "Formal",
-  "Smart Casual": "Smart Casual"
+  "Smart Casual": "Smart Casual",
+  "loading_desc": "We are creating your custom styles.",
+  "loading_title": "Analyzing data... "
 }

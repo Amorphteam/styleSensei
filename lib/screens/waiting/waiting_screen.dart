@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../main.dart';
@@ -96,15 +97,28 @@ class _WaitingScreenState extends State<WaitingScreen> {
               ),
             ),
             Positioned(
-              left: 20, // Add some padding from the left
-              bottom: 40,
-              right: 160,// Add some padding from the bottom
+              left: 140, // Add some padding from the left
+              bottom: 160,
+              right: 10,// Add some padding from the bottom
               child: Text(
-                '',
-                style: TextStyle(
-                  color: Colors.white, // Text color
-                  fontSize: 34, // Text size
-                  fontWeight: FontWeight.bold, // Text weight
+                AppLocalizations.of(context)!.translate('loading_desc'), // 'Loading...
+                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            Positioned(
+              left: 10, // Add some padding from the left
+              top: 160,
+              right: 140,// Add some padding from the bottom
+              child: Text(
+                AppLocalizations.of(context)!.translate('loading_title'), // 'Loading...
+                //add alpha or opacity to the color
+                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
