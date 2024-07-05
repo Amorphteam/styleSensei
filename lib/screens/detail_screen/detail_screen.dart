@@ -604,19 +604,6 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Future<Map<String, bool>> loadBookmarkedItems() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, bool> bookmarkedItems = {};
-    if (prefs.containsKey('bookmarkedItems')) {
-      bookmarkedItems = Map<String, bool>.from(json.decode(prefs.getString('bookmarkedItems')!));
-    }
-    return bookmarkedItems;
-  }
-
-  Future<void> saveBookmarkedItems(Map<String, bool> bookmarkedItems) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('bookmarkedItems', json.encode(bookmarkedItems));
-  }
 
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
