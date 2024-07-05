@@ -53,16 +53,9 @@ class ProfileScreen extends StatelessWidget {
     return Center(
       child: Column(
         children: <Widget>[
-          CircleAvatar(
-            radius: 50.0,
-            backgroundImage: NetworkImage(UserController.currentUser?.photoURL ??
-                'https://via.placeholder.com/150'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(UserController.currentUser?.displayName ?? '',
-                style: Theme.of(context).textTheme.titleLarge),
-          ),
+          Image.asset('assets/logo/logo.png', height: 70, width: 70),
+          // Text(UserController.currentUser?.displayName ?? '',
+          //     style: Theme.of(context).textTheme.titleLarge),
         ],
       ),
     );

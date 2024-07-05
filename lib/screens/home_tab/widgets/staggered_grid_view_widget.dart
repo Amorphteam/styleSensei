@@ -96,6 +96,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
       margin: EdgeInsets.zero, // Ensure no margin
 
       child: MasonryGridView.count(
+        padding: EdgeInsets.only(top: 0),
         crossAxisCount: 2,
         mainAxisSpacing: 18,
         crossAxisSpacing: 6,
@@ -242,6 +243,8 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
 
   Widget buildStaggeredGrid(bool isArabic) {
     return GridView.custom(
+      padding: EdgeInsets.only(top: 0),
+
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverQuiltedGridDelegate(
         crossAxisCount: 1,
