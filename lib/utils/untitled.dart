@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -308,6 +310,8 @@ final List<ImageItem> bodyTypes = [
   ImageItem('assets/images/petite.jpg', 802, 'Petite', 'صغير الحجم'),
   ImageItem('assets/images/tall.jpg', 801, 'Tall', 'طويل'),
 ];
+
+
 
 final List<ImageItem> colorTones = [
   ImageItem('assets/images/dark.jpg', 503, 'Dark', 'داكن'),
@@ -714,3 +718,18 @@ List<String> getDescriptionsFromCodes(List<int> codes, Map<int, String> lookupTa
   return descriptions;
 }
 
+String getDesPart(String? desJson, String part, String language) {
+  if (desJson != null) {
+    desJson = desJson.replaceAll("**", "");
+    try {
+      Map<String, dynamic> jsonData = json.decode(desJson);
+      if (jsonData.containsKey(part) && jsonData[part].containsKey(language)) {
+        return jsonData[part][language];
+      }
+      return '$part not available in the specified language.';
+    } catch (error) {
+      return 'Error parsing JSON data: $error';
+    }
+  }
+  return '$part is empty.';
+}

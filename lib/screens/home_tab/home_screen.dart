@@ -99,24 +99,22 @@ class _HomeTabState extends State<HomeTab> {
       backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
       builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(28.0),
-            child: Wrap(
-              children: options.map((ImageItem option) {
-                String displayText = isArabic ? option.arDes : option.des;
-                return ListTile(
-                  title: Text(displayText, style: Theme.of(context).textTheme.titleSmall,),
-                  onTap: () {
-                    setState(() {
-                      selectedChoices[title] = option;
-                    });
-                    addTags(getSelectedOptionIds());
-                    Navigator.pop(context);
-                  },
-                );
-              }).toList(),
-            ),
+        return Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: Wrap(
+            children: options.map((ImageItem option) {
+              String displayText = isArabic ? option.arDes : option.des;
+              return ListTile(
+                title: Text(displayText, style: Theme.of(context).textTheme.titleSmall,),
+                onTap: () {
+                  setState(() {
+                    selectedChoices[title] = option;
+                  });
+                  addTags(getSelectedOptionIds());
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
           ),
         );
       },

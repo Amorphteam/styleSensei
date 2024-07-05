@@ -2,24 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/models/ProductsModel.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/chat_widget.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/sekeleton_loading.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/single_item_screen.dart';
-import 'package:style_sensei/screens/home_tab/widgets/staggered_grid_view_widget.dart';
-import 'package:style_sensei/screens/detail_screen/widgets/staggered_grid_view_detail_widget.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
-import 'package:visibility_detector/visibility_detector.dart'; // Import the visibility_detector package
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../models/Collections.dart';
 import '../../models/Rules.dart';
@@ -48,7 +44,7 @@ class _DetailState extends State<Detail> {
   bool _showChips = true; // State to track visibility of chips
   Map<int, bool> visibilityMap = {}; // Track visibility of items
   Map<int, bool> horizontalVisibilityMap =
-      {}; // Track visibility of horizontal items
+  {}; // Track visibility of horizontal items
 
   @override
   void initState() {
@@ -66,7 +62,7 @@ class _DetailState extends State<Detail> {
         // Video finished playing
         setState(() {
           _isVideoPlayed =
-              true; // Mark video as played to show the text instead
+          true; // Mark video as played to show the text instead
         });
       }
     });
@@ -98,14 +94,26 @@ class _DetailState extends State<Detail> {
           return buildUi(context, collection, collectionDetail);
         } else if (state is DetailLoadingState) {
           return Scaffold(
-            body: Center(
-              child: Container(
-                width: 200,
-                height: 100,
-                child: Lottie.asset('assets/json/loading.json'),
-              ),
+            body: NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    expandedHeight: 600.0,
+                    floating: false,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: CachedNetworkImage(
+                        imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ];
+              },
+              body: SkeletonLoading(),
             ),
           );
+
         } else if (state is DetailErrorState) {
           return Scaffold(
             body: Center(
@@ -135,7 +143,7 @@ class _DetailState extends State<Detail> {
               pinned: true,
               title: innerBoxIsScrolled
                   ? Text(getTitle(collectionDetail?.collection?.title,
-                      (isArabic) ? 'ar' : 'en'))
+                  (isArabic) ? 'ar' : 'en'))
                   : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
@@ -191,8 +199,8 @@ class _DetailState extends State<Detail> {
           Text(
             getDesPart(collectionDetail?.collection?.description, 'desc',
                 (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-                .textTheme
-                .titleSmall,
+              .textTheme
+              .titleSmall,
           ),
           Gap(30),
           Text(
@@ -236,7 +244,7 @@ class _DetailState extends State<Detail> {
               .titleSmall,
           ),
           Gap(48),
-          ChatScreen()
+          ChatWidget(collectionDetail: collectionDetail)
         ],
       ),
     );
@@ -244,6 +252,7 @@ class _DetailState extends State<Detail> {
 
   Widget buildTabContent2(List<CollectionItem> items,
       ProductsModel? collectionDetail, bool isArabic) {
+    print('id is : ${collectionDetail?.collection?.id}');
     return Expanded(
       child: ListView.builder(
         itemCount: items.length,
@@ -260,7 +269,7 @@ class _DetailState extends State<Detail> {
             child: visibilityMap[index] == true
                 ? buildCollectionItem(context, items[index], collectionDetail, isArabic, index)
                 : Container(
-                    height: 200, color: Colors.transparent), // Placeholder
+                height: 200, color: Colors.transparent), // Placeholder
           );
         },
       ),
@@ -269,7 +278,6 @@ class _DetailState extends State<Detail> {
 
   Widget buildCollectionItem(BuildContext context, CollectionItem item, ProductsModel? collectionDetail,
       bool isArabic, int parentIndex) {
-
 
     // If products is not null, reorder them
     List<Product> orderedProducts = item.products != null
@@ -308,7 +316,7 @@ class _DetailState extends State<Detail> {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
-          child: buildAttributes(item.products?[parentIndex].attributes),
+          child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
         ),
         Padding(
             padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
@@ -362,14 +370,12 @@ class _DetailState extends State<Detail> {
     );
   }
 
-// Reorder products based on matchCount in descending order
   List<Product> reorderProducts(List<Product> products, Map<String, int> matchCount) {
-    // Create a copy of the list to avoid modifying the original list
     List<Product> productsCopy = List<Product>.from(products);
     productsCopy.sort((a, b) {
       int aMatch = matchCount[a.id.toString()] ?? 0;
       int bMatch = matchCount[b.id.toString()] ?? 0;
-      return bMatch.compareTo(aMatch); // Descending order
+      return bMatch.compareTo(aMatch);
     });
     return productsCopy;
   }
@@ -394,7 +400,7 @@ class _DetailState extends State<Detail> {
                     },
                     child: CachedNetworkImage(
                       imageUrl:
-                          getSmallImageUrl(productItem.pictures!.split(',')[0]),
+                      getSmallImageUrl(productItem.pictures!.split(',')[0]),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.height * 0.34,
                       width: MediaQuery.of(context).size.width * 0.44,
@@ -460,15 +466,15 @@ class _DetailState extends State<Detail> {
               child: IconButton(
                 icon: bookmarkedItems[productItem.id.toString()]!
                     ? SvgPicture.asset(
-                        'assets/images/bookmarked.svg',
-                      )
+                  'assets/images/bookmarked.svg',
+                )
                     : SvgPicture.asset(
-                        'assets/images/bookmark.svg',
-                      ),
+                  'assets/images/bookmark.svg',
+                ),
                 onPressed: () {
                   setState(() {
                     bookmarkedItems[productItem.id.toString()] =
-                        !bookmarkedItems[productItem.id.toString()]!;
+                    !bookmarkedItems[productItem.id.toString()]!;
                     saveBookmarkedItems(bookmarkedItems);
                   });
                 },
@@ -522,23 +528,6 @@ class _DetailState extends State<Detail> {
     return '';
   }
 
-  String getDesPart(String? desJson, String part, String language) {
-    if (desJson != null) {
-      desJson = desJson.replaceAll("**", "");
-      try {
-        Map<String, dynamic> jsonData = json.decode(desJson);
-        if (jsonData.containsKey(part) && jsonData[part].containsKey(language)) {
-          return jsonData[part][language];
-        }
-        return '$part not available in the specified language.';
-      } catch (error) {
-        return 'Error parsing JSON data: $error';
-      }
-    }
-    return '$part is empty.';
-  }
-
-
   void showPopupOnce(BuildContext context, String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -578,7 +567,7 @@ class _DetailState extends State<Detail> {
             .where((tag) => tag.toString() != 'Hijab') // Exclude 'Hijab' tag
             .map((tag) => Chip(
           label: Text(
-              AppLocalizations.of(context).translate('${tag}'),
+            AppLocalizations.of(context).translate('${tag}'),
             style: Theme.of(context).textTheme.labelSmall,
           ),
           backgroundColor: Theme.of(context)
@@ -621,167 +610,40 @@ class _DetailState extends State<Detail> {
 
     return tagWidgets;
   }
-  Widget buildAttributes(List<Attribute>? attributes) {
 
-    List<String> excludedAttributes = ['FromAi', 'ProductTag', 'Breadcrumbs', 'Brand name', 'ColorFamily'];
-    if (attributes != null)
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: attributes.where((attribute) => !excludedAttributes.contains(attribute.attribute?.name)).map((rule) {
-        String? ruleName = AppLocalizations.of(context).translate('${rule.attribute?.name}');
-        String? ruleValue = AppLocalizations.of(context).translate('${rule.value}');
+  Widget buildAttributes(List<Rules>? rules, String? categoryId) {
+    if (rules != null) {
+      List<Rules> filteredRules = rules
+          .where((rule) => rule.categoryId == categoryId)
+          .toList();
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: [
-              Text( (ruleName.length>3) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
-                style: TextStyle(fontWeight: FontWeight.normal),
-              ),
-              Text('   ${rule.value} ',
-                style: TextStyle(fontWeight: FontWeight.bold),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: filteredRules.map((rule) {
+          String? ruleName = AppLocalizations.of(context).translate('${rule.attribute?.name}');
+          String? ruleValue = AppLocalizations.of(context).translate('${rule.attributeValue}');
 
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-    return Container();
-  }
-
-}
-
-class ChatScreen extends StatefulWidget {
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _controller = TextEditingController();
-  bool _showSuggestions = false;
-  bool _showResponse = false;
-  String _selectedQuestion = "";
-
-  final List<String> _suggestions = [
-    "Is the material comfortable for everyday wear?",
-    "Can I wear these pieces to a formal event?",
-  ];
-
-  void _onTextChanged(String text) {
-    setState(() {
-      _showSuggestions = text.isNotEmpty;
-      _showResponse = false;
-    });
-  }
-
-  void _onSuggestionTapped(String suggestion) {
-    setState(() {
-      _controller.text = suggestion;
-      _showSuggestions = false;
-      _showResponse = true;
-      _selectedQuestion = suggestion;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).translate('ask_ai_title'),
-        ),
-        Gap(10),
-        TextField(
-
-          controller: _controller,
-          decoration: InputDecoration(
-            hintText: AppLocalizations.of(context).translate('ai_field_hint'),
-            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SvgPicture.asset(
-                'assets/images/ai.svg', color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
-            suffixIcon: _controller.text.isNotEmpty
-                ? IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/arrow_top.svg',
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _showSuggestions = false;
-                        _showResponse = true;
-                        _selectedQuestion = _controller.text;
-                      });
-                    },
-                  )
-                : null,
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0), // Adjust this value to change the height
-
-          ),
-          onChanged: _onTextChanged,
-        ),
-        if (_showSuggestions) ...[
-          for (var suggestion in _suggestions)
-            GestureDetector(
-              onTap: () => _onSuggestionTapped(suggestion),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                margin: EdgeInsets.symmetric(vertical: 4),
-                color: Colors.grey[500],
-                child: Text(
-                  suggestion,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-        ],
-        if (_showResponse)
-          Container(
-            padding: EdgeInsets.all(16),
-            margin: EdgeInsets.only(top: 16),
-            color: Colors.grey[700],
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Row(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _selectedQuestion,
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.white),
-                      onPressed: () {
-                        setState(() {
-                          _showResponse = false;
-                          _controller.clear();
-                        });
-                      },
-                    ),
-                  ],
+                Text((ruleName.length > 3) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
+                  style: TextStyle(fontWeight: FontWeight.normal),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  "Yes, this collection is suitable for evening outings. The sleek, long black dress and chic combat boots create a sophisticated yet edgy look perfect for a night out.",
-                  style: TextStyle(color: Colors.white),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8),
+                    child: Text('${rule.attributeValue} ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
-      ],
-    );
+          );
+        }).toList(),
+      );
+    }
+    return Container();
   }
 }

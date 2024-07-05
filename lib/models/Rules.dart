@@ -1,3 +1,5 @@
+import 'package:style_sensei/new_models/attribute_for_rules.dart';
+
 import '../new_models/attribute.dart';
 import '../new_models/category.dart';
 
@@ -18,7 +20,7 @@ class Rules {
       num? attributeId, 
       String? attributeValue, 
       Category? category, 
-      Attribute? attribute, 
+      AttributeForRules? attribute,
       dynamic products,}){
     _id = id;
     _collectionId = collectionId;
@@ -37,7 +39,7 @@ class Rules {
     _attributeId = json['attribute_id'];
     _attributeValue = json['attribute_value'];
     _category = json['category'] != null ? Category.fromJson(json['category']) : null;
-    _attribute = json['attribute'] != null ? Attribute.fromJson(json['attribute']) : null;
+    _attribute = json['attribute'] != null ? AttributeForRules.fromJson(json['attribute']) : null;
     _products = json['products'];
   }
   num? _id;
@@ -46,7 +48,7 @@ class Rules {
   num? _attributeId;
   String? _attributeValue;
   Category? _category;
-  Attribute? _attribute;
+  AttributeForRules? _attribute;
   dynamic _products;
 Rules copyWith({  num? id,
   num? collectionId,
@@ -54,7 +56,7 @@ Rules copyWith({  num? id,
   num? attributeId,
   String? attributeValue,
   Category? category,
-  Attribute? attribute,
+  AttributeForRules? attribute,
   dynamic products,
 }) => Rules(  id: id ?? _id,
   collectionId: collectionId ?? _collectionId,
@@ -71,7 +73,7 @@ Rules copyWith({  num? id,
   num? get attributeId => _attributeId;
   String? get attributeValue => _attributeValue;
   Category? get category => _category;
-  Attribute? get attribute => _attribute;
+  AttributeForRules? get attribute => _attribute;
   dynamic get products => _products;
 
   Map<String, dynamic> toJson() {

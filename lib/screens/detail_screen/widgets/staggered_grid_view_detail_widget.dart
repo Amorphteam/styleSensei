@@ -26,7 +26,7 @@ class _StaggeredGridViewDetailState extends State<StaggeredGridViewDetail> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Long black women\'s dress', style: Theme.of(context).textTheme.labelLarge,),
-              Text('ZARA', style: Theme.of(context).textTheme.caption,)
+              Text('ZARA', style: Theme.of(context).textTheme.labelSmall,)
             ],
           ),
         ),
