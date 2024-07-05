@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
+Future<Map<String, dynamic>> loadConfig() async {
+  final configString = await rootBundle.loadString('assets/json/config.json');
+  return json.decode(configString);
+}
 Future<String> getStyleDetails(String prompt) async {
-  final apiKey = Platform.environment['OPENAI_API_KEY'];
+  final config = await loadConfig();
+  final apiKey = config['OPENAI_API_KEY'];
   if (apiKey == null) {
-    throw Exception('API Key is not set in the environment variables.');
+    throw Exception('API Key is not set in the configuration file.');
   }
   final url = Uri.parse('https://api.openai.com/v1/chat/completions');
 

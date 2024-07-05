@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-
 import '../../../models/ProductsModel.dart';
 import '../../../utils/AppLocalizations.dart';
 import '../../../utils/ai_helper.dart';
@@ -52,7 +50,6 @@ class _ChatWidgetState extends State<ChatWidget> {
     return "$tags\n${_controller.text}\nDescription: $desc\nBody Shape: $bodyShape\nSituation: $situation\nDesign: $design\nLanguage: ${isArabic ? 'Arabic' : 'English'}";
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -97,10 +94,20 @@ class _ChatWidgetState extends State<ChatWidget> {
 
           ),
           onChanged: _onTextChanged,
+          onSubmitted: (text) {
+            if (text.isNotEmpty) {
+              _askStyleQuestion();
+              setState(() {
+                _selectedQuestion = text;
+                _showResponse = true;
+                _response = '';
+              });
+              FocusScope.of(context).unfocus(); // Hide the keyboard
+            }
+          },
         ),
         if (_showResponse)
           Container(
-            padding: EdgeInsets.all(16),
             margin: EdgeInsets.only(top: 16),
             color: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
             child: Column(
@@ -110,10 +117,13 @@ class _ChatWidgetState extends State<ChatWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Text(
-                        _selectedQuestion,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground, fontWeight: FontWeight.bold),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          _selectedQuestion,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     IconButton(
@@ -128,9 +138,12 @@ class _ChatWidgetState extends State<ChatWidget> {
                   ],
                 ),
                 SizedBox(height: 10),
-                Text(
-                  _response,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    _response,
+                    style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+                  ),
                 ),
               ],
             ),
