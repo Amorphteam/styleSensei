@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-Future<Map<String, dynamic>> loadConfig() async {
-  final configString = await rootBundle.loadString('assets/json/config.json');
-  return json.decode(configString);
-}
+
 Future<String> getStyleDetails(String prompt) async {
-  final config = await loadConfig();
-  final apiKey = config['OPENAI_API_KEY'];
+  final apiKey = dotenv.env['OPENAI_API_KEY'];
   if (apiKey == null) {
     throw Exception('API Key is not set in the configuration file.');
   }
