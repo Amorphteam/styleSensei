@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/models/ProductsModel.dart';
@@ -39,12 +39,13 @@ class _DetailState extends State<Detail> {
   Map<String, bool> bookmarkedItems = {};
   PageController _pageController = PageController();
   int _currentPage = 0;
+  int _animation_time = 4;
+  bool _hasAnimated = false;
   VideoPlayerController? _videoController;
   bool _isVideoPlayed = false; // Track if the video has been played
   bool _showChips = true; // State to track visibility of chips
   Map<int, bool> visibilityMap = {}; // Track visibility of items
-  Map<int, bool> horizontalVisibilityMap =
-  {}; // Track visibility of horizontal items
+  Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
 
   @override
   void initState() {
@@ -57,12 +58,10 @@ class _DetailState extends State<Detail> {
       });
 
     _videoController?.addListener(() {
-      if (_videoController!.value.position ==
-          _videoController!.value.duration) {
+      if (_videoController!.value.position == _videoController!.value.duration) {
         // Video finished playing
         setState(() {
-          _isVideoPlayed =
-          true; // Mark video as played to show the text instead
+          _isVideoPlayed = true; // Mark video as played to show the text instead
         });
       }
     });
@@ -73,8 +72,7 @@ class _DetailState extends State<Detail> {
           bookmarkedItems = loadedBookmarkedItems;
         });
       });
-      BlocProvider.of<DetailCubit>(context)
-          .fetchData(CollectionRepository(), widget.collection.id);
+      BlocProvider.of<DetailCubit>(context).fetchData(CollectionRepository(), widget.collection.id);
     });
   }
 
@@ -83,6 +81,7 @@ class _DetailState extends State<Detail> {
     _videoController?.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +112,6 @@ class _DetailState extends State<Detail> {
               body: SkeletonLoading(),
             ),
           );
-
         } else if (state is DetailErrorState) {
           return Scaffold(
             body: NestedScrollView(
@@ -132,11 +130,11 @@ class _DetailState extends State<Detail> {
                   ),
                 ];
               },
-            body: Center(
-              child: Text(AppLocalizations.of(context).translate('error')),
+              body: Center(
+                child: Text(AppLocalizations.of(context).translate('error')),
+              ),
             ),
-          ),
-        );
+          );
         } else {
           // This handles DetailInitial and any other unhandled state
           return Scaffold(
@@ -147,8 +145,7 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildUi(BuildContext context, List<CollectionItem> collection,
-      ProductsModel? collectionDetail) {
+  Widget buildUi(BuildContext context, List<CollectionItem> collection, ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Scaffold(
       body: NestedScrollView(
@@ -159,8 +156,7 @@ class _DetailState extends State<Detail> {
               floating: false,
               pinned: true,
               title: innerBoxIsScrolled
-                  ? Text(getTitle(collectionDetail?.collection?.title,
-                  (isArabic) ? 'ar' : 'en'))
+                  ? Text(getTitle(collectionDetail?.collection?.title, (isArabic) ? 'ar' : 'en'))
                   : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
@@ -176,8 +172,7 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildWidget(
-      List<CollectionItem> items, ProductsModel? collectionDetail) {
+  Widget buildWidget(List<CollectionItem> items, ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return DefaultTabController(
@@ -186,12 +181,8 @@ class _DetailState extends State<Detail> {
         children: [
           TabBar(
             tabs: [
-              Tab(
-                  text: AppLocalizations.of(context)
-                      .translate('collection_detail')),
-              Tab(
-                  text: AppLocalizations.of(context)
-                      .translate('collection_items')),
+              Tab(text: AppLocalizations.of(context).translate('collection_detail')),
+              Tab(text: AppLocalizations.of(context).translate('collection_items')),
             ],
           ),
           Expanded(
@@ -207,103 +198,219 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildTabContent1(List<CollectionItem> items,
-      ProductsModel? collectionDetail, bool isArabic) {
+  Widget buildTabContent1(List<CollectionItem> items, ProductsModel? collectionDetail, bool isArabic) {
     return Padding(
       padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 16),
-      child: Expanded(
-        child: ListView(
-          padding: EdgeInsets.only(top: 20),
-          children: [
-            Text(
-              getDesPart(collectionDetail?.collection?.description, 'desc',
-                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-                .textTheme
-                .titleSmall,
-            ),
-            Gap(30),
-            Text(
-              AppLocalizations.of(context).translate('des_title'),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Column(
-              children: listOfChips(collectionDetail, context),
-            ),
-            Gap(20),
-            Text(
-              AppLocalizations.of(context).translate('body_shape_question'),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              getDesPart(collectionDetail?.collection?.description, 'body_shape',
-                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-                .textTheme
-                .titleSmall,
-            ),
-            Gap(20),
-            Text(
-              AppLocalizations.of(context).translate('situation_question'),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              getDesPart(collectionDetail?.collection?.description, 'situation',
-                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-                .textTheme
-                .titleSmall,
-            ),
-            Gap(20),
-            Text(
-              AppLocalizations.of(context).translate('design_question'),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              getDesPart(collectionDetail?.collection?.description, 'design',
-                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-                .textTheme
-                .titleSmall,
-            ),
-            Gap(48),
-            ChatWidget(collectionDetail: collectionDetail)
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildTabContent2(List<CollectionItem> items,
-      ProductsModel? collectionDetail, bool isArabic) {
-    print('id is : ${collectionDetail?.collection?.id}');
-    return Expanded(
-      child: ListView.builder(
+      child: ListView(
         padding: EdgeInsets.only(top: 20),
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int index) {
-          return VisibilityDetector(
-            key: Key(index.toString()),
-            onVisibilityChanged: (VisibilityInfo info) {
-              if (info.visibleFraction > 0.5) {
-                setState(() {
-                  visibilityMap[index] = true;
-                });
-              }
+        children: [
+          _hasAnimated
+              ? Text(
+            getDesPart(collectionDetail?.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
+            style: Theme.of(context).textTheme.titleSmall,
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                getDesPart(collectionDetail?.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
+                textStyle: Theme.of(context).textTheme.titleSmall!,
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
             },
-            child: visibilityMap[index] == true
-                ? buildCollectionItem(context, items[index], collectionDetail, isArabic, index)
-                : Container(
-                height: 200, color: Colors.transparent), // Placeholder
-          );
-        },
+          ),
+          Gap(30),
+          _hasAnimated
+              ? Text(
+            AppLocalizations.of(context).translate('des_title'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                AppLocalizations.of(context).translate('des_title'),
+                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          Column(
+            children: listOfChips(collectionDetail, context),
+          ),
+          Gap(20),
+          _hasAnimated
+              ? Text(
+            AppLocalizations.of(context).translate('body_shape_question'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                AppLocalizations.of(context).translate('body_shape_question'),
+                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          _hasAnimated
+              ? Text(
+            getDesPart(collectionDetail?.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
+            style: Theme.of(context).textTheme.titleSmall,
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                getDesPart(collectionDetail?.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
+                textStyle: Theme.of(context).textTheme.titleSmall!,
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          Gap(20),
+          _hasAnimated
+              ? Text(
+            AppLocalizations.of(context).translate('situation_question'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                AppLocalizations.of(context).translate('situation_question'),
+                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          _hasAnimated
+              ? Text(
+            getDesPart(collectionDetail?.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
+            style: Theme.of(context).textTheme.titleSmall,
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                getDesPart(collectionDetail?.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
+                textStyle: Theme.of(context).textTheme.titleSmall!,
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          Gap(20),
+          _hasAnimated
+              ? Text(
+            AppLocalizations.of(context).translate('design_question'),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                AppLocalizations.of(context).translate('design_question'),
+                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          _hasAnimated
+              ? Text(
+            getDesPart(collectionDetail?.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
+            style: Theme.of(context).textTheme.titleSmall,
+          )
+              : AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                getDesPart(collectionDetail?.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
+                textStyle: Theme.of(context).textTheme.titleSmall!,
+                speed: Duration(milliseconds: _animation_time),
+              ),
+            ],
+            isRepeatingAnimation: false,
+            totalRepeatCount: 1,
+            onFinished: () {
+              setState(() {
+                _hasAnimated = true;
+              });
+            },
+          ),
+          Gap(48),
+          ChatWidget(collectionDetail: collectionDetail),
+        ],
       ),
     );
   }
 
-  Widget buildCollectionItem(BuildContext context, CollectionItem item, ProductsModel? collectionDetail,
-      bool isArabic, int parentIndex) {
+  Widget buildTabContent2(List<CollectionItem> items, ProductsModel? collectionDetail, bool isArabic) {
+    return ListView.builder(
+      padding: EdgeInsets.only(top: 20),
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int index) {
+        return VisibilityDetector(
+          key: Key(index.toString()),
+          onVisibilityChanged: (VisibilityInfo info) {
+            if (info.visibleFraction > 0.5) {
+              setState(() {
+                visibilityMap[index] = true;
+              });
+            }
+          },
+          child: visibilityMap[index] == true
+              ? buildCollectionItem(context, items[index], collectionDetail, isArabic, index)
+              : Container(height: 200, color: Colors.transparent), // Placeholder
+        );
+      },
+    );
+  }
 
+  Widget buildCollectionItem(BuildContext context, CollectionItem item, ProductsModel? collectionDetail, bool isArabic, int parentIndex) {
     // If products is not null, reorder them
-    List<Product> orderedProducts = item.products != null
-        ? reorderProducts(item.products!, item.match_count ?? {})
-        : [];
+    List<Product> orderedProducts = item.products != null ? reorderProducts(item.products!, item.match_count ?? {}) : [];
 
     String? catName = AppLocalizations.of(context).translate('${item.category?.name}');
     return Column(
@@ -320,8 +427,7 @@ class _DetailState extends State<Detail> {
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(
-                '${orderedProducts.length}' +
-                    '  ' + AppLocalizations.of(context).translate('alternatives'),
+                '${orderedProducts.length}' + '  ' + AppLocalizations.of(context).translate('alternatives'),
                 style: Theme.of(context).textTheme.labelSmall,
               )
             ],
@@ -340,9 +446,11 @@ class _DetailState extends State<Detail> {
           child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
         ),
         Padding(
-            padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
-            child: Text(AppLocalizations.of(context).translate('products_suggestion_title'),
-                style: TextStyle(fontWeight: FontWeight.bold))
+          padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
+          child: Text(
+            AppLocalizations.of(context).translate('products_suggestion_title'),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
@@ -355,8 +463,10 @@ class _DetailState extends State<Detail> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(AppLocalizations.of(context).translate('products_suggestion_des'),
-                    style: Theme.of(context).textTheme.labelSmall,),
+                  child: Text(
+                    AppLocalizations.of(context).translate('products_suggestion_des'),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
                 ),
               ],
             ),
@@ -380,8 +490,7 @@ class _DetailState extends State<Detail> {
                 },
                 child: horizontalVisibilityMap[key] == true
                     ? buildProductItem(context, orderedProducts[index], isArabic)
-                    : Container(
-                    width: 100, color: Colors.transparent), // Placeholder
+                    : Container(width: 100, color: Colors.transparent), // Placeholder
               );
             },
           ),
@@ -401,8 +510,7 @@ class _DetailState extends State<Detail> {
     return productsCopy;
   }
 
-  Widget buildProductItem(
-      BuildContext context, Product productItem, bool isArabic) {
+  Widget buildProductItem(BuildContext context, Product productItem, bool isArabic) {
     bookmarkedItems[productItem.id.toString()] ??= false;
 
     return Padding(
@@ -420,13 +528,11 @@ class _DetailState extends State<Detail> {
                       showImagePopup(context, productItem);
                     },
                     child: CachedNetworkImage(
-                      imageUrl:
-                      getSmallImageUrl(productItem.pictures!.split(',')[0]),
+                      imageUrl: getSmallImageUrl(productItem.pictures!.split(',')[0]),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.height * 0.34,
                       width: MediaQuery.of(context).size.width * 0.44,
-                      placeholder: (context, url) =>
-                          Center(child: CircularProgressIndicator()),
+                      placeholder: (context, url) => Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) {
                         print(error);
                         return Icon(Icons.error);
@@ -439,10 +545,7 @@ class _DetailState extends State<Detail> {
                   padding: const EdgeInsets.only(left: 12.0, right: 12.0),
                   child: Text(
                     getBrandName(productItem.attributes) ?? 'Unknown',
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -460,8 +563,7 @@ class _DetailState extends State<Detail> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () =>
-                      showPopupOnce(context, productItem.corresponding_url!),
+                  onPressed: () => showPopupOnce(context, productItem.corresponding_url!),
                   child: Text(
                     AppLocalizations.of(context).translate('shopping_bu'),
                     style: TextStyle(
@@ -486,16 +588,11 @@ class _DetailState extends State<Detail> {
               ),
               child: IconButton(
                 icon: bookmarkedItems[productItem.id.toString()]!
-                    ? SvgPicture.asset(
-                  'assets/images/bookmarked.svg',
-                )
-                    : SvgPicture.asset(
-                  'assets/images/bookmark.svg',
-                ),
+                    ? SvgPicture.asset('assets/images/bookmarked.svg')
+                    : SvgPicture.asset('assets/images/bookmark.svg'),
                 onPressed: () {
                   setState(() {
-                    bookmarkedItems[productItem.id.toString()] =
-                    !bookmarkedItems[productItem.id.toString()]!;
+                    bookmarkedItems[productItem.id.toString()] = !bookmarkedItems[productItem.id.toString()]!;
                     saveBookmarkedItems(bookmarkedItems);
                   });
                 },
@@ -511,8 +608,7 @@ class _DetailState extends State<Detail> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, bool> bookmarkedItems = {};
     if (prefs.containsKey('bookmarkedItems')) {
-      bookmarkedItems = Map<String, bool>.from(
-          json.decode(prefs.getString('bookmarkedItems')!));
+      bookmarkedItems = Map<String, bool>.from(json.decode(prefs.getString('bookmarkedItems')!));
     }
     return bookmarkedItems;
   }
@@ -591,10 +687,7 @@ class _DetailState extends State<Detail> {
             AppLocalizations.of(context).translate('${tag}'),
             style: Theme.of(context).textTheme.labelSmall,
           ),
-          backgroundColor: Theme.of(context)
-              .colorScheme
-              .inversePrimary
-              .withOpacity(0.0),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.0),
           shape: StadiumBorder(
             side: BorderSide(
               color: Theme.of(context).colorScheme.onBackground, // Color of the border
@@ -612,7 +705,8 @@ class _DetailState extends State<Detail> {
             children: [
               Expanded(
                 flex: 1,
-                child: Text(AppLocalizations.of(context).translate('${key}'), style: Theme.of(context).textTheme.labelMedium),
+                child: Text(AppLocalizations.of(context).translate('${key}'),
+                    style: Theme.of(context).textTheme.labelMedium),
               ),
               Expanded(
                 flex: 2,
@@ -634,9 +728,7 @@ class _DetailState extends State<Detail> {
 
   Widget buildAttributes(List<Rules>? rules, String? categoryId) {
     if (rules != null) {
-      List<Rules> filteredRules = rules
-          .where((rule) => rule.categoryId == categoryId)
-          .toList();
+      List<Rules> filteredRules = rules.where((rule) => rule.categoryId == categoryId).toList();
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,13 +740,15 @@ class _DetailState extends State<Detail> {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Row(
               children: [
-                Text((ruleName.length > 3) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
+                Text(
+                  (ruleName.length > 3) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
                   style: TextStyle(fontWeight: FontWeight.normal),
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0, right: 8),
-                    child: Text('${rule.attributeValue} ',
+                    child: Text(
+                      '${rule.attributeValue} ',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

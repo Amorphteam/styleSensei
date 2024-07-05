@@ -328,7 +328,7 @@ class _HomeTabState extends State<HomeTab> {
                         AppLocalizations.of(context).translate('home_title'),
                         style: Theme.of(context)
                             .textTheme
-                            .titleLarge
+                            .titleMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(

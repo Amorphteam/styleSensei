@@ -137,9 +137,8 @@ class _ChatWidgetState extends State<ChatWidget> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.only(right: 16, left: 16, bottom: 26),
                   child: Text(
                     _response,
                     style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
