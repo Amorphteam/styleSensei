@@ -8,7 +8,9 @@ import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../utils/user_controller.dart';
+import '../body/body_screen.dart';
 import '../waiting/waiting_screen.dart';
+
 
 class SplashWithVideo extends StatefulWidget {
   final String? title;
@@ -87,7 +89,7 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                     padding: EdgeInsets.symmetric(vertical: 12.0), // Adjust vertical padding as needed
                   ),
                   onPressed: () async {
-                    await loginWithGoogle(context);
+                    await openBodyTypeScreen(context);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.5,
@@ -95,13 +97,8 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                       mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
                       mainAxisSize: MainAxisSize.max, // Max width within the parent
                       children: <Widget>[
-                        SvgPicture.asset(
-                          'assets/images/google.svg', // Replace with your asset image path
-                          height: 20.0,
-                        ),
-                        SizedBox(width: 8), // You can adjust spacing as needed
                         Text(
-                          AppLocalizations.of(context).translate('google_login'),
+                          AppLocalizations.of(context).translate('get_started'),
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.white,
@@ -144,7 +141,18 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
     }
   }
 
-  @override
+  Future<void> openBodyTypeScreen(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BodyTypeSelectionScreen(),
+      ),
+    );
+  }
+
+
+
+@override
   void dispose() {
     _controller?.dispose();
     super.dispose();

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-
 Future<String> getStyleDetails(String prompt) async {
   final apiKey = Platform.environment['OPENAI_API_KEY'];
   if (apiKey == null) {

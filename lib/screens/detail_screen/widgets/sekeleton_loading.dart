@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonLoading extends StatelessWidget {
-  const SkeletonLoading({
-    super.key,
-  });
+  const SkeletonLoading({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,70 +11,45 @@ class SkeletonLoading extends StatelessWidget {
         child: Shimmer.fromColors(
           baseColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
           highlightColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-
-                child: Row(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width/3,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10),
-                      ),                  ),
-                    Container(
-                      width: MediaQuery.of(context).size.width/3,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10),
-                      ),                  ),
-                  ],),
-              ),
-              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.only(right: 20, left: 60),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.only(right: 20, left: 30),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.only(right: 20, left: 120),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),              SizedBox(height: 20),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                height: 10,
-                color:  Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
-              ),
-            ],
+                    _buildShimmerContainer(context, widthFraction: 1 / 3, height: 50),
+                    _buildShimmerContainer(context, widthFraction: 1 / 3, height: 50),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(top: 0),
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: _buildShimmerContainer(context, height: 10),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerContainer(BuildContext context, {double widthFraction = 1.0, double? height}) {
+    return Container(
+      width: MediaQuery.of(context).size.width * widthFraction,
+      height: height,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(10),
       ),
     );
   }

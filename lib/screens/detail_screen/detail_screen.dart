@@ -116,10 +116,27 @@ class _DetailState extends State<Detail> {
 
         } else if (state is DetailErrorState) {
           return Scaffold(
+            body: NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    expandedHeight: 600.0,
+                    floating: false,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: CachedNetworkImage(
+                        imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ];
+              },
             body: Center(
               child: Text(AppLocalizations.of(context).translate('error')),
             ),
-          );
+          ),
+        );
         } else {
           // This handles DetailInitial and any other unhandled state
           return Scaffold(
@@ -194,58 +211,61 @@ class _DetailState extends State<Detail> {
       ProductsModel? collectionDetail, bool isArabic) {
     return Padding(
       padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 16),
-      child: ListView(
-        children: [
-          Text(
-            getDesPart(collectionDetail?.collection?.description, 'desc',
-                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-              .textTheme
-              .titleSmall,
-          ),
-          Gap(30),
-          Text(
-            AppLocalizations.of(context).translate('des_title'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Column(
-            children: listOfChips(collectionDetail, context),
-          ),
-          Gap(20),
-          Text(
-            AppLocalizations.of(context).translate('body_shape_question'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            getDesPart(collectionDetail?.collection?.description, 'body_shape',
-                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-              .textTheme
-              .titleSmall,
-          ),
-          Gap(20),
-          Text(
-            AppLocalizations.of(context).translate('situation_question'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            getDesPart(collectionDetail?.collection?.description, 'situation',
-                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-              .textTheme
-              .titleSmall,
-          ),
-          Gap(20),
-          Text(
-            AppLocalizations.of(context).translate('design_question'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            getDesPart(collectionDetail?.collection?.description, 'design',
-                (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
-              .textTheme
-              .titleSmall,
-          ),
-          Gap(48),
-          ChatWidget(collectionDetail: collectionDetail)
-        ],
+      child: Expanded(
+        child: ListView(
+          padding: EdgeInsets.only(top: 20),
+          children: [
+            Text(
+              getDesPart(collectionDetail?.collection?.description, 'desc',
+                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+                .textTheme
+                .titleSmall,
+            ),
+            Gap(30),
+            Text(
+              AppLocalizations.of(context).translate('des_title'),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Column(
+              children: listOfChips(collectionDetail, context),
+            ),
+            Gap(20),
+            Text(
+              AppLocalizations.of(context).translate('body_shape_question'),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              getDesPart(collectionDetail?.collection?.description, 'body_shape',
+                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+                .textTheme
+                .titleSmall,
+            ),
+            Gap(20),
+            Text(
+              AppLocalizations.of(context).translate('situation_question'),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              getDesPart(collectionDetail?.collection?.description, 'situation',
+                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+                .textTheme
+                .titleSmall,
+            ),
+            Gap(20),
+            Text(
+              AppLocalizations.of(context).translate('design_question'),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              getDesPart(collectionDetail?.collection?.description, 'design',
+                  (isArabic) ? 'ar' : 'en'), style: Theme.of(context)
+                .textTheme
+                .titleSmall,
+            ),
+            Gap(48),
+            ChatWidget(collectionDetail: collectionDetail)
+          ],
+        ),
       ),
     );
   }
@@ -255,6 +275,7 @@ class _DetailState extends State<Detail> {
     print('id is : ${collectionDetail?.collection?.id}');
     return Expanded(
       child: ListView.builder(
+        padding: EdgeInsets.only(top: 20),
         itemCount: items.length,
         itemBuilder: (BuildContext context, int index) {
           return VisibilityDetector(

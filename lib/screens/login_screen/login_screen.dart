@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 

@@ -143,7 +143,7 @@ class MyApp extends StatelessWidget {
               // Check if a style has been selected
               if (styleSelectionsString == null) {
                 // No style selected, show simple splash
-                return SplashSimple(imagePath: 'assets/images/splash1.jpg');
+                return SplashWithVideo();
               } else {
                 // Style selected, proceed to waiting screen
                 return WaitingScreen();

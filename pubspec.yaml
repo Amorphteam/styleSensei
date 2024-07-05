@@ -57,6 +57,7 @@ dependencies:
   google_sign_in: ^6.1.5
   freezed: ^2.4.7
   json_annotation: ^4.8.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
