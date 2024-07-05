@@ -66,6 +66,10 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
           elevation: 0, // Remove elevation to prevent overlay color
         ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.white,
+          elevation: 0, // Remove elevation to prevent overlay color
+        ),
 
       ),
 

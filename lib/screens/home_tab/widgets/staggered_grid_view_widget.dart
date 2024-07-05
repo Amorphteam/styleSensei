@@ -90,13 +90,16 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
     }
   }
 
-  Padding buildMasonryGrid(bool isArabic) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
+  Widget buildMasonryGrid(bool isArabic) {
+    return Container(
+      padding: EdgeInsets.zero, // Ensure no padding
+      margin: EdgeInsets.zero, // Ensure no margin
+
       child: MasonryGridView.count(
         crossAxisCount: 2,
         mainAxisSpacing: 18,
         crossAxisSpacing: 6,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: mutableCollections.length,
         itemBuilder: (context, index) {
           return buildGridItem(index, isArabic, context);
@@ -239,6 +242,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
 
   Widget buildStaggeredGrid(bool isArabic) {
     return GridView.custom(
+      physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverQuiltedGridDelegate(
         crossAxisCount: 1,
         mainAxisSpacing: 2,
