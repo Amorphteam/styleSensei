@@ -27,7 +27,12 @@ import 'package:style_sensei/utils/user_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 // Initialize Firebase
-  await dotenv.load(fileName: '.env'); // Explicitly specify the file path
+  // Load environment variables (this is for local development)
+  await dotenv.load(fileName: '.env');
+
+  // Log environment variable for debugging
+  print('Loaded API Key: ${dotenv.env['OPENAI_API_KEY']}');
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Enable Firebase Crashlytics
