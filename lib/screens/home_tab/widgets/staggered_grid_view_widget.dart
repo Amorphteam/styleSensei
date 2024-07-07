@@ -115,11 +115,11 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
     final isLiked = likedCollections.contains(collection.id.toString());
     double padding = 4.0;
     double imageSize = 16.0;
-    var style = Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal);
+    var style = Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.normal);
     if (!widget.twoColumn){
       padding = 16.0;
       imageSize = 24.0;
-      style = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.normal);
+      style = Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.normal);
     }
 
     bool showOverlay = index == dislikedIndex;

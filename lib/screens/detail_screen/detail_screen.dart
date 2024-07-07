@@ -254,13 +254,13 @@ class _DetailState extends State<Detail> {
           _hasAnimated
               ? Text(
             AppLocalizations.of(context).translate('body_shape_question'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('body_shape_question'),
-                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                 speed: Duration(milliseconds: _animation_time),
               ),
             ],
@@ -275,13 +275,13 @@ class _DetailState extends State<Detail> {
           _hasAnimated
               ? Text(
             getDesPart(collectionDetail?.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.bodyMedium,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
                 getDesPart(collectionDetail?.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.titleSmall!,
+                textStyle: Theme.of(context).textTheme.bodyMedium!,
                 speed: Duration(milliseconds: _animation_time),
               ),
             ],
@@ -297,13 +297,13 @@ class _DetailState extends State<Detail> {
           _hasAnimated
               ? Text(
             AppLocalizations.of(context).translate('situation_question'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('situation_question'),
-                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                 speed: Duration(milliseconds: _animation_time),
               ),
             ],
@@ -318,13 +318,13 @@ class _DetailState extends State<Detail> {
           _hasAnimated
               ? Text(
             getDesPart(collectionDetail?.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.bodyMedium,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
                 getDesPart(collectionDetail?.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.titleSmall!,
+                textStyle: Theme.of(context).textTheme.bodyMedium!,
                 speed: Duration(milliseconds: _animation_time),
               ),
             ],
@@ -340,13 +340,13 @@ class _DetailState extends State<Detail> {
           _hasAnimated
               ? Text(
             AppLocalizations.of(context).translate('design_question'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('design_question'),
-                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+                textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                 speed: Duration(milliseconds: _animation_time),
               ),
             ],
@@ -361,13 +361,13 @@ class _DetailState extends State<Detail> {
           _hasAnimated
               ? Text(
             getDesPart(collectionDetail?.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
-            style: Theme.of(context).textTheme.titleSmall,
+            style: Theme.of(context).textTheme.bodyMedium,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
                 getDesPart(collectionDetail?.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.titleSmall!,
+                textStyle: Theme.of(context).textTheme.bodyMedium!,
                 speed: Duration(milliseconds: _animation_time),
               ),
             ],
@@ -672,7 +672,7 @@ class _DetailState extends State<Detail> {
             .map((tag) => Chip(
           label: Text(
             AppLocalizations.of(context).translate('${tag}'),
-            style: Theme.of(context).textTheme.labelSmall,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.0),
           shape: StadiumBorder(
@@ -693,7 +693,7 @@ class _DetailState extends State<Detail> {
               Expanded(
                 flex: 1,
                 child: Text(AppLocalizations.of(context).translate('${key}'),
-                    style: Theme.of(context).textTheme.labelMedium),
+                    style: Theme.of(context).textTheme.bodyMedium),
               ),
               Expanded(
                 flex: 2,

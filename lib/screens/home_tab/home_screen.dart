@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
@@ -91,7 +93,7 @@ class _HomeTabState extends State<HomeTab> {
             children: options.map((ImageItem option) {
               String displayText = isArabic ? option.arDes : option.des;
               return ListTile(
-                title: Text(displayText, style: Theme.of(context).textTheme.titleSmall,),
+                title: Text(displayText),
                 onTap: () {
                   setState(() {
                     selectedChoices[title] = option;
@@ -181,16 +183,16 @@ class _HomeTabState extends State<HomeTab> {
                     AppLocalizations.of(context).translate('home_title'),
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium
+                        .titleLarge
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    AppLocalizations.of(context).translate('home_des'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(fontWeight: FontWeight.normal),
-                  ),
+                  // Text(
+                  //   AppLocalizations.of(context).translate('home_des'),
+                  //   style: Theme.of(context)
+                  //       .textTheme
+                  //       .bodyMedium
+                  //       ?.copyWith(fontWeight: FontWeight.normal),
+                  // ),
 
                 ],
               ),
@@ -209,7 +211,7 @@ class _HomeTabState extends State<HomeTab> {
 
   Widget buildChips(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -235,12 +237,12 @@ class _HomeTabState extends State<HomeTab> {
             bool isSelected = selectedChoices.containsKey(title);
 
             Widget chipLabel = isSelected
-                ? Text((isArabic)?selectedChoices[title]!.arDes:selectedChoices[title]!.des, style: Theme.of(context).textTheme.labelSmall,)
+                ? Text((isArabic)?selectedChoices[title]!.arDes:selectedChoices[title]!.des, style: Theme.of(context).textTheme.bodyMedium,)
                 : Container(
                   child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.labelSmall,),
+                        Text(title, style: Theme.of(context).textTheme.bodyMedium,),
                         Icon(Icons.arrow_drop_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
                       ],
                     ),
