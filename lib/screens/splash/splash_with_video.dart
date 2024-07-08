@@ -1,21 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:style_sensei/screens/splash/splash_screen.dart';
-import 'package:style_sensei/screens/splash/splash_simple.dart';
-import 'package:style_sensei/utils/AppLocalizations.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../utils/user_controller.dart';
-import '../body/body_screen.dart';
-import '../waiting/waiting_screen.dart';
-
+import '../../utils/AppLocalizations.dart';
+import '../splash/splash_simple.dart';
 
 class SplashWithVideo extends StatefulWidget {
   final String? title;
+  final bool isFromSettings;
 
-  const SplashWithVideo({super.key, this.title});
+  const SplashWithVideo({super.key, this.title, required this.isFromSettings});
 
   @override
   _SplashWithVideoState createState() => _SplashWithVideoState();
@@ -65,7 +59,7 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
             Positioned(
               left: 20, // Add some padding from the left
               bottom: 40,
-              right: 160,// Add some padding from the bottom
+              right: 160, // Add some padding from the bottom
               child: Text(
                 widget.title ?? '',
                 style: TextStyle(
@@ -84,13 +78,19 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                 children: [
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100.0),
                       ),
                       padding: EdgeInsets.all(12.0), // Adjust vertical padding as needed
                     ),
                     onPressed: () async {
+                      Provider.of<LocaleProvider>(context, listen: false).setLocale(Locale('en'));
+                      if (widget.isFromSettings) {
+                        Navigator.pop(context);
+                        return;
+                      }
                       await openSplash(context);
                     },
                     child: Container(
@@ -100,7 +100,8 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                         mainAxisSize: MainAxisSize.max, // Max width within the parent
                         children: <Widget>[
                           Text(
-                            AppLocalizations.of(context).translate('get_started_english'),
+                            AppLocalizations.of(context)
+                                .translate('get_started_english'),
                             style: TextStyle(
                               fontSize: 14.0,
                               color: Colors.white,
@@ -112,13 +113,19 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                   ),
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100.0),
                       ),
                       padding: EdgeInsets.all(12.0), // Adjust vertical padding as needed
                     ),
                     onPressed: () async {
+                      Provider.of<LocaleProvider>(context, listen: false).setLocale(Locale('ar'));
+                      if (widget.isFromSettings) {
+                        Navigator.pop(context);
+                        return;
+                      }
                       await openSplash(context);
                     },
                     child: Container(
@@ -128,7 +135,8 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                         mainAxisSize: MainAxisSize.max, // Max width within the parent
                         children: <Widget>[
                           Text(
-                            AppLocalizations.of(context).translate('get_started_arabic'),
+                            AppLocalizations.of(context)
+                                .translate('get_started_arabic'),
                             style: TextStyle(
                               fontSize: 14.0,
                               color: Colors.white,
@@ -148,42 +156,18 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
     );
   }
 
-  Future<void> loginWithGoogle(BuildContext context) async {
-    try {
-      final user = await UserController.loginWithGoogle();
-      if (user != null && mounted) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String? styleSelectionsString = prefs.getString('styleSelections');
-        if (styleSelectionsString == null) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SplashSimple(imagePath: "assets/images/splash1.jpg"),
-          ));
-        } else {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => WaitingScreen(),
-          ));
-        }
-      }
-    } on FirebaseAuthException catch (error) {
-      debugPrint(error.message);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).translate('error'))));
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
-    }
-  }
-
   Future<void> openSplash(BuildContext context) async {
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SplashSimple(imagePath: 'assets/images/splash1.jpg'),
+        builder: (context) =>
+            SplashSimple(imagePath: 'assets/images/splash1.jpg'),
       ),
     );
   }
 
-
-
-@override
+  @override
   void dispose() {
     _controller?.dispose();
     super.dispose();

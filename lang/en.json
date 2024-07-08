@@ -1508,5 +1508,6 @@
   "get_started_english": "English",
   "get_started_arabic": "العربية",
   "no_products": "No matching items found.",
-  "no_products_desc": "Style Sensei AI will search for similar items in online shops, and items will be updated as soon as they're found."
+  "no_products_desc": "Style Sensei AI will search for similar items in online shops, and items will be updated as soon as they're found.",
+  "language": "Language"
 }

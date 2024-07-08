@@ -24,7 +24,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final List<Widget> splashPages = [
-    SplashWithVideo(),
+    SplashWithVideo(isFromSettings: false,),
 
     SplashSimple(imagePath: "assets/images/splash1.jpg"),
     BodyTypeSelectionScreen(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:style_sensei/screens/body/body_screen.dart';
+import 'package:style_sensei/screens/splash/splash_with_video.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +26,8 @@ class ProfileScreen extends StatelessWidget {
             height: 16,
           ),
           _buildSectionTitle(context, AppLocalizations.of(context).translate('appearance_preferences')),
+          _buildListTile(
+              title: AppLocalizations.of(context).translate('language'), icon: Icons.accessibility, context: context),
           _buildListTile(
               title: AppLocalizations.of(context).translate('body_type'), icon: Icons.accessibility, context: context),
           _buildListTile(
@@ -90,6 +93,7 @@ class ProfileScreen extends StatelessWidget {
 
   void _openScreen(String title, BuildContext context) {
     final screens = {
+      AppLocalizations.of(context).translate('language'): SplashWithVideo(isFromSettings: true),
       AppLocalizations.of(context).translate('body_type'): BodyTypeSelectionScreen(isFromSettings: true),
       AppLocalizations.of(context).translate('color_tone'): ColorTonesScreen(isFromSettings: true),
       AppLocalizations.of(context).translate('styles'): StyleScreen(isFromSettings: true),
