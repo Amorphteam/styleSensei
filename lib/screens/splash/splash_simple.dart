@@ -24,17 +24,32 @@ class SplashSimple extends StatelessWidget {
             alignment: Alignment.bottomLeft,
             child: Container(
               padding: EdgeInsets.only(left: 55, bottom: 100),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width / 1.6, // Width is half of the screen
+              width: MediaQuery.of(context).size.width /
+                  1.6, // Width is half of the screen
               child: Text(
                 AppLocalizations.of(context).translate('splash_title'),
-                style: TextStyle(
-                  fontSize: 32,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .displaySmall
+                    ?.copyWith(color: Colors.white),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height / 3,
+                  left: 0,
+                  bottom: 100),
+              width: MediaQuery.of(context).size.width /
+                  1.6, // Width is half of the screen
+              child: Text(
+                AppLocalizations.of(context).translate('splash_title2'),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(color: Colors.white),
               ),
             ),
           ),
@@ -45,7 +60,8 @@ class SplashSimple extends StatelessWidget {
               child: Center(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100.0),
                     ),
@@ -55,22 +71,18 @@ class SplashSimple extends StatelessWidget {
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.5,
-                    child:  Center(
+                    child: Center(
                       child: Text(
-                        AppLocalizations.of(context).translate('get_started'),
+                        AppLocalizations.of(context).translate('next'),
                         style: TextStyle(
                           fontSize: 14.0,
                           color: Colors.white,
                         ),
                       ),
                     ),
-
                   ),
                 ),
-              )
-
-          )
-
+              ))
         ],
       ),
     );

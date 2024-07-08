@@ -77,37 +77,68 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
             ),
             Positioned(
               bottom: 20,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100.0),
+              left: 30,
+              right: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      padding: EdgeInsets.all(12.0), // Adjust vertical padding as needed
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 12.0), // Adjust vertical padding as needed
-                  ),
-                  onPressed: () async {
-                    await openBodyTypeScreen(context);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
-                      mainAxisSize: MainAxisSize.max, // Max width within the parent
-                      children: <Widget>[
-                        Text(
-                          AppLocalizations.of(context).translate('get_started'),
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.white,
+                    onPressed: () async {
+                      await openSplash(context);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
+                        mainAxisSize: MainAxisSize.max, // Max width within the parent
+                        children: <Widget>[
+                          Text(
+                            AppLocalizations.of(context).translate('get_started_english'),
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white, backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      padding: EdgeInsets.all(12.0), // Adjust vertical padding as needed
+                    ),
+                    onPressed: () async {
+                      await openSplash(context);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
+                        mainAxisSize: MainAxisSize.max, // Max width within the parent
+                        children: <Widget>[
+                          Text(
+                            AppLocalizations.of(context).translate('get_started_arabic'),
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             )
           ],
@@ -135,17 +166,17 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
       }
     } on FirebaseAuthException catch (error) {
       debugPrint(error.message);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? "Something went wrong")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).translate('error'))));
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 
-  Future<void> openBodyTypeScreen(BuildContext context) async {
+  Future<void> openSplash(BuildContext context) async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BodyTypeSelectionScreen(),
+        builder: (context) => SplashSimple(imagePath: 'assets/images/splash1.jpg'),
       ),
     );
   }

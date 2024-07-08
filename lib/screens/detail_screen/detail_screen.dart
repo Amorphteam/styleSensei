@@ -445,57 +445,90 @@ class _DetailState extends State<Detail> {
           padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
           child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
-          child: Text(
-            AppLocalizations.of(context).translate('products_suggestion_title'),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
-          child: Opacity(
-            opacity: 0.4,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/images/ai.svg',
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    AppLocalizations.of(context).translate('products_suggestion_des'),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
-                ),
-              ],
+        (orderedProducts.length>0)?
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
+              child: Text(
+                AppLocalizations.of(context).translate('products_suggestion_title'),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.40,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: orderedProducts.length,
-            itemBuilder: (BuildContext context, int index) {
-              int key = parentIndex * 1000 + index; // Generate unique key for each horizontal item
-              return VisibilityDetector(
-                key: Key(key.toString()),
-                onVisibilityChanged: (VisibilityInfo info) {
-                  if (info.visibleFraction > 0.5) {
-                    setState(() {
-                      horizontalVisibilityMap[key] = true;
-                    });
-                  }
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
+              child: Opacity(
+                opacity: 0.4,
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/ai.svg',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        AppLocalizations.of(context).translate('products_suggestion_des'),
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: orderedProducts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  int key = parentIndex * 1000 + index; // Generate unique key for each horizontal item
+                  return VisibilityDetector(
+                    key: Key(key.toString()),
+                    onVisibilityChanged: (VisibilityInfo info) {
+                      if (info.visibleFraction > 0.5) {
+                        setState(() {
+                          horizontalVisibilityMap[key] = true;
+                        });
+                      }
+                    },
+                    child: horizontalVisibilityMap[key] == true
+                        ? buildProductItem(context, orderedProducts[index], isArabic)
+                        : Container(width: 100, color: Colors.transparent), // Placeholder
+                  );
                 },
-                child: horizontalVisibilityMap[key] == true
-                    ? buildProductItem(context, orderedProducts[index], isArabic)
-                    : Container(width: 100, color: Colors.transparent), // Placeholder
-              );
-            },
+              ),
+            ),
+            Gap(40)
+          ],
+        ): Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(bottom: 40, top: 20),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
+          padding: EdgeInsets.symmetric(horizontal: 26, vertical: 58),
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                'assets/images/ai.svg', height: 30, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
+                child: Text(
+                  AppLocalizations.of(context).translate('no_products'),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),              Padding(
+                padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  AppLocalizations.of(context).translate('no_products_desc'),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal),
+                ),
+              ),
+              ],
           ),
         ),
-        Gap(40)
       ],
     );
   }
@@ -670,18 +703,18 @@ class _DetailState extends State<Detail> {
         List<Widget> chips = tagValues
             .where((tag) => tag.toString() != 'Hijab') // Exclude 'Hijab' tag
             .map((tag) => Chip(
-          label: Text(
+                      label: Text(
             AppLocalizations.of(context).translate('${tag}'),
             style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.0),
-          shape: StadiumBorder(
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.0),
+                      shape: StadiumBorder(
             side: BorderSide(
               color: Theme.of(context).colorScheme.onBackground, // Color of the border
               width: 0.5, // Width of the border
             ),
-          ),
-        ))
+                      ),
+                    ))
             .toList();
 
         // Create a row for the category name and its tags
@@ -697,10 +730,13 @@ class _DetailState extends State<Detail> {
               ),
               Expanded(
                 flex: 2,
-                child: Wrap(
-                  spacing: 8.0,
-                  runSpacing: 0.0,
-                  children: chips,
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Wrap(
+                    spacing: 8.0,
+                    runSpacing: 0.0,
+                    children: chips,
+                  ),
                 ),
               ),
             ],

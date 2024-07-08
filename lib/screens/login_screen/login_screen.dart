@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:style_sensei/screens/splash/splash_screen.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/user_controller.dart';
 
 
@@ -65,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   } on FirebaseAuthException catch (error){
                     debugPrint(error.message);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? "Something went wrong",)));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).translate('error'))));
                   } catch (error){
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString(),)));
                   }
