@@ -85,7 +85,25 @@ class MyApp extends StatelessWidget {
               var locale = Localizations.localeOf(context);
               if (locale.languageCode == 'ar') {
                 return Theme(
-                  data: ThemeData(
+                  data: Theme.of(context).brightness == Brightness.dark
+                      ? ThemeData(
+                    useMaterial3: true,
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: Color(0xFFDC4D28),
+                      primary: Color(0xFFDC4D28),
+                      brightness: Brightness.dark,
+                    ),
+                    fontFamily: 'tajawal',
+                    navigationBarTheme: NavigationBarThemeData(
+                      backgroundColor: Colors.black,
+                      elevation: 0,
+                    ),
+                    appBarTheme: AppBarTheme(
+                      backgroundColor: Colors.black,
+                      elevation: 0,
+                    ),
+                  )
+                      : ThemeData(
                     useMaterial3: true,
                     colorScheme: ColorScheme.fromSeed(
                       seedColor: Color(0xFFDC4D28),

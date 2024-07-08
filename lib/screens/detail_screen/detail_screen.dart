@@ -653,7 +653,7 @@ class _DetailState extends State<Detail> {
 
   String getTitle(String? titleJson, String language) {
     if (titleJson != null) {
-      titleJson = titleJson.replaceAll("@", "");
+      titleJson = titleJson.replaceAll("@", "").replaceAll("*", "");
 
       try {
         Map<String, dynamic> jsonData = json.decode(titleJson);

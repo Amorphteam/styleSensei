@@ -198,7 +198,7 @@ class _StaggeredGridViewState extends State<StaggeredGridView> {
   String parseTitle(dynamic title, String language) {
 
     if (title is String) {
-      title = title.replaceAll("@", "");
+      title = title.replaceAll("@", "").replaceAll("*", "");
       try {
         final decoded = json.decode(title);
         if (decoded is Map<String, dynamic> && decoded.containsKey(language)) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/screens/style/style_screen.dart';
 import 'package:style_sensei/screens/waiting/waiting_screen.dart';
@@ -22,35 +23,34 @@ class SplashSimple extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomLeft,
-            child: Container(
-              padding: EdgeInsets.only(left: 55, bottom: 100),
-              width: MediaQuery.of(context).size.width /
-                  1.6, // Width is half of the screen
-              child: Text(
-                AppLocalizations.of(context).translate('splash_title'),
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall
-                    ?.copyWith(color: Colors.white),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height / 3,
-                  left: 0,
-                  bottom: 100),
-              width: MediaQuery.of(context).size.width /
-                  1.6, // Width is half of the screen
-              child: Text(
-                AppLocalizations.of(context).translate('splash_title2'),
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
-                    ?.copyWith(color: Colors.white),
-              ),
+            child: Column(
+              children: [
+                Gap(MediaQuery.of(context).size.height/3),
+                Center(
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/4, top: 20.0, bottom: 20.0, right: 10),
+                    child: Text(
+                      AppLocalizations.of(context).translate('splash_title2'),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+                Gap(70),
+                Container(
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width/3, left: MediaQuery.of(context).size.width/6),
+                  child: Text(
+                    AppLocalizations.of(context).translate('splash_title'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(color: Colors.white),
+                  ),
+                )
+              ],
             ),
           ),
           Positioned(
