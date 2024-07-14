@@ -651,19 +651,6 @@ class _DetailState extends State<Detail> {
     return 'Unknown';
   }
 
-  String getTitle(String? titleJson, String language) {
-    if (titleJson != null) {
-      titleJson = titleJson.replaceAll("@", "").replaceAll("*", "");
-
-      try {
-        Map<String, dynamic> jsonData = json.decode(titleJson);
-        return jsonData[language];
-      } catch (error) {
-        return titleJson;
-      }
-    }
-    return '';
-  }
 
   void showPopupOnce(BuildContext context, String url) async {
     if (await canLaunch(url)) {

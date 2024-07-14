@@ -13,6 +13,7 @@ import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 import '../models/Collections.dart';
 import '../screens/style/style_screen.dart';
@@ -109,6 +110,28 @@ class ImageTile extends StatefulWidget {
 
 class _ImageTileState extends State<ImageTile> {
   bool isLongPressing = false;
+  VideoPlayerController? _videoPlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.collections[widget.index].title.contains('.mp4')) {
+      _videoPlayerController = VideoPlayerController.network(getTitle(widget.collections[widget.index].title, 'video'))
+        ..initialize().then((_) {
+          setState(() {});
+          _videoPlayerController!.setLooping(true);
+          _videoPlayerController!.setVolume(0); // Mute the video
+          _videoPlayerController!.play();
+        });
+    }
+  }
+
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +151,24 @@ class _ImageTileState extends State<ImageTile> {
           isLongPressing = false;
         });
       },
-      child: CachedNetworkImage(
+      child: widget.collections[widget.index].title.contains('.mp4')
+          ? (_videoPlayerController != null && _videoPlayerController!.value.isInitialized)
+          ? AspectRatio(
+        aspectRatio: _videoPlayerController!.value.aspectRatio,
+        child: VideoPlayer(_videoPlayerController!),
+      )
+          : Container(
+        height: 280,
+        color: Colors.transparent,
+        child: Center(child: CircularProgressIndicator()),
+      )
+          : CachedNetworkImage(
         imageUrl: replaceNumbersInUrl(widget.collections[widget.index].image),
-
-        placeholder: (context, url) => Container(height: 280, color: Colors.transparent,child: Center(child: CircularProgressIndicator())),
+        placeholder: (context, url) => Container(
+          height: 280,
+          color: Colors.transparent,
+          child: Center(child: CircularProgressIndicator()),
+        ),
         errorWidget: (context, url, error) {
           print(error); // This will print the error to the console
           return Icon(Icons.error);
@@ -717,7 +754,19 @@ List<String> getDescriptionsFromCodes(List<int> codes, Map<int, String> lookupTa
   }
   return descriptions;
 }
+String getTitle(String? titleJson, String language) {
+  if (titleJson != null) {
+    titleJson = titleJson.replaceAll("@", "").replaceAll("*", "");
 
+    try {
+      Map<String, dynamic> jsonData = json.decode(titleJson);
+      return jsonData[language];
+    } catch (error) {
+      return titleJson;
+    }
+  }
+  return '';
+}
 String getDesPart(String? desJson, String part, String language) {
   if (desJson != null) {
     desJson = desJson.replaceAll("**", "");
