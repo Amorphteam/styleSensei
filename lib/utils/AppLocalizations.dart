@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLocalizations {
   final Locale locale;
@@ -51,17 +52,34 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 class LocaleProvider with ChangeNotifier {
   Locale _locale = Locale('en');
 
+  LocaleProvider() {
+    _loadLocale();
+  }
+
   Locale get locale => _locale;
 
-  void setLocale(Locale locale) {
+  void setLocale(Locale locale) async {
     if (!L10n.all.contains(locale)) return;
 
     _locale = locale;
     notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedLocale', locale.languageCode);
   }
 
-  void clearLocale() {
+  void clearLocale() async {
     _locale = Locale('en');
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('selectedLocale');
+  }
+
+  Future<void> _loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final localeCode = prefs.getString('selectedLocale') ?? 'en';
+    _locale = Locale(localeCode);
     notifyListeners();
   }
 }

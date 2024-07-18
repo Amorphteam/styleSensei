@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../utils/AppLocalizations.dart';
@@ -86,6 +87,8 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                       padding: EdgeInsets.all(12.0), // Adjust vertical padding as needed
                     ),
                     onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('selectedLocale', 'en');
                       Provider.of<LocaleProvider>(context, listen: false).setLocale(Locale('en'));
                       if (widget.isFromSettings) {
                         Navigator.pop(context);
@@ -93,6 +96,7 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                       }
                       await openSplash(context);
                     },
+
                     child: Container(
                       width: MediaQuery.of(context).size.width / 3,
                       child: Row(
@@ -121,6 +125,8 @@ class _SplashWithVideoState extends State<SplashWithVideo> {
                       padding: EdgeInsets.all(12.0), // Adjust vertical padding as needed
                     ),
                     onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('selectedLocale', 'ar');
                       Provider.of<LocaleProvider>(context, listen: false).setLocale(Locale('ar'));
                       if (widget.isFromSettings) {
                         Navigator.pop(context);

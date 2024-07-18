@@ -685,23 +685,24 @@ class _DetailState extends State<Detail> {
     List<Widget> tagWidgets = [];
 
     if (collectionDetail?.collection?.tags != null) {
-      collectionDetail!.collection!.tags!.forEach((key, value) {
+      collectionDetail!.collection!.tags!.removeWhere((key, value) => key.contains('Hijab'));
+
+      collectionDetail.collection?.tags?.forEach((key, value) {
         List<dynamic> tagValues = value;
         List<Widget> chips = tagValues
-            .where((tag) => tag.toString() != 'Hijab') // Exclude 'Hijab' tag
             .map((tag) => Chip(
-                      label: Text(
-            AppLocalizations.of(context).translate('${tag}'),
+          label: Text(
+            AppLocalizations.of(context).translate('$tag'),
             style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.0),
-                      shape: StadiumBorder(
+          ),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.0),
+          shape: StadiumBorder(
             side: BorderSide(
               color: Theme.of(context).colorScheme.onBackground, // Color of the border
               width: 0.5, // Width of the border
             ),
-                      ),
-                    ))
+          ),
+        ))
             .toList();
 
         // Create a row for the category name and its tags
@@ -712,7 +713,7 @@ class _DetailState extends State<Detail> {
             children: [
               Expanded(
                 flex: 1,
-                child: Text(AppLocalizations.of(context).translate('${key}'),
+                child: Text(AppLocalizations.of(context).translate('$key'),
                     style: Theme.of(context).textTheme.bodyMedium),
               ),
               Expanded(
@@ -751,7 +752,7 @@ class _DetailState extends State<Detail> {
             child: Row(
               children: [
                 Text(
-                  (ruleName.length > 3) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
+                  (!ruleName.contains('N/A')) ? ' - $ruleName:' : ' - ${rule.attribute?.name}: ',
                   style: TextStyle(fontWeight: FontWeight.normal),
                 ),
                 Expanded(
