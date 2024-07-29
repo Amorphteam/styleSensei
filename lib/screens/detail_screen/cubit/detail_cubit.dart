@@ -28,7 +28,7 @@ class DetailCubit extends Cubit<DetailState> {
 
   Future<void> fetchCollectionItems(CollectionRepository collectionRepository, int collectionId) async {
     if (_cachedItems != null) {
-      emit(DetailState.loadedItems(_cachedItems!));
+      emit(DetailState.loadedItems(_cachedItems!, _cachedCollectionDetail));
       return;
     }
 
@@ -36,7 +36,7 @@ class DetailCubit extends Cubit<DetailState> {
     try {
       final items = await collectionRepository.fetchCollectionItems(collectionId);
       _cachedItems = items;
-      emit(DetailState.loadedItems(items));
+      emit(DetailState.loadedItems(items, _cachedCollectionDetail));
     } catch (error) {
       emit(DetailState.error(error.toString()));
     }

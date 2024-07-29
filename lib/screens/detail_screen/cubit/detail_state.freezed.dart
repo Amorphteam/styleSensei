@@ -20,9 +20,11 @@ mixin _$DetailState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
     required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
     required TResult Function(String message) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -30,9 +32,11 @@ mixin _$DetailState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
     TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult? Function(String message)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -40,9 +44,11 @@ mixin _$DetailState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
     TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) =>
@@ -51,8 +57,8 @@ mixin _$DetailState {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadedItems value) loadedItems,
     required TResult Function(_Error value) error,
   }) =>
@@ -61,8 +67,8 @@ mixin _$DetailState {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadedItems value)? loadedItems,
     TResult? Function(_Error value)? error,
   }) =>
@@ -71,8 +77,8 @@ mixin _$DetailState {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadedItems value)? loadedItems,
     TResult Function(_Error value)? error,
     required TResult orElse(),
@@ -138,9 +144,11 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
     required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -151,9 +159,11 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
     TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -164,9 +174,11 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
     TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -181,8 +193,8 @@ class _$InitialImpl implements _Initial {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadedItems value) loadedItems,
     required TResult Function(_Error value) error,
   }) {
@@ -194,8 +206,8 @@ class _$InitialImpl implements _Initial {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadedItems value)? loadedItems,
     TResult? Function(_Error value)? error,
   }) {
@@ -207,8 +219,8 @@ class _$InitialImpl implements _Initial {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadedItems value)? loadedItems,
     TResult Function(_Error value)? error,
     required TResult orElse(),
@@ -264,9 +276,11 @@ class _$LoadingDetailImpl implements _LoadingDetail {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
     required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
     required TResult Function(String message) error,
   }) {
     return loadingDetail();
@@ -277,9 +291,11 @@ class _$LoadingDetailImpl implements _LoadingDetail {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
     TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult? Function(String message)? error,
   }) {
     return loadingDetail?.call();
@@ -290,9 +306,11 @@ class _$LoadingDetailImpl implements _LoadingDetail {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
     TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -307,8 +325,8 @@ class _$LoadingDetailImpl implements _LoadingDetail {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadedItems value) loadedItems,
     required TResult Function(_Error value) error,
   }) {
@@ -320,8 +338,8 @@ class _$LoadingDetailImpl implements _LoadingDetail {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadedItems value)? loadedItems,
     TResult? Function(_Error value)? error,
   }) {
@@ -333,8 +351,8 @@ class _$LoadingDetailImpl implements _LoadingDetail {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadedItems value)? loadedItems,
     TResult Function(_Error value)? error,
     required TResult orElse(),
@@ -348,6 +366,138 @@ class _$LoadingDetailImpl implements _LoadingDetail {
 
 abstract class _LoadingDetail implements DetailState {
   const factory _LoadingDetail() = _$LoadingDetailImpl;
+}
+
+/// @nodoc
+abstract class _$$LoadingItemsImplCopyWith<$Res> {
+  factory _$$LoadingItemsImplCopyWith(
+          _$LoadingItemsImpl value, $Res Function(_$LoadingItemsImpl) then) =
+      __$$LoadingItemsImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$LoadingItemsImplCopyWithImpl<$Res>
+    extends _$DetailStateCopyWithImpl<$Res, _$LoadingItemsImpl>
+    implements _$$LoadingItemsImplCopyWith<$Res> {
+  __$$LoadingItemsImplCopyWithImpl(
+      _$LoadingItemsImpl _value, $Res Function(_$LoadingItemsImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$LoadingItemsImpl implements _LoadingItems {
+  const _$LoadingItemsImpl();
+
+  @override
+  String toString() {
+    return 'DetailState.loadingItems()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$LoadingItemsImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loadingDetail,
+    required TResult Function() loadingItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
+    required TResult Function(String message) error,
+  }) {
+    return loadingItems();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loadingDetail,
+    TResult? Function()? loadingItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
+    TResult? Function(String message)? error,
+  }) {
+    return loadingItems?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loadingDetail,
+    TResult Function()? loadingItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
+    TResult Function(String message)? error,
+    required TResult orElse(),
+  }) {
+    if (loadingItems != null) {
+      return loadingItems();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_LoadingDetail value) loadingDetail,
+    required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
+    required TResult Function(_LoadedItems value) loadedItems,
+    required TResult Function(_Error value) error,
+  }) {
+    return loadingItems(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_LoadingDetail value)? loadingDetail,
+    TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
+    TResult? Function(_LoadedItems value)? loadedItems,
+    TResult? Function(_Error value)? error,
+  }) {
+    return loadingItems?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_LoadingDetail value)? loadingDetail,
+    TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
+    TResult Function(_LoadedItems value)? loadedItems,
+    TResult Function(_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (loadingItems != null) {
+      return loadingItems(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadingItems implements DetailState {
+  const factory _LoadingItems() = _$LoadingItemsImpl;
 }
 
 /// @nodoc
@@ -417,9 +567,11 @@ class _$LoadedDetailImpl implements _LoadedDetail {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
     required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
     required TResult Function(String message) error,
   }) {
     return loadedDetail(collectionDetail);
@@ -430,9 +582,11 @@ class _$LoadedDetailImpl implements _LoadedDetail {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
     TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult? Function(String message)? error,
   }) {
     return loadedDetail?.call(collectionDetail);
@@ -443,9 +597,11 @@ class _$LoadedDetailImpl implements _LoadedDetail {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
     TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -460,8 +616,8 @@ class _$LoadedDetailImpl implements _LoadedDetail {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadedItems value) loadedItems,
     required TResult Function(_Error value) error,
   }) {
@@ -473,8 +629,8 @@ class _$LoadedDetailImpl implements _LoadedDetail {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadedItems value)? loadedItems,
     TResult? Function(_Error value)? error,
   }) {
@@ -486,8 +642,8 @@ class _$LoadedDetailImpl implements _LoadedDetail {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadedItems value)? loadedItems,
     TResult Function(_Error value)? error,
     required TResult orElse(),
@@ -510,138 +666,12 @@ abstract class _LoadedDetail implements DetailState {
 }
 
 /// @nodoc
-abstract class _$$LoadingItemsImplCopyWith<$Res> {
-  factory _$$LoadingItemsImplCopyWith(
-          _$LoadingItemsImpl value, $Res Function(_$LoadingItemsImpl) then) =
-      __$$LoadingItemsImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoadingItemsImplCopyWithImpl<$Res>
-    extends _$DetailStateCopyWithImpl<$Res, _$LoadingItemsImpl>
-    implements _$$LoadingItemsImplCopyWith<$Res> {
-  __$$LoadingItemsImplCopyWithImpl(
-      _$LoadingItemsImpl _value, $Res Function(_$LoadingItemsImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$LoadingItemsImpl implements _LoadingItems {
-  const _$LoadingItemsImpl();
-
-  @override
-  String toString() {
-    return 'DetailState.loadingItems()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadingItemsImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
-    required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
-    required TResult Function(String message) error,
-  }) {
-    return loadingItems();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
-    TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
-    TResult? Function(String message)? error,
-  }) {
-    return loadingItems?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
-    TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (loadingItems != null) {
-      return loadingItems();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
-    required TResult Function(_LoadingItems value) loadingItems,
-    required TResult Function(_LoadedItems value) loadedItems,
-    required TResult Function(_Error value) error,
-  }) {
-    return loadingItems(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
-    TResult? Function(_LoadingItems value)? loadingItems,
-    TResult? Function(_LoadedItems value)? loadedItems,
-    TResult? Function(_Error value)? error,
-  }) {
-    return loadingItems?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
-    TResult Function(_LoadingItems value)? loadingItems,
-    TResult Function(_LoadedItems value)? loadedItems,
-    TResult Function(_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (loadingItems != null) {
-      return loadingItems(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoadingItems implements DetailState {
-  const factory _LoadingItems() = _$LoadingItemsImpl;
-}
-
-/// @nodoc
 abstract class _$$LoadedItemsImplCopyWith<$Res> {
   factory _$$LoadedItemsImplCopyWith(
           _$LoadedItemsImpl value, $Res Function(_$LoadedItemsImpl) then) =
       __$$LoadedItemsImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<CollectionItem> items});
+  $Res call({List<CollectionItem> items, ProductsModel? collectionDetail});
 }
 
 /// @nodoc
@@ -656,12 +686,17 @@ class __$$LoadedItemsImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? items = null,
+    Object? collectionDetail = freezed,
   }) {
     return _then(_$LoadedItemsImpl(
       null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<CollectionItem>,
+      freezed == collectionDetail
+          ? _value.collectionDetail
+          : collectionDetail // ignore: cast_nullable_to_non_nullable
+              as ProductsModel?,
     ));
   }
 }
@@ -669,7 +704,9 @@ class __$$LoadedItemsImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoadedItemsImpl implements _LoadedItems {
-  const _$LoadedItemsImpl(final List<CollectionItem> items) : _items = items;
+  const _$LoadedItemsImpl(
+      final List<CollectionItem> items, this.collectionDetail)
+      : _items = items;
 
   final List<CollectionItem> _items;
   @override
@@ -680,8 +717,11 @@ class _$LoadedItemsImpl implements _LoadedItems {
   }
 
   @override
+  final ProductsModel? collectionDetail;
+
+  @override
   String toString() {
-    return 'DetailState.loadedItems(items: $items)';
+    return 'DetailState.loadedItems(items: $items, collectionDetail: $collectionDetail)';
   }
 
   @override
@@ -689,12 +729,14 @@ class _$LoadedItemsImpl implements _LoadedItems {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedItemsImpl &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            const DeepCollectionEquality().equals(other._items, _items) &&
+            (identical(other.collectionDetail, collectionDetail) ||
+                other.collectionDetail == collectionDetail));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(_items), collectionDetail);
 
   @JsonKey(ignore: true)
   @override
@@ -707,12 +749,14 @@ class _$LoadedItemsImpl implements _LoadedItems {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
     required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
     required TResult Function(String message) error,
   }) {
-    return loadedItems(items);
+    return loadedItems(items, collectionDetail);
   }
 
   @override
@@ -720,12 +764,14 @@ class _$LoadedItemsImpl implements _LoadedItems {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
     TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult? Function(String message)? error,
   }) {
-    return loadedItems?.call(items);
+    return loadedItems?.call(items, collectionDetail);
   }
 
   @override
@@ -733,14 +779,16 @@ class _$LoadedItemsImpl implements _LoadedItems {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
     TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (loadedItems != null) {
-      return loadedItems(items);
+      return loadedItems(items, collectionDetail);
     }
     return orElse();
   }
@@ -750,8 +798,8 @@ class _$LoadedItemsImpl implements _LoadedItems {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadedItems value) loadedItems,
     required TResult Function(_Error value) error,
   }) {
@@ -763,8 +811,8 @@ class _$LoadedItemsImpl implements _LoadedItems {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadedItems value)? loadedItems,
     TResult? Function(_Error value)? error,
   }) {
@@ -776,8 +824,8 @@ class _$LoadedItemsImpl implements _LoadedItems {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadedItems value)? loadedItems,
     TResult Function(_Error value)? error,
     required TResult orElse(),
@@ -790,10 +838,11 @@ class _$LoadedItemsImpl implements _LoadedItems {
 }
 
 abstract class _LoadedItems implements DetailState {
-  const factory _LoadedItems(final List<CollectionItem> items) =
-      _$LoadedItemsImpl;
+  const factory _LoadedItems(final List<CollectionItem> items,
+      final ProductsModel? collectionDetail) = _$LoadedItemsImpl;
 
   List<CollectionItem> get items;
+  ProductsModel? get collectionDetail;
   @JsonKey(ignore: true)
   _$$LoadedItemsImplCopyWith<_$LoadedItemsImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -865,9 +914,11 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loadingDetail,
-    required TResult Function(ProductsModel collectionDetail) loadedDetail,
     required TResult Function() loadingItems,
-    required TResult Function(List<CollectionItem> items) loadedItems,
+    required TResult Function(ProductsModel collectionDetail) loadedDetail,
+    required TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)
+        loadedItems,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -878,9 +929,11 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loadingDetail,
-    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
     TResult? Function()? loadingItems,
-    TResult? Function(List<CollectionItem> items)? loadedItems,
+    TResult? Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult? Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -891,9 +944,11 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loadingDetail,
-    TResult Function(ProductsModel collectionDetail)? loadedDetail,
     TResult Function()? loadingItems,
-    TResult Function(List<CollectionItem> items)? loadedItems,
+    TResult Function(ProductsModel collectionDetail)? loadedDetail,
+    TResult Function(
+            List<CollectionItem> items, ProductsModel? collectionDetail)?
+        loadedItems,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -908,8 +963,8 @@ class _$ErrorImpl implements _Error {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_LoadingDetail value) loadingDetail,
-    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadingItems value) loadingItems,
+    required TResult Function(_LoadedDetail value) loadedDetail,
     required TResult Function(_LoadedItems value) loadedItems,
     required TResult Function(_Error value) error,
   }) {
@@ -921,8 +976,8 @@ class _$ErrorImpl implements _Error {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_LoadingDetail value)? loadingDetail,
-    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadingItems value)? loadingItems,
+    TResult? Function(_LoadedDetail value)? loadedDetail,
     TResult? Function(_LoadedItems value)? loadedItems,
     TResult? Function(_Error value)? error,
   }) {
@@ -934,8 +989,8 @@ class _$ErrorImpl implements _Error {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_LoadingDetail value)? loadingDetail,
-    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadingItems value)? loadingItems,
+    TResult Function(_LoadedDetail value)? loadedDetail,
     TResult Function(_LoadedItems value)? loadedItems,
     TResult Function(_Error value)? error,
     required TResult orElse(),

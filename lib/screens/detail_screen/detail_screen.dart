@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/models/ProductsModel.dart';
 import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/chat_widget.dart';
+import 'package:style_sensei/screens/detail_screen/widgets/loading_animation.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/sekeleton_loading.dart';
 import 'package:style_sensei/screens/detail_screen/widgets/single_item_screen.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
@@ -103,17 +104,17 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
                         loadingDetail: () => SkeletonLoading(),
                         loadedDetail: (collectionDetail) => buildDetailTab(collectionDetail),
                         error: (message) => Center(child: Text(message)),
-                        orElse: () => Center(child: Text('Select a tab to load data')),
+                        orElse: () => SkeletonLoading(),
                       );
                     },
                   ),
                   BlocBuilder<DetailCubit, DetailState>(
                     builder: (context, state) {
                       return state.maybeWhen(
-                        loadingItems: () => SkeletonLoading(),
-                        loadedItems: (items) => buildItemsTab(items),
+                        loadingItems: () => LoadingAnimation(),
+                        loadedItems: (items, collectionDetail) => buildItemsTab(items, collectionDetail),
                         error: (message) => Center(child: Text(message)),
-                        orElse: () => Center(child: Text('Select a tab to load data')),
+                        orElse: () => LoadingAnimation(),
                       );
                     },
                   ),
@@ -315,7 +316,7 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget buildItemsTab(List<CollectionItem> items) {
+  Widget buildItemsTab(List<CollectionItem> items, ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return ListView.builder(
@@ -332,14 +333,14 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
             }
           },
           child: visibilityMap[index] == true
-              ? buildCollectionItem(context, items[index], isArabic, index)
+              ? buildCollectionItem(context, items[index], isArabic, index, collectionDetail)
               : Container(height: 200, color: Colors.transparent), // Placeholder
         );
       },
     );
   }
 
-  Widget buildCollectionItem(BuildContext context, CollectionItem item, bool isArabic, int parentIndex) {
+  Widget buildCollectionItem(BuildContext context, CollectionItem item, bool isArabic, int parentIndex, ProductsModel? collectionDetail) {
     List<Product> orderedProducts = item.products != null ? reorderProducts(item.products!, item.match_count ?? {}) : [];
 
     String? catName = AppLocalizations.of(context).translate('${item.category?.name}');
@@ -371,10 +372,10 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
             style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
-        //   child: buildAttributes(item.category?.rules, item.category?.id),
-        // ),
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
+          child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
+        ),
         (orderedProducts.length > 0)
             ? Column(
           mainAxisAlignment: MainAxisAlignment.start,
