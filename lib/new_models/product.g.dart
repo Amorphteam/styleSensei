@@ -8,13 +8,13 @@ part of 'product.dart';
 
 _$ProductImpl _$$ProductImplFromJson(Map<String, dynamic> json) =>
     _$ProductImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       arabic_name: json['arabic_name'] as String?,
       description: json['description'] as String?,
       arabic_description: json['arabic_description'] as String?,
       category_id: json['category_id'] as String?,
-      crawler_id: json['crawler_id'] as int?,
+      crawler_id: (json['crawler_id'] as num?)?.toInt(),
       pictures: json['pictures'] as String?,
       corresponding_url: json['corresponding_url'] as String?,
       is_from_bc: json['is_from_bc'] as bool?,

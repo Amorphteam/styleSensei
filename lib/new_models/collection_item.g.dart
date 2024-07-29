@@ -16,7 +16,7 @@ _$CollectionItemImpl _$$CollectionItemImplFromJson(Map<String, dynamic> json) =>
           ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
           .toList(),
       match_count: (json['match_count'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, e as int),
+        (k, e) => MapEntry(k, (e as num).toInt()),
       ),
     );
 

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +24,7 @@ import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
+import 'cubit/detail_state.dart';
 
 class Detail extends StatefulWidget {
   final Collections collection;
@@ -35,118 +35,38 @@ class Detail extends StatefulWidget {
   State<Detail> createState() => _DetailState();
 }
 
-class _DetailState extends State<Detail> {
+class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   Map<String, bool> bookmarkedItems = {};
-  PageController _pageController = PageController();
-  int _currentPage = 0;
-  int _animation_time = 4;
+  final _animtaionDuration = 4;
   bool _hasAnimated = false;
-  VideoPlayerController? _videoController;
-  bool _isVideoPlayed = false; // Track if the video has been played
-  bool _showChips = true; // State to track visibility of chips
-  Map<int, bool> visibilityMap = {}; // Track visibility of items
-  Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
+  final Map<int, bool> visibilityMap = {}; // Track visibility of items
+  final Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
 
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.asset('assets/video/body2.m4v')
-      ..initialize().then((_) {
-        setState(() {
-          _videoController!.setLooping(false); // Ensure the video doesn't loop
-        });
-      });
-
-    _videoController?.addListener(() {
-      if (_videoController!.value.position == _videoController!.value.duration) {
-        // Video finished playing
-        setState(() {
-          _isVideoPlayed = true; // Mark video as played to show the text instead
-        });
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.index == 0) {
+        context.read<DetailCubit>().fetchCollectionDetail(CollectionRepository(), widget.collection.id);
+      } else if (_tabController.index == 1) {
+        context.read<DetailCubit>().fetchCollectionItems(CollectionRepository(), widget.collection.id);
       }
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      loadBookmarkedItems().then((loadedBookmarkedItems) {
-        setState(() {
-          bookmarkedItems = loadedBookmarkedItems;
-        });
-      });
-      BlocProvider.of<DetailCubit>(context).fetchData(CollectionRepository(), widget.collection.id);
-    });
+    // Load the first tab data initially
+    context.read<DetailCubit>().fetchCollectionDetail(CollectionRepository(), widget.collection.id);
   }
 
   @override
   void dispose() {
-    _videoController?.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DetailCubit, DetailState>(
-      builder: (context, state) {
-        if (state is ProductListLoadedState) {
-          var collection = state.items;
-          var collectionDetail = state.collectionDetail;
-          return buildUi(context, collection, collectionDetail);
-        } else if (state is DetailLoadingState) {
-          return Scaffold(
-            body: NestedScrollView(
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    expandedHeight: 600.0,
-                    floating: false,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: CachedNetworkImage(
-                        imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ];
-              },
-              body: SkeletonLoading(),
-            ),
-          );
-        } else if (state is DetailErrorState) {
-          return Scaffold(
-            body: NestedScrollView(
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    expandedHeight: 600.0,
-                    floating: false,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: CachedNetworkImage(
-                        imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ];
-              },
-              body: Center(
-                child: Text(AppLocalizations.of(context).translate('error')),
-              ),
-            ),
-          );
-        } else {
-          // This handles DetailInitial and any other unhandled state
-          return Scaffold(
-            body: Center(child: Text('Loading...')),
-          );
-        }
-      },
-    );
-  }
-
-  Widget buildUi(BuildContext context, List<CollectionItem> collection, ProductsModel? collectionDetail) {
-    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -155,9 +75,6 @@ class _DetailState extends State<Detail> {
               expandedHeight: 600.0,
               floating: false,
               pinned: true,
-              title: innerBoxIsScrolled
-                  ? Text(getTitle(collectionDetail?.collection?.title, (isArabic) ? 'ar' : 'en'))
-                  : null,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
                   imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
@@ -167,38 +84,50 @@ class _DetailState extends State<Detail> {
             ),
           ];
         },
-        body: buildWidget(collection, collectionDetail),
-      ),
-    );
-  }
-
-  Widget buildWidget(List<CollectionItem> items, ProductsModel? collectionDetail) {
-    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
-
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: [
-          TabBar(
-            tabs: [
-              Tab(text: AppLocalizations.of(context).translate('collection_detail')),
-              Tab(text: AppLocalizations.of(context).translate('collection_items')),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                buildTabContent1(items, collectionDetail, isArabic),
-                buildTabContent2(items, collectionDetail, isArabic),
+        body: Column(
+          children: [
+            TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(text: AppLocalizations.of(context).translate('collection_detail')),
+                Tab(text: AppLocalizations.of(context).translate('collection_items')),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  BlocBuilder<DetailCubit, DetailState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        loadingDetail: () => SkeletonLoading(),
+                        loadedDetail: (collectionDetail) => buildDetailTab(collectionDetail),
+                        error: (message) => Center(child: Text(message)),
+                        orElse: () => Center(child: Text('Select a tab to load data')),
+                      );
+                    },
+                  ),
+                  BlocBuilder<DetailCubit, DetailState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        loadingItems: () => SkeletonLoading(),
+                        loadedItems: (items) => buildItemsTab(items),
+                        error: (message) => Center(child: Text(message)),
+                        orElse: () => Center(child: Text('Select a tab to load data')),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildTabContent1(List<CollectionItem> items, ProductsModel? collectionDetail, bool isArabic) {
+  Widget buildDetailTab(ProductsModel collectionDetail) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return Padding(
       padding: const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 16),
       child: ListView(
@@ -206,15 +135,15 @@ class _DetailState extends State<Detail> {
         children: [
           _hasAnimated
               ? Text(
-            getDesPart(collectionDetail?.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
+            getDesPart(collectionDetail.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.titleSmall,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                getDesPart(collectionDetail?.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
+                getDesPart(collectionDetail.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
                 textStyle: Theme.of(context).textTheme.titleSmall!,
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -236,7 +165,7 @@ class _DetailState extends State<Detail> {
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('des_title'),
                 textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -261,7 +190,7 @@ class _DetailState extends State<Detail> {
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('body_shape_question'),
                 textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -274,15 +203,15 @@ class _DetailState extends State<Detail> {
           ),
           _hasAnimated
               ? Text(
-            getDesPart(collectionDetail?.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
+            getDesPart(collectionDetail.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.bodyMedium,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                getDesPart(collectionDetail?.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
+                getDesPart(collectionDetail.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
                 textStyle: Theme.of(context).textTheme.bodyMedium!,
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -304,7 +233,7 @@ class _DetailState extends State<Detail> {
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('situation_question'),
                 textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -317,15 +246,15 @@ class _DetailState extends State<Detail> {
           ),
           _hasAnimated
               ? Text(
-            getDesPart(collectionDetail?.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
+            getDesPart(collectionDetail.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.bodyMedium,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                getDesPart(collectionDetail?.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
+                getDesPart(collectionDetail.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
                 textStyle: Theme.of(context).textTheme.bodyMedium!,
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -347,7 +276,7 @@ class _DetailState extends State<Detail> {
               TypewriterAnimatedText(
                 AppLocalizations.of(context).translate('design_question'),
                 textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -360,15 +289,15 @@ class _DetailState extends State<Detail> {
           ),
           _hasAnimated
               ? Text(
-            getDesPart(collectionDetail?.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
+            getDesPart(collectionDetail.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.bodyMedium,
           )
               : AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                getDesPart(collectionDetail?.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
+                getDesPart(collectionDetail.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
                 textStyle: Theme.of(context).textTheme.bodyMedium!,
-                speed: Duration(milliseconds: _animation_time),
+                speed: Duration(milliseconds: _animtaionDuration),
               ),
             ],
             isRepeatingAnimation: false,
@@ -386,7 +315,9 @@ class _DetailState extends State<Detail> {
     );
   }
 
-  Widget buildTabContent2(List<CollectionItem> items, ProductsModel? collectionDetail, bool isArabic) {
+  Widget buildItemsTab(List<CollectionItem> items) {
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return ListView.builder(
       padding: EdgeInsets.only(top: 20),
       itemCount: items.length,
@@ -401,15 +332,14 @@ class _DetailState extends State<Detail> {
             }
           },
           child: visibilityMap[index] == true
-              ? buildCollectionItem(context, items[index], collectionDetail, isArabic, index)
+              ? buildCollectionItem(context, items[index], isArabic, index)
               : Container(height: 200, color: Colors.transparent), // Placeholder
         );
       },
     );
   }
 
-  Widget buildCollectionItem(BuildContext context, CollectionItem item, ProductsModel? collectionDetail, bool isArabic, int parentIndex) {
-    // If products is not null, reorder them
+  Widget buildCollectionItem(BuildContext context, CollectionItem item, bool isArabic, int parentIndex) {
     List<Product> orderedProducts = item.products != null ? reorderProducts(item.products!, item.match_count ?? {}) : [];
 
     String? catName = AppLocalizations.of(context).translate('${item.category?.name}');
@@ -441,12 +371,12 @@ class _DetailState extends State<Detail> {
             style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
-          child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
-        ),
-        (orderedProducts.length>0)?
-        Column(
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
+        //   child: buildAttributes(item.category?.rules, item.category?.id),
+        // ),
+        (orderedProducts.length > 0)
+            ? Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -502,7 +432,8 @@ class _DetailState extends State<Detail> {
             ),
             Gap(40)
           ],
-        ): Container(
+        )
+            : Container(
           width: double.infinity,
           margin: EdgeInsets.only(bottom: 40, top: 20),
           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
@@ -510,7 +441,9 @@ class _DetailState extends State<Detail> {
           child: Column(
             children: [
               SvgPicture.asset(
-                'assets/images/ai.svg', height: 30, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                'assets/images/ai.svg',
+                height: 30,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
@@ -518,7 +451,8 @@ class _DetailState extends State<Detail> {
                   AppLocalizations.of(context).translate('no_products'),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                 ),
-              ),              Padding(
+              ),
+              Padding(
                 padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
                 child: Text(
                   textAlign: TextAlign.center,
@@ -526,7 +460,7 @@ class _DetailState extends State<Detail> {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal),
                 ),
               ),
-              ],
+            ],
           ),
         ),
       ],
@@ -637,7 +571,6 @@ class _DetailState extends State<Detail> {
     );
   }
 
-
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
       return 'Unknown';
@@ -650,7 +583,6 @@ class _DetailState extends State<Detail> {
     }
     return 'Unknown';
   }
-
 
   void showPopupOnce(BuildContext context, String url) async {
     if (await canLaunch(url)) {

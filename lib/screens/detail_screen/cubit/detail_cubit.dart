@@ -1,27 +1,44 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-
-import '../../../models/ProductsModel.dart';
-import '../../../new_models/collection_item.dart';
-import '../../../repositories/collection_repository.dart';
-
-part 'detail_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:style_sensei/models/ProductsModel.dart';
+import 'package:style_sensei/new_models/collection_item.dart';
+import 'package:style_sensei/repositories/collection_repository.dart';
+import 'detail_state.dart';
 
 class DetailCubit extends Cubit<DetailState> {
-  DetailCubit() : super(DetailInitial());
+  DetailCubit() : super(const DetailState.initial());
 
-  Future<void> fetchData(CollectionRepository? collectionRepository, int collectionId) async{
-    emit(DetailLoadingState());
+  ProductsModel? _cachedCollectionDetail;
+  List<CollectionItem>? _cachedItems;
+
+  Future<void> fetchCollectionDetail(CollectionRepository collectionRepository, int collectionId) async {
+    if (_cachedCollectionDetail != null) {
+      emit(DetailState.loadedDetail(_cachedCollectionDetail!));
+      return;
+    }
+
+    emit(const DetailState.loadingDetail());
     try {
-      final items = await collectionRepository?.fetchCollectionItems(collectionId);
-      final collectionDetail = await collectionRepository?.fetchProductModel(collectionId);
-      if (items != null) {
-        emit(ProductListLoadedState(items, collectionDetail));
-      }else {
-        emit(DetailErrorState("The collection is null"));
-      }
-    }catch(error){
-      emit(DetailErrorState(error.toString()));
+      final collectionDetail = await collectionRepository.fetchProductModel(collectionId);
+      _cachedCollectionDetail = collectionDetail;
+      emit(DetailState.loadedDetail(collectionDetail));
+    } catch (error) {
+      emit(DetailState.error(error.toString()));
+    }
+  }
+
+  Future<void> fetchCollectionItems(CollectionRepository collectionRepository, int collectionId) async {
+    if (_cachedItems != null) {
+      emit(DetailState.loadedItems(_cachedItems!));
+      return;
+    }
+
+    emit(const DetailState.loadingItems());
+    try {
+      final items = await collectionRepository.fetchCollectionItems(collectionId);
+      _cachedItems = items;
+      emit(DetailState.loadedItems(items));
+    } catch (error) {
+      emit(DetailState.error(error.toString()));
     }
   }
 }

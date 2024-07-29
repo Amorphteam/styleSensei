@@ -9,7 +9,7 @@ part of 'attribute_for_rules.dart';
 _$AttributeForRulesImpl _$$AttributeForRulesImplFromJson(
         Map<String, dynamic> json) =>
     _$AttributeForRulesImpl(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       admin_name: json['admin_name'] as String?,
     );

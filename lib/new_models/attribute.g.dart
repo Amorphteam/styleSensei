@@ -8,8 +8,8 @@ part of 'attribute.dart';
 
 _$AttributeImpl _$$AttributeImplFromJson(Map<String, dynamic> json) =>
     _$AttributeImpl(
-      product_id: json['product_id'] as int?,
-      attribute_id: json['attribute_id'] as int?,
+      product_id: (json['product_id'] as num?)?.toInt(),
+      attribute_id: (json['attribute_id'] as num?)?.toInt(),
       value: json['value'] as String?,
       attribute: json['attribute'] == null
           ? null
