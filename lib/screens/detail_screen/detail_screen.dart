@@ -39,7 +39,7 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Map<String, bool> bookmarkedItems = {};
-  final _animtaionDuration = 4;
+  final _animtaionDuration = 0;
   bool _hasAnimated = false;
   final Map<int, bool> visibilityMap = {}; // Track visibility of items
   final Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
@@ -134,180 +134,44 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
       child: ListView(
         padding: EdgeInsets.only(top: 20),
         children: [
-          _hasAnimated
-              ? Text(
+Text(
             getDesPart(collectionDetail.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.titleSmall,
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                getDesPart(collectionDetail.collection?.description, 'desc', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.titleSmall!,
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
           Gap(30),
-          _hasAnimated
-              ? Text(
+ Text(
             AppLocalizations.of(context).translate('des_title'),
             style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                AppLocalizations.of(context).translate('des_title'),
-                textStyle: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
           Column(
             children: listOfChips(collectionDetail, context),
           ),
           Gap(20),
-          _hasAnimated
-              ? Text(
+ Text(
             AppLocalizations.of(context).translate('body_shape_question'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                AppLocalizations.of(context).translate('body_shape_question'),
-                textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
-          _hasAnimated
-              ? Text(
+ Text(
             getDesPart(collectionDetail.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.bodyMedium,
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                getDesPart(collectionDetail.collection?.description, 'body_shape', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.bodyMedium!,
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
           Gap(20),
-          _hasAnimated
-              ? Text(
+ Text(
             AppLocalizations.of(context).translate('situation_question'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                AppLocalizations.of(context).translate('situation_question'),
-                textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
-          _hasAnimated
-              ? Text(
+ Text(
             getDesPart(collectionDetail.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.bodyMedium,
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                getDesPart(collectionDetail.collection?.description, 'situation', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.bodyMedium!,
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
           Gap(20),
-          _hasAnimated
-              ? Text(
+ Text(
             AppLocalizations.of(context).translate('design_question'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                AppLocalizations.of(context).translate('design_question'),
-                textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
-          _hasAnimated
-              ? Text(
+ Text(
             getDesPart(collectionDetail.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
             style: Theme.of(context).textTheme.bodyMedium,
-          )
-              : AnimatedTextKit(
-            animatedTexts: [
-              TypewriterAnimatedText(
-                getDesPart(collectionDetail.collection?.description, 'design', (isArabic) ? 'ar' : 'en'),
-                textStyle: Theme.of(context).textTheme.bodyMedium!,
-                speed: Duration(milliseconds: _animtaionDuration),
-              ),
-            ],
-            isRepeatingAnimation: false,
-            totalRepeatCount: 1,
-            onFinished: () {
-              setState(() {
-                _hasAnimated = true;
-              });
-            },
           ),
           Gap(48),
           ChatWidget(collectionDetail: collectionDetail),
