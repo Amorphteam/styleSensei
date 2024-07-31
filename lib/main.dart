@@ -137,43 +137,21 @@ class MyApp extends StatelessWidget {
   }
 
   Widget checkUserState() {
-    return FutureBuilder<bool>(
-      future: UserController.isUserLoggedIn(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data == true) {
-            return FutureBuilder<SharedPreferences>(
-              future: SharedPreferences.getInstance(),
-              builder: (context, prefSnapshot) {
-                if (prefSnapshot.connectionState == ConnectionState.done) {
-                  String? styleSelectionsString = prefSnapshot.data?.getString('styleSelections');
-                  if (styleSelectionsString == null) {
-                    return SplashSimple(imagePath: 'assets/images/splash1.jpg');
-                  } else {
-                    return WaitingScreen();
-                  }
-                }
-                return CircularProgressIndicator();
-              },
-            );
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, prefSnapshot) {
+        if (prefSnapshot.connectionState == ConnectionState.done) {
+          String? styleSelectionsString = prefSnapshot.data?.getString('styleSelections');
+          if (styleSelectionsString == null) {
+            return SplashWithVideo(isFromSettings: false,);
+          } else {
+            return WaitingScreen();
           }
         }
-        return FutureBuilder<SharedPreferences>(
-          future: SharedPreferences.getInstance(),
-          builder: (context, prefSnapshot) {
-            if (prefSnapshot.connectionState == ConnectionState.done) {
-              String? styleSelectionsString = prefSnapshot.data?.getString('styleSelections');
-              if (styleSelectionsString == null) {
-                return SplashWithVideo(isFromSettings: false,);
-              } else {
-                return WaitingScreen();
-              }
-            }
-            return CircularProgressIndicator();
-          },
-        );
+        return CircularProgressIndicator();
       },
     );
+
   }
 }
 

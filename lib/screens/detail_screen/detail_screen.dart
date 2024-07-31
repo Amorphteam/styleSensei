@@ -39,10 +39,6 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Map<String, bool> bookmarkedItems = {};
-  final _animtaionDuration = 0;
-  bool _hasAnimated = false;
-  final Map<int, bool> visibilityMap = {}; // Track visibility of items
-  final Map<int, bool> horizontalVisibilityMap = {}; // Track visibility of horizontal items
 
   @override
   void initState() {
@@ -187,19 +183,7 @@ Text(
       padding: EdgeInsets.only(top: 20),
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
-        return VisibilityDetector(
-          key: Key(index.toString()),
-          onVisibilityChanged: (VisibilityInfo info) {
-            if (info.visibleFraction > 0.5) {
-              setState(() {
-                visibilityMap[index] = true;
-              });
-            }
-          },
-          child: visibilityMap[index] == true
-              ? buildCollectionItem(context, items[index], isArabic, index, collectionDetail)
-              : Container(height: 200, color: Colors.transparent), // Placeholder
-        );
+        return buildCollectionItem(context, items[index], isArabic, index, collectionDetail);
       },
     );
   }
@@ -279,19 +263,7 @@ Text(
                 itemCount: orderedProducts.length,
                 itemBuilder: (BuildContext context, int index) {
                   int key = parentIndex * 1000 + index; // Generate unique key for each horizontal item
-                  return VisibilityDetector(
-                    key: Key(key.toString()),
-                    onVisibilityChanged: (VisibilityInfo info) {
-                      if (info.visibleFraction > 0.5) {
-                        setState(() {
-                          horizontalVisibilityMap[key] = true;
-                        });
-                      }
-                    },
-                    child: horizontalVisibilityMap[key] == true
-                        ? buildProductItem(context, orderedProducts[index], isArabic)
-                        : Container(width: 100, color: Colors.transparent), // Placeholder
-                  );
+                  return buildProductItem(context, orderedProducts[index], isArabic);
                 },
               ),
             ),
