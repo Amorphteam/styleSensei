@@ -8,10 +8,10 @@ import '../models/ProductsModel.dart';
 import '../new_models/collection_item.dart';
 
 class CollectionRepository {
-  final String apiUrl = 'http://stylesensei.net:8282/api/v1/';
+  final String apiUrl = 'http://18.208.227.158/api/v1/';
 
   Future<CollectionModel> fetchCollectionModel(List<List<int>> collectionTags) async {
-    String apiUrl = 'http://stylesensei.net:8282/api/v1';
+    String apiUrl = 'http://18.208.227.158/api/v1';
     String pathUrl = '$apiUrl/collection/list?limit=300&offset=0';
     var headers = {'Content-Type': 'application/json'};
     var body = json.encode({"tags": collectionTags});
