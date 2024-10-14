@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class SurveyRating extends StatefulWidget {
+class SurveyBinaryChoice extends StatefulWidget {
   final VoidCallback onClose;
 
-  SurveyRating({required this.onClose});
+  SurveyBinaryChoice({required this.onClose});
 
   @override
   _SurveyTrueFalseState createState() => _SurveyTrueFalseState();
 }
 
-class _SurveyTrueFalseState extends State<SurveyRating> {
+class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
   String selectedOption = '';
   String hoveredOption = '';
 
@@ -46,13 +46,13 @@ class _SurveyTrueFalseState extends State<SurveyRating> {
 
                   // Question Text
                   Text(
-                    "How much do you agree with the statement:\n'The app's design is simple and easy to use?'",
+                    'Have you easily accessed the purchase links for your favorite items through the app?',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
 
-                  // Emoji Options
+                  // Emoji Options with Hover and Selection Effect Around Icon Only
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -85,60 +85,31 @@ class _SurveyTrueFalseState extends State<SurveyRating> {
                         ),
                       ),
 
-                      // "It’s okay" Option
+                      // "Yes" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection('Okay'),
+                        onTap: () => handleOptionSelection('Yes'),
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = 'Okay'),
+                              onEnter: (_) => setState(() => hoveredOption = 'Yes'),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == 'Okay' || hoveredOption == 'Okay'
-                                      ? Colors.blue.withOpacity(0.2)
-                                      : Colors.transparent,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.sentiment_neutral_rounded,
-                                  size: 40,
-                                  color: selectedOption == 'Okay' ? Colors.blue : Colors.grey,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text('It\'s okay'),
-                          ],
-                        ),
-                      ),
-
-                      // "100% agree" Option
-                      GestureDetector(
-                        onTap: () => handleOptionSelection('Agree'),
-                        child: Column(
-                          children: [
-                            MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = 'Agree'),
-                              onExit: (_) => setState(() => hoveredOption = ''),
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: selectedOption == 'Agree' || hoveredOption == 'Agree'
+                                  color: selectedOption == 'Yes' || hoveredOption == 'Yes'
                                       ? Colors.orange.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  Icons.sentiment_satisfied_alt_rounded,
+                                  Icons.sentiment_very_satisfied_rounded,
                                   size: 40,
-                                  color: selectedOption == 'Agree' ? Colors.orange : Colors.grey,
+                                  color: selectedOption == 'Yes' ? Colors.orange : Colors.grey,
                                 ),
                               ),
                             ),
-                            SizedBox(height: 5),
-                            Text('100% agree'),
+                            SizedBox(height: 5), // Space between icon and text
+                            Text('Yes'),
                           ],
                         ),
                       ),

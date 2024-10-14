@@ -9,7 +9,7 @@ import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import '../../models/Collections.dart';
 import '../../utils/untitled.dart';
-import '../survey/survey_true_false.dart';
+import '../survey/survey_binary_choice.dart';
 import 'widgets/staggered_grid_view_widget.dart';
 
 class HomeTab extends StatefulWidget {
@@ -172,7 +172,7 @@ class _HomeTabState extends State<HomeTab> {
             body: buildContent(context),
           ),
           if (showSurvey)
-            SurveyTrueFalse(
+            SurveyBinaryChoice(
               onClose: () {
                 setState(() {
                   showSurvey = false;

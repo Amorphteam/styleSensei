@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class NewSurveyPage extends StatefulWidget {
+class SurveyMultipleChoice extends StatefulWidget {
   final VoidCallback onClose;
 
-  NewSurveyPage({required this.onClose});
+  SurveyMultipleChoice({required this.onClose});
 
   @override
   _NewSurveyPageState createState() => _NewSurveyPageState();
 }
 
-class _NewSurveyPageState extends State<NewSurveyPage> {
+class _NewSurveyPageState extends State<SurveyMultipleChoice> {
   String selectedOption = '';
   TextEditingController _suggestionController = TextEditingController();
 

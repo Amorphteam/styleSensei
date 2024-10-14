@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class MultiStepSurvey extends StatefulWidget {
+class SurveyMultistep extends StatefulWidget {
   final VoidCallback onClose;
 
-  MultiStepSurvey({required this.onClose});
+  SurveyMultistep({required this.onClose});
 
   @override
   _MultiStepSurveyState createState() => _MultiStepSurveyState();
 }
 
-class _MultiStepSurveyState extends State<MultiStepSurvey> {
+class _MultiStepSurveyState extends State<SurveyMultistep> {
   int currentStep = 0;
   String selectedOption = '';
   String hoveredOption = '';
