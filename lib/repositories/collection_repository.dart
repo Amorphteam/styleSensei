@@ -8,7 +8,7 @@ import '../models/ProductsModel.dart';
 import '../new_models/collection_item.dart';
 
 class CollectionRepository {
-  final String apiUrl = 'http://apiipa.stylesensei.net/api/v1/';
+  final String apiUrl = 'http://apiipa.stylesensei.net/api/v1';
 
   Future<CollectionModel> fetchCollectionModel(List<List<int>> collectionTags) async {
     String pathUrl = '$apiUrl/collection/list?limit=300&offset=0';
@@ -28,7 +28,7 @@ class CollectionRepository {
 
 
   Future<ProductsModel> fetchProductModel(int collectionId) async {
-    String pathUrl = 'collection/view/$collectionId';
+    String pathUrl = '/collection/view/$collectionId';
     final response = await http.get(Uri.parse(apiUrl+pathUrl));
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);
@@ -39,7 +39,7 @@ class CollectionRepository {
   }
 
   Future<List<CollectionItem>> fetchCollectionItems(int collectionId) async {
-    String pathUrl = 'collection/$collectionId/items';
+    String pathUrl = '/collection/$collectionId/items';
     final Uri fullUrl = Uri.parse(apiUrl + pathUrl);
 
     var headers = {'Content-Type': 'application/json'};
@@ -58,7 +58,7 @@ class CollectionRepository {
 
   Future<ProductsTemp> fetchProductModelByIds(List<int> collectionId) async {
     String idsQuery = collectionId.join(',');
-    String pathUrl = 'product/list/get-by-ids?ids=$idsQuery';
+    String pathUrl = '/product/list/get-by-ids?ids=$idsQuery';
     final response = await http.get(Uri.parse(apiUrl + pathUrl));
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);

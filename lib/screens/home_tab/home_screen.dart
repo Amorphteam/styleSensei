@@ -9,6 +9,7 @@ import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import '../../models/Collections.dart';
 import '../../utils/untitled.dart';
+import '../survey/survey_true_false.dart';
 import 'widgets/staggered_grid_view_widget.dart';
 
 class HomeTab extends StatefulWidget {
@@ -30,6 +31,7 @@ class _HomeTabState extends State<HomeTab> {
   String selectedTagsString = '';
   bool _twoColumn = true;
   bool isArabic = false;
+  bool showSurvey = true;
 
   @override
   void initState() {
@@ -140,32 +142,44 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
   @override
+  @override
   Widget build(BuildContext context) {
     Locale locale = Localizations.localeOf(context);
     isArabic = locale.languageCode == 'ar';
     imageAssetsUrl.shuffle();
     return RefreshIndicator(
       onRefresh: _handleRefresh,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              title: Column(
-                children: [
-                  buildAppBarTitle(context),
-                  buildChips(context)
-                ],
-              ),
-              floating: true,
-              snap: true,
-              centerTitle: false,
-              toolbarHeight: kToolbarHeight*2,
-              pinned: false,
+      child: Stack(
+        children: [
+          NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  title: Column(
+                    children: [
+                      buildAppBarTitle(context),
+                      buildChips(context)
+                    ],
+                  ),
+                  floating: true,
+                  snap: true,
+                  centerTitle: false,
+                  toolbarHeight: kToolbarHeight * 2,
+                  pinned: false,
+                ),
+              ];
+            },
+            body: buildContent(context),
+          ),
+          if (showSurvey)
+            SurveyTrueFalse(
+              onClose: () {
+                setState(() {
+                  showSurvey = false;
+                });
+              },
             ),
-
-          ];
-        },
-        body: buildContent(context),
+        ],
       ),
     );
   }
