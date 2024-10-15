@@ -18,9 +18,9 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void handleOptionSelection(String option) {
+  void handleOptionSelection(String optionKey) {
     setState(() {
-      selectedOption = option;
+      selectedOption = optionKey;  // Store the localization key
     });
   }
 
@@ -29,7 +29,7 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
     try {
       await _firestore.collection('survey_responses').add({
         'survey_type': 'SatisfactionRating',  // You can use different survey types
-        'response': selectedOption,
+        'response': selectedOption,  // Store the localization key
         'timestamp': Timestamp.now(),
       });
       widget.onClose();
@@ -77,16 +77,16 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                     children: [
                       // "Nope" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('nope')),
+                        onTap: () => handleOptionSelection('nope'),  // Store the key
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('nope')),
+                              onEnter: (_) => setState(() => hoveredOption = 'nope'),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == AppLocalizations.of(context).translate('nope') || hoveredOption == AppLocalizations.of(context).translate('nope')
+                                  color: selectedOption == 'nope' || hoveredOption == 'nope'
                                       ? Colors.red.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -94,7 +94,7 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                                 child: Icon(
                                   Icons.sentiment_very_dissatisfied_rounded,
                                   size: 40,
-                                  color: selectedOption == AppLocalizations.of(context).translate('nope') ? Colors.red : Colors.grey,
+                                  color: selectedOption == 'nope' ? Colors.red : Colors.grey,
                                 ),
                               ),
                             ),
@@ -106,16 +106,16 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
 
                       // "It’s okay" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('okay')),
+                        onTap: () => handleOptionSelection('okay'),  // Store the key
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('okay')),
+                              onEnter: (_) => setState(() => hoveredOption = 'okay'),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == AppLocalizations.of(context).translate('okay') || hoveredOption == AppLocalizations.of(context).translate('okay')
+                                  color: selectedOption == 'okay' || hoveredOption == 'okay'
                                       ? Colors.blue.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -123,7 +123,7 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                                 child: Icon(
                                   Icons.sentiment_neutral_rounded,
                                   size: 40,
-                                  color: selectedOption == AppLocalizations.of(context).translate('okay') ? Colors.blue : Colors.grey,
+                                  color: selectedOption == 'okay' ? Colors.blue : Colors.grey,
                                 ),
                               ),
                             ),
@@ -135,16 +135,16 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
 
                       // "100% agree" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('agree')),
+                        onTap: () => handleOptionSelection('agree'),  // Store the key
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('agree')),
+                              onEnter: (_) => setState(() => hoveredOption = 'agree'),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == AppLocalizations.of(context).translate('agree') || hoveredOption == AppLocalizations.of(context).translate('agree')
+                                  color: selectedOption == 'agree' || hoveredOption == 'agree'
                                       ? Colors.orange.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -152,7 +152,7 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                                 child: Icon(
                                   Icons.sentiment_satisfied_alt_rounded,
                                   size: 40,
-                                  color: selectedOption == AppLocalizations.of(context).translate('agree') ? Colors.orange : Colors.grey,
+                                  color: selectedOption == 'agree' ? Colors.orange : Colors.grey,
                                 ),
                               ),
                             ),

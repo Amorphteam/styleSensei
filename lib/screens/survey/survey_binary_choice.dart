@@ -18,9 +18,9 @@ class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void handleOptionSelection(String option) {
+  void handleOptionSelection(String optionKey) {
     setState(() {
-      selectedOption = option;
+      selectedOption = optionKey;  // Store the localization key
     });
   }
 
@@ -28,8 +28,8 @@ class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
   Future<void> _sendSurveyResponse() async {
     try {
       await _firestore.collection('survey_responses').add({
-        'survey_type': 'BinaryChoice',  // You can use different survey types
-        'response': selectedOption,
+        'survey_type': 'BinaryChoice',  // Use consistent survey types
+        'response': selectedOption,  // Store the localization key
         'timestamp': Timestamp.now(),
       });
       widget.onClose();  // Close the survey after submission
@@ -77,16 +77,16 @@ class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
                     children: [
                       // "Nope" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('NO')),
+                        onTap: () => handleOptionSelection('NO'),  // Use localization key
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('NO')),
+                              onEnter: (_) => setState(() => hoveredOption = 'NO'),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == AppLocalizations.of(context).translate('NO') || hoveredOption == AppLocalizations.of(context).translate('NO')
+                                  color: selectedOption == 'NO' || hoveredOption == 'NO'
                                       ? Colors.red.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -94,7 +94,7 @@ class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
                                 child: Icon(
                                   Icons.sentiment_very_dissatisfied_rounded,
                                   size: 40,
-                                  color: selectedOption == AppLocalizations.of(context).translate('NO') ? Colors.red : Colors.grey,
+                                  color: selectedOption == 'NO' ? Colors.red : Colors.grey,
                                 ),
                               ),
                             ),
@@ -106,16 +106,16 @@ class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
 
                       // "Yes" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('YES')),
+                        onTap: () => handleOptionSelection('YES'),  // Use localization key
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('YES')),
+                              onEnter: (_) => setState(() => hoveredOption = 'YES'),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == AppLocalizations.of(context).translate('YES') || hoveredOption == AppLocalizations.of(context).translate('YES')
+                                  color: selectedOption == 'YES' || hoveredOption == 'YES'
                                       ? Colors.orange.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -123,7 +123,7 @@ class _SurveyTrueFalseState extends State<SurveyBinaryChoice> {
                                 child: Icon(
                                   Icons.sentiment_very_satisfied_rounded,
                                   size: 40,
-                                  color: selectedOption == AppLocalizations.of(context).translate('YES') ? Colors.orange : Colors.grey,
+                                  color: selectedOption == 'YES' ? Colors.orange : Colors.grey,
                                 ),
                               ),
                             ),

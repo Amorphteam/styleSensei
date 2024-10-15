@@ -19,9 +19,9 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void handleOptionSelection(String option) {
+  void handleOptionSelection(String optionKey) {
     setState(() {
-      selectedOption = option;
+      selectedOption = optionKey;  // Store the localization key instead of the actual value
     });
   }
 
@@ -30,7 +30,7 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
     try {
       await _firestore.collection('survey_responses').add({
         'survey_type': 'MultipleChoice',  // You can use different survey types
-        'response': selectedOption,
+        'response': selectedOption,  // Save the localization key instead of the translated value
         'suggestion': _suggestionController.text.isNotEmpty ? _suggestionController.text : null,
         'timestamp': Timestamp.now(),
       });
@@ -152,29 +152,30 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
 
   // Method to build the multiple-choice options with full width
   List<Widget> _buildOptions() {
+    // Use localization keys for options
     List<String> options = [
-      AppLocalizations.of(context).translate('quick_tips'),
-      AppLocalizations.of(context).translate('full_tutorials'),
-      AppLocalizations.of(context).translate('video_guides'),
-      AppLocalizations.of(context).translate('ai_chat_styling'),
-      AppLocalizations.of(context).translate('none')
+      'quick_tips',  // Localization key for "Quick Tips"
+      'full_tutorials',  // Localization key for "Full Tutorials"
+      'video_guides',  // Localization key for "Video Guides"
+      'ai_chat_styling',  // Localization key for "AI Chat for Styling"
+      'none'  // Localization key for "None"
     ];
 
-    return options.map((option) {
+    return options.map((optionKey) {
       return GestureDetector(
-        onTap: () => handleOptionSelection(option),
+        onTap: () => handleOptionSelection(optionKey),  // Send localization key as response
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 5),
           padding: EdgeInsets.all(12),
           width: double.infinity, // Make sure the option takes full width
           decoration: BoxDecoration(
-            color: selectedOption == option ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
+            color: selectedOption == optionKey ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            option,
+            AppLocalizations.of(context).translate(optionKey),  // Display the translated value
             style: TextStyle(
-              color: selectedOption == option ? Colors.white : Colors.black,
+              color: selectedOption == optionKey ? Colors.white : Colors.black,
             ),
             textAlign: isRtl ? TextAlign.right : TextAlign.left, // Align text based on direction
           ),

@@ -26,9 +26,9 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
   ];
 
   // Method to handle option selection
-  void handleOptionSelection(String option) {
+  void handleOptionSelection(String optionKey) {
     setState(() {
-      selectedOption = option;
+      selectedOption = optionKey;
     });
   }
 
@@ -36,7 +36,7 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
   Future<void> _sendSurveyResponse() async {
     try {
       await _firestore.collection('survey_responses').add({
-        'survey_type': 'MultiStep',  // You can use different survey types
+        'survey_type': 'MultiStep',  // Use consistent survey types
         'responses': _buildResponses(),
         'timestamp': Timestamp.now(),
       });
@@ -49,8 +49,7 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
   // Build the responses for each step
   Map<String, dynamic> _buildResponses() {
     return {
-      'outfit_alignment': selectedOption,  // Store the response for the first question
-      // Add other responses as needed for different questions
+      surveyQuestions[currentStep]: selectedOption,  // Store the key instead of the translated value
     };
   }
 
@@ -136,17 +135,17 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildEmojiOption(
-                        AppLocalizations.of(context).translate('way_off'),
+                        'way_off',  // Localization key for "Way off"
                         Icons.sentiment_very_dissatisfied_rounded,
                         Colors.red,
                       ),
                       _buildEmojiOption(
-                        AppLocalizations.of(context).translate('meh_kinda'),
+                        'meh_kinda',  // Localization key for "Meh, kinda"
                         Icons.sentiment_neutral_rounded,
                         Colors.blue,
                       ),
                       _buildEmojiOption(
-                        AppLocalizations.of(context).translate('totally_me'),
+                        'totally_me',  // Localization key for "Totally me"
                         Icons.sentiment_satisfied_alt_rounded,
                         Colors.orange,
                       ),
@@ -206,19 +205,19 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
     );
   }
 
-  // Widget to build emoji options
-  Widget _buildEmojiOption(String label, IconData icon, Color color) {
+  // Widget to build emoji options with localization keys
+  Widget _buildEmojiOption(String optionKey, IconData icon, Color color) {
     return GestureDetector(
-      onTap: () => handleOptionSelection(label),
+      onTap: () => handleOptionSelection(optionKey),  // Send key instead of value
       child: Column(
         children: [
           MouseRegion(
-            onEnter: (_) => setState(() => hoveredOption = label),
+            onEnter: (_) => setState(() => hoveredOption = optionKey),
             onExit: (_) => setState(() => hoveredOption = ''),
             child: Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: selectedOption == label || hoveredOption == label
+                color: selectedOption == optionKey || hoveredOption == optionKey
                     ? color.withOpacity(0.2)
                     : Colors.transparent,
                 shape: BoxShape.circle,
@@ -226,12 +225,12 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
               child: Icon(
                 icon,
                 size: 40,
-                color: selectedOption == label ? color : Colors.grey,
+                color: selectedOption == optionKey ? color : Colors.grey,
               ),
             ),
           ),
           SizedBox(height: 5), // Space between icon and text
-          Text(label),
+          Text(AppLocalizations.of(context).translate(optionKey)),  // Display the translated value
         ],
       ),
     );
