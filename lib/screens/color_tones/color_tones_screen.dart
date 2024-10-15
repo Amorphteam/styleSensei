@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:style_sensei/utils/analytics_helper.dart'; // Import AnalyticsHelper
 
 import '../../utils/AppLocalizations.dart';
 import '../../utils/untitled.dart';
@@ -71,6 +72,9 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                           } else {
                             selectedColorTones.add(colorTones[index].tag);
                           }
+
+                          // Log color tone selection using AnalyticsHelper
+                          AnalyticsHelper.logColorToneSelection(colorTones[index].tag, isSelected);
                         });
                       },
                       child: Column(
@@ -97,6 +101,9 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
                                     } else {
                                       selectedColorTones.add(colorTones[index].tag);
                                     }
+
+                                    // Log color tone selection using AnalyticsHelper
+                                    AnalyticsHelper.logColorToneSelection(colorTones[index].tag, isSelected);
                                   });
                                 },
                               ),
@@ -124,6 +131,10 @@ class _ColorTonesScreenState extends State<ColorTonesScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   saveSelections(colorToneSelections: selectedColorTones);
+
+                  // Log the event when proceeding to the next screen or saving
+                  AnalyticsHelper.logProceedEvent(selectedColorTones, widget.isFromSettings);
+
                   final imageSelectionCubit = ImageSelectionCubit();
 
                   if (widget.isFromSettings) {

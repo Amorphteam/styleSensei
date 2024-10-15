@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:style_sensei/screens/waiting/cubit/waiting_cubit.dart';
 import 'package:style_sensei/screens/waiting/waiting_screen.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
+import 'package:firebase_analytics/firebase_analytics.dart'; // Firebase Analytics
 
 import '../../utils/untitled.dart';
 import '../home_tab/cubit/home_cubit.dart';
@@ -20,6 +21,7 @@ class StyleScreen extends StatefulWidget {
 
 class _StyleScreenState extends State<StyleScreen> {
   Set<int> selectedIndexes = {};
+  FirebaseAnalytics _analytics = FirebaseAnalytics.instance; // Firebase Analytics instance
 
   @override
   void initState() {
@@ -57,9 +59,7 @@ class _StyleScreenState extends State<StyleScreen> {
               SizedBox(height: 8),
               GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
-                // to disable GridView's scrolling
                 shrinkWrap: true,
-                // You won't see infinite size error
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 2,
@@ -76,33 +76,28 @@ class _StyleScreenState extends State<StyleScreen> {
                           selectedIndexes.remove(index);
                         } else {
                           selectedIndexes.add(index);
+                          // Log the style selection event
+                          _logSelectEvent(images[index].tag);
                         }
                       });
                     },
                     child: GridTile(
                       child: Stack(
                         fit: StackFit.expand,
-                        // Ensure the stack fills the parent
                         children: [
-                          // Image.asset widget with BoxFit.cover should cover the entire grid tile.
                           Image.asset(
                             images[index].path,
-                            fit: BoxFit
-                                .cover, // This will cover the entire grid area
+                            fit: BoxFit.cover,
                           ),
-                          if (isSelected) Container(color: Colors.black54),
-                          // Semi-transparent overlay
+                          if (isSelected) Container(color: Colors.black54), // Semi-transparent overlay
                         ],
                       ),
                       footer: GridTileBar(
                         title: Text(''),
-                        // Empty text widget for alignment purposes
                         trailing: isSelected
                             ? Icon(Icons.check_circle,
-                                color: Theme.of(context).colorScheme.primary)
-                            : Icon(
-                                Icons.radio_button_off,
-                              ),
+                            color: Theme.of(context).colorScheme.primary)
+                            : Icon(Icons.radio_button_off),
                       ),
                     ),
                   );
@@ -122,43 +117,39 @@ class _StyleScreenState extends State<StyleScreen> {
             child: ElevatedButton(
               onPressed: selectedIndexes.length >= 4
                   ? () {
-                      List<int> collectionTags = getTagsSelected();
-                      saveSelections(styleSelections: collectionTags);
-                      final waitingCubit =
-                          WaitingCubit(); // Create an instance of HomeCubit
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) => waitingCubit,
-                            child: WaitingScreen(),
-                          ),
-                        ),
-                        (Route<dynamic> route) =>
-                            false, // No route will allow return
-                      );
+                List<int> collectionTags = getTagsSelected();
+                saveSelections(styleSelections: collectionTags);
+                // Log the final style selection
+                _logFinalSelection(collectionTags);
 
-                      // Your navigation logic here
-                    }
-                  : null,
-              // Button is disabled if less than 4 items are selected
+                final waitingCubit = WaitingCubit();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => waitingCubit,
+                      child: WaitingScreen(),
+                    ),
+                  ),
+                      (Route<dynamic> route) => false,
+                );
+              }
+                  : null, // Disable button if less than 4 items are selected
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
+                      (Set<MaterialState> states) {
                     if (states.contains(MaterialState.disabled)) {
                       return Colors.grey; // Disabled color
                     }
-                    return selectedIndexes.length < 4
-                        ? Colors.grey
-                        : Colors.black; // Enable color changes
+                    return selectedIndexes.length < 4 ? Colors.grey : Colors.black;
                   },
                 ),
               ),
               child: Text(
                 selectedIndexes.length < 4
                     ? AppLocalizations.of(context).translate('pick') +
-                        '${4 - selectedIndexes.length}' +
-                        AppLocalizations.of(context).translate('more')
+                    '${4 - selectedIndexes.length}' +
+                    AppLocalizations.of(context).translate('more')
                     : AppLocalizations.of(context).translate('recommendation'),
                 style: TextStyle(
                   color: Colors.white, // Change color conditionally
@@ -179,5 +170,25 @@ class _StyleScreenState extends State<StyleScreen> {
       }
     }
     return collectionTags;
+  }
+
+  // Log an event when a user selects a style
+  Future<void> _logSelectEvent(int styleTag) async {
+    await _analytics.logEvent(
+      name: 'select_favorite_style',
+      parameters: <String, dynamic>{
+        'style_tag': styleTag,
+      },
+    );
+  }
+
+  // Log an event when the user confirms their final selection
+  Future<void> _logFinalSelection(List<int> selectedStyles) async {
+    await _analytics.logEvent(
+      name: 'final_style_selection',
+      parameters: <String, dynamic>{
+        'selected_styles': selectedStyles.join(','), // Send selected styles as a parameter
+      },
+    );
   }
 }

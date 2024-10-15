@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:style_sensei/utils/analytics_helper.dart'; // Import AnalyticsHelper
 import 'package:style_sensei/utils/AppLocalizations.dart';
 
 import '../../utils/untitled.dart';
@@ -17,8 +18,9 @@ class BodyTypeSelectionScreen extends StatefulWidget {
 
 class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
   int selectedBodyType = -1;
+
   @override
-  void initState()  {
+  void initState() {
     getBodyTypeSelections().then((value) {
       if (value != null) {
         setState(() {
@@ -32,8 +34,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isArabic = Localizations.localeOf(context).languageCode ==
-        'ar'; // Check if the current language is Arabic
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar'; // Check if the current language is Arabic
 
     return Scaffold(
       body: Stack(children: [
@@ -94,12 +95,15 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                 itemCount: bodyTypes.length,
                 itemBuilder: (context, index) {
                   String description =
-                      isArabic ? bodyTypes[index].arDes : bodyTypes[index].des;
+                  isArabic ? bodyTypes[index].arDes : bodyTypes[index].des;
 
                   return GestureDetector(
                     onTap: () {
                       setState(() {
                         selectedBodyType = bodyTypes[index].tag;
+
+                        // Log the body type selection
+                        AnalyticsHelper.logBodyTypeSelection(bodyTypes[index].tag);
                       });
                     },
                     child: Column(
@@ -117,6 +121,9 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                             if (value != null) {
                               setState(() {
                                 selectedBodyType = value;
+
+                                // Log the body type selection
+                                AnalyticsHelper.logBodyTypeSelection(value);
                               });
                             }
                           },
@@ -138,29 +145,30 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
             color: Theme.of(context).colorScheme.surface,
             padding: EdgeInsets.all(8),
             child: ElevatedButton(
-
-
               onPressed: selectedBodyType > 0
                   ? () {
+                List<int> selectedBodyTypes = [];
+                selectedBodyTypes.add(selectedBodyType);
+                saveSelections(bodyTypeSelections: selectedBodyTypes);
 
-                      List<int> selectedBodyTypes = [];
-                      selectedBodyTypes.add(selectedBodyType);
-                      saveSelections(bodyTypeSelections: selectedBodyTypes);
-                      if (widget.isFromSettings) {
-                        Navigator.pop(context);
-                        return;
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ColorTonesScreen(),
-                        ),
-                      );
-                    }
+                // Log the proceed or save event
+                AnalyticsHelper.logProceedEventBody(selectedBodyType, widget.isFromSettings);
+
+                if (widget.isFromSettings) {
+                  Navigator.pop(context);
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ColorTonesScreen(),
+                  ),
+                );
+              }
                   : null,
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
+                      (Set<MaterialState> states) {
                     if (states.contains(MaterialState.disabled)) {
                       return Colors.grey; // Disabled color
                     }
@@ -178,7 +186,6 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
                   color: Colors.white, // The color is always white as per your current setup
                 ),
               ),
-
             ),
           ),
         )
@@ -189,7 +196,7 @@ class _BodyTypeSelectionScreenState extends State<BodyTypeSelectionScreen> {
   Future<List<int>?> getBodyTypeSelections() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? bodyTypeSelectionsString = prefs.getString('bodyTypeSelections');
-    if (bodyTypeSelectionsString == null){
+    if (bodyTypeSelectionsString == null) {
       return null;
     }
     return parseIdsFromString(bodyTypeSelectionsString);
