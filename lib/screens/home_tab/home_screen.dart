@@ -6,10 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
+import 'package:style_sensei/screens/survey/survey_satisfaction_rating.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import '../../models/Collections.dart';
 import '../../utils/untitled.dart';
 import '../survey/survey_binary_choice.dart';
+import '../survey/survey_multiple_choice.dart';
+import '../survey/survey_multistep.dart';
 import 'widgets/staggered_grid_view_widget.dart';
 
 class HomeTab extends StatefulWidget {
@@ -172,7 +175,7 @@ class _HomeTabState extends State<HomeTab> {
             body: buildContent(context),
           ),
           if (showSurvey)
-            SurveyBinaryChoice(
+            SurveySatisfactionRating(
               onClose: () {
                 setState(() {
                   showSurvey = false;

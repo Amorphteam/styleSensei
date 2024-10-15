@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 class SurveyMultipleChoice extends StatefulWidget {
   final VoidCallback onClose;
@@ -12,7 +13,7 @@ class SurveyMultipleChoice extends StatefulWidget {
 class _NewSurveyPageState extends State<SurveyMultipleChoice> {
   String selectedOption = '';
   TextEditingController _suggestionController = TextEditingController();
-
+  bool isRtl = false;
   void handleOptionSelection(String option) {
     setState(() {
       selectedOption = option;
@@ -21,7 +22,11 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if the current locale is Arabic or another RTL language
+    isRtl = Directionality.of(context) == TextDirection.rtl;
+
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Allows the layout to adjust when the keyboard appears
       backgroundColor: Colors.black.withOpacity(0.5),
       body: Center(
         child: Padding(
@@ -39,80 +44,86 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
             ),
             padding: EdgeInsets.all(20),
             width: MediaQuery.of(context).size.width * 0.8,
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: SingleChildScrollView( // Make the container scrollable
+              child: Directionality(
+                textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+                child: Stack(
                   children: [
-                    SizedBox(height: 50), // For space between top and question text
-                    Text(
-                      'Which method do you prefer for receiving styling education?',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20),
-
-                    // Multiple-choice options with full width
-                    ..._buildOptions(),
-
-                    SizedBox(height: 20),
-
-                    // TextField for other suggestions
-                    Text(
-                      'Other suggestions?',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    TextField(
-                      controller: _suggestionController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Type your answer here...',
-                      ),
-                      maxLines: 3,
-                    ),
-                    SizedBox(height: 30),
-
-                    // "Ask me later" and "Send" buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextButton(
-                          onPressed: widget.onClose, // Close the survey
-                          child: Text(
-                            'Ask me later',
-                            style: TextStyle(color: Colors.grey),
-                          ),
+                        SizedBox(height: 50),
+                        Text(
+                          AppLocalizations.of(context).translate('which_method_prefer'),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle "Send" action (submit survey)
-                            if (selectedOption.isNotEmpty || _suggestionController.text.isNotEmpty) {
-                              // Submit the selected option and the suggestion (if any)
-                              widget.onClose(); // Close survey after submission
-                            }
-                          },
-                          child: Text('Send'),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white, backgroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        SizedBox(height: 20),
+
+                        // Multiple-choice options with full width
+                        ..._buildOptions(),
+
+                        SizedBox(height: 20),
+
+                        // TextField for other suggestions
+                        Text(
+                          AppLocalizations.of(context).translate('other_suggestions'),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _suggestionController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: AppLocalizations.of(context).translate('type_answer'),
                           ),
+                          maxLines: 3,
+                        ),
+                        SizedBox(height: 30),
+
+                        // "Ask me later" and "Send" buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: widget.onClose, // Close the survey
+                              child: Text(
+                                AppLocalizations.of(context).translate('ask_me_later'),
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Handle "Send" action (submit survey)
+                                if (selectedOption.isNotEmpty || _suggestionController.text.isNotEmpty) {
+                                  // Submit the selected option and the suggestion (if any)
+                                  widget.onClose(); // Close survey after submission
+                                }
+                              },
+                              child: Text(AppLocalizations.of(context).translate('send_bu')),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.black,
+                                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
+
+                    // Close Icon (Top Right)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(Icons.close, color: Colors.grey),
+                        onPressed: widget.onClose, // Close survey when icon is pressed
+                      ),
+                    ),
                   ],
                 ),
-
-                // Close Icon (Top Right)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    icon: Icon(Icons.close, color: Colors.grey),
-                    onPressed: widget.onClose, // Close survey when icon is pressed
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -123,11 +134,11 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
   // Method to build the multiple-choice options with full width
   List<Widget> _buildOptions() {
     List<String> options = [
-      'Quick tips',
-      'Full tutorials',
-      'Video guides',
-      'AI chat for styling advice',
-      'None'
+      AppLocalizations.of(context).translate('quick_tips'),
+      AppLocalizations.of(context).translate('full_tutorials'),
+      AppLocalizations.of(context).translate('video_guides'),
+      AppLocalizations.of(context).translate('ai_chat_styling'),
+      AppLocalizations.of(context).translate('none')
     ];
 
     return options.map((option) {
@@ -146,7 +157,7 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
             style: TextStyle(
               color: selectedOption == option ? Colors.white : Colors.black,
             ),
-            textAlign: TextAlign.left, // Align text to the left
+            textAlign: isRtl ? TextAlign.right : TextAlign.left, // Align text based on direction
           ),
         ),
       );

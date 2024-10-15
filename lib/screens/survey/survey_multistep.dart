@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 class SurveyMultistep extends StatefulWidget {
   final VoidCallback onClose;
@@ -16,8 +17,8 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
 
   // List of survey steps (questions)
   final List<String> surveyQuestions = [
-    "How well do the outfit collections displayed on the homepage align with your personal style and preferences?",
-    "How much do you agree with the statement: 'The app makes it easy for me to discover clothing that is suitable for my style, body shape, and personal preferences?'"
+    'outfit_alignment',  // Localization key
+    'discover_clothing_suitability',  // Localization key
   ];
 
   // Method to handle option selection
@@ -96,7 +97,7 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
 
                   // Question Text
                   Text(
-                    surveyQuestions[currentStep],
+                    AppLocalizations.of(context).translate(surveyQuestions[currentStep]),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -108,9 +109,21 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildEmojiOption('Way off', Icons.sentiment_very_dissatisfied_rounded, Colors.red),
-                      _buildEmojiOption('Meh, kinda', Icons.sentiment_neutral_rounded, Colors.blue),
-                      _buildEmojiOption('Totally me', Icons.sentiment_satisfied_alt_rounded, Colors.orange),
+                      _buildEmojiOption(
+                        AppLocalizations.of(context).translate('way_off'),
+                        Icons.sentiment_very_dissatisfied_rounded,
+                        Colors.red,
+                      ),
+                      _buildEmojiOption(
+                        AppLocalizations.of(context).translate('meh_kinda'),
+                        Icons.sentiment_neutral_rounded,
+                        Colors.blue,
+                      ),
+                      _buildEmojiOption(
+                        AppLocalizations.of(context).translate('totally_me'),
+                        Icons.sentiment_satisfied_alt_rounded,
+                        Colors.orange,
+                      ),
                     ],
                   ),
                   SizedBox(height: 30),
@@ -124,7 +137,7 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                         TextButton(
                           onPressed: previousStep,
                           child: Text(
-                            'Previous',
+                            AppLocalizations.of(context).translate('previous'),
                             style: TextStyle(color: Colors.grey, fontSize: 16),
                           ),
                         ),
@@ -133,10 +146,17 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                       // Next/Submit button
                       ElevatedButton(
                         onPressed: selectedOption.isNotEmpty ? nextStep : null, // Only enable when an option is selected
-                        child: Text(currentStep == surveyQuestions.length - 1 ? 'Send' : 'Next'),
+                        child: Text(
+                          currentStep == surveyQuestions.length - 1
+                              ? AppLocalizations.of(context).translate('send_bu')
+                              : AppLocalizations.of(context).translate('next'),
+                        ),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white, backgroundColor: selectedOption.isNotEmpty ? Colors.black : Colors.grey,
-                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          foregroundColor: Colors.white,
+                          backgroundColor:
+                          selectedOption.isNotEmpty ? Colors.black : Colors.grey,
+                          padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
                       ),
                     ],

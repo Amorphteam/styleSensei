@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:style_sensei/utils/AppLocalizations.dart';
 
 class SurveySatisfactionRating extends StatefulWidget {
   final VoidCallback onClose;
@@ -46,7 +47,7 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
 
                   // Question Text
                   Text(
-                    "How much do you agree with the statement:\n'The app's design is simple and easy to use?'",
+                    AppLocalizations.of(context).translate('satisfaction_question'),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -58,16 +59,16 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                     children: [
                       // "Nope" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection('Nope'),
+                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('nope')),
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = 'Nope'),
+                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('nope')),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == 'Nope' || hoveredOption == 'Nope'
+                                  color: selectedOption == AppLocalizations.of(context).translate('nope') || hoveredOption == AppLocalizations.of(context).translate('nope')
                                       ? Colors.red.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -75,28 +76,28 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                                 child: Icon(
                                   Icons.sentiment_very_dissatisfied_rounded,
                                   size: 40,
-                                  color: selectedOption == 'Nope' ? Colors.red : Colors.grey,
+                                  color: selectedOption == AppLocalizations.of(context).translate('nope') ? Colors.red : Colors.grey,
                                 ),
                               ),
                             ),
                             SizedBox(height: 5), // Space between icon and text
-                            Text('Nope'),
+                            Text(AppLocalizations.of(context).translate('nope')),
                           ],
                         ),
                       ),
 
                       // "It’s okay" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection('Okay'),
+                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('okay')),
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = 'Okay'),
+                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('okay')),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == 'Okay' || hoveredOption == 'Okay'
+                                  color: selectedOption == AppLocalizations.of(context).translate('okay') || hoveredOption == AppLocalizations.of(context).translate('okay')
                                       ? Colors.blue.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -104,28 +105,28 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                                 child: Icon(
                                   Icons.sentiment_neutral_rounded,
                                   size: 40,
-                                  color: selectedOption == 'Okay' ? Colors.blue : Colors.grey,
+                                  color: selectedOption == AppLocalizations.of(context).translate('okay') ? Colors.blue : Colors.grey,
                                 ),
                               ),
                             ),
                             SizedBox(height: 5),
-                            Text('It\'s okay'),
+                            Text(AppLocalizations.of(context).translate('okay')),
                           ],
                         ),
                       ),
 
                       // "100% agree" Option
                       GestureDetector(
-                        onTap: () => handleOptionSelection('Agree'),
+                        onTap: () => handleOptionSelection(AppLocalizations.of(context).translate('agree')),
                         child: Column(
                           children: [
                             MouseRegion(
-                              onEnter: (_) => setState(() => hoveredOption = 'Agree'),
+                              onEnter: (_) => setState(() => hoveredOption = AppLocalizations.of(context).translate('agree')),
                               onExit: (_) => setState(() => hoveredOption = ''),
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: selectedOption == 'Agree' || hoveredOption == 'Agree'
+                                  color: selectedOption == AppLocalizations.of(context).translate('agree') || hoveredOption == AppLocalizations.of(context).translate('agree')
                                       ? Colors.orange.withOpacity(0.2)
                                       : Colors.transparent,
                                   shape: BoxShape.circle,
@@ -133,12 +134,12 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                                 child: Icon(
                                   Icons.sentiment_satisfied_alt_rounded,
                                   size: 40,
-                                  color: selectedOption == 'Agree' ? Colors.orange : Colors.grey,
+                                  color: selectedOption == AppLocalizations.of(context).translate('agree') ? Colors.orange : Colors.grey,
                                 ),
                               ),
                             ),
                             SizedBox(height: 5),
-                            Text('100% agree'),
+                            Text(AppLocalizations.of(context).translate('agree')),
                           ],
                         ),
                       ),
@@ -153,7 +154,7 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                       TextButton(
                         onPressed: widget.onClose, // Close the survey
                         child: Text(
-                          'Ask me later',
+                          AppLocalizations.of(context).translate('ask_me_later'),
                           style: TextStyle(color: Colors.grey, fontSize: 14),
                         ),
                       ),
@@ -161,11 +162,10 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                         onPressed: () {
                           // Handle "Send" action (submit survey)
                           if (selectedOption.isNotEmpty) {
-                            // You can store this result in your backend
                             widget.onClose(); // Close survey after submission
                           }
                         },
-                        child: Text('Send'),
+                        child: Text(AppLocalizations.of(context).translate('send_bu')),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white, backgroundColor: Colors.black,
                           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
