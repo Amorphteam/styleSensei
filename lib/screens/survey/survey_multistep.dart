@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SurveyMultistep extends StatefulWidget {
   final VoidCallback onClose;
@@ -15,6 +16,9 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
   String selectedOption = '';
   String hoveredOption = '';
 
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   // List of survey steps (questions)
   final List<String> surveyQuestions = [
     'outfit_alignment',  // Localization key
@@ -28,6 +32,28 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
     });
   }
 
+  // Method to send data to Firestore
+  Future<void> _sendSurveyResponse() async {
+    try {
+      await _firestore.collection('survey_responses').add({
+        'survey_type': 'MultiStep',  // You can use different survey types
+        'responses': _buildResponses(),
+        'timestamp': Timestamp.now(),
+      });
+      widget.onClose(); // Close the survey after submission
+    } catch (e) {
+      print("Error saving survey response: $e");
+    }
+  }
+
+  // Build the responses for each step
+  Map<String, dynamic> _buildResponses() {
+    return {
+      'outfit_alignment': selectedOption,  // Store the response for the first question
+      // Add other responses as needed for different questions
+    };
+  }
+
   // Method to go to the next step
   void nextStep() {
     if (currentStep < surveyQuestions.length - 1) {
@@ -36,8 +62,8 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
         selectedOption = ''; // Reset selection for the next step
       });
     } else {
-      // Handle submission (e.g., send the results to a server)
-      widget.onClose(); // Close the survey after submission
+      // Final step - submit the data
+      _sendSurveyResponse();  // Send data to Firestore
     }
   }
 

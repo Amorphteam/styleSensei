@@ -175,7 +175,7 @@ class _HomeTabState extends State<HomeTab> {
             body: buildContent(context),
           ),
           if (showSurvey)
-            SurveySatisfactionRating(
+            SurveyMultipleChoice(
               onClose: () {
                 setState(() {
                   showSurvey = false;

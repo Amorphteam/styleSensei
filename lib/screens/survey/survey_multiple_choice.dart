@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SurveyMultipleChoice extends StatefulWidget {
   final VoidCallback onClose;
@@ -14,10 +15,29 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
   String selectedOption = '';
   TextEditingController _suggestionController = TextEditingController();
   bool isRtl = false;
+
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   void handleOptionSelection(String option) {
     setState(() {
       selectedOption = option;
     });
+  }
+
+  // Method to send data to Firestore
+  Future<void> _sendSurveyResponse() async {
+    try {
+      await _firestore.collection('survey_responses').add({
+        'survey_type': 'MultipleChoice',  // You can use different survey types
+        'response': selectedOption,
+        'suggestion': _suggestionController.text.isNotEmpty ? _suggestionController.text : null,
+        'timestamp': Timestamp.now(),
+      });
+      widget.onClose();
+    } catch (e) {
+      print("Error saving survey response: $e");
+    }
   }
 
   @override
@@ -96,8 +116,7 @@ class _NewSurveyPageState extends State<SurveyMultipleChoice> {
                               onPressed: () {
                                 // Handle "Send" action (submit survey)
                                 if (selectedOption.isNotEmpty || _suggestionController.text.isNotEmpty) {
-                                  // Submit the selected option and the suggestion (if any)
-                                  widget.onClose(); // Close survey after submission
+                                  _sendSurveyResponse(); // Send data to Firestore
                                 }
                               },
                               child: Text(AppLocalizations.of(context).translate('send_bu')),

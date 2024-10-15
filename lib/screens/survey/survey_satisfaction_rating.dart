@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SurveySatisfactionRating extends StatefulWidget {
   final VoidCallback onClose;
@@ -14,10 +15,27 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
   String selectedOption = '';
   String hoveredOption = '';
 
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   void handleOptionSelection(String option) {
     setState(() {
       selectedOption = option;
     });
+  }
+
+  // Method to send data to Firestore
+  Future<void> _sendSurveyResponse() async {
+    try {
+      await _firestore.collection('survey_responses').add({
+        'survey_type': 'SatisfactionRating',  // You can use different survey types
+        'response': selectedOption,
+        'timestamp': Timestamp.now(),
+      });
+      widget.onClose();
+    } catch (e) {
+      print("Error saving survey response: $e");
+    }
   }
 
   @override
@@ -160,14 +178,14 @@ class _SurveyTrueFalseState extends State<SurveySatisfactionRating> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Handle "Send" action (submit survey)
                           if (selectedOption.isNotEmpty) {
-                            widget.onClose(); // Close survey after submission
+                            _sendSurveyResponse(); // Send data to Firestore
                           }
                         },
                         child: Text(AppLocalizations.of(context).translate('send_bu')),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white, backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.black,
                           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
                       ),
