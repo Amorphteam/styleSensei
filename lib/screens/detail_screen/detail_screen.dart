@@ -143,14 +143,14 @@ Text(
             style: Theme.of(context).textTheme.titleSmall,
           ),
           Gap(30),
- Text(
-            AppLocalizations.of(context).translate('des_title'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Column(
-            children: listOfChips(collectionDetail, context),
-          ),
-          Gap(20),
+ // Text(
+ //            AppLocalizations.of(context).translate('des_title'),
+ //            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+ //          ),
+ //          Column(
+ //            children: listOfChips(collectionDetail, context),
+ //          ),
+ //          Gap(20),
  Text(
             AppLocalizations.of(context).translate('body_shape_question'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -221,17 +221,17 @@ Text(
           ),
         ),
         Gap(20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            AppLocalizations.of(context).translate('attributes'),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
-          child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        //   child: Text(
+        //     AppLocalizations.of(context).translate('attributes'),
+        //     style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+        //   ),
+        // ),
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 16, top: 8),
+        //   child: buildAttributes(collectionDetail?.collection?.rules, item.category?.id),
+        // ),
         (orderedProducts.length > 0)
             ? Column(
           mainAxisAlignment: MainAxisAlignment.start,
