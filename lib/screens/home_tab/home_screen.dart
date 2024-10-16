@@ -9,6 +9,7 @@ import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/survey/survey_satisfaction_rating.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import '../../models/Collections.dart';
+import '../../utils/survey_manager.dart';
 import '../../utils/untitled.dart';
 import '../survey/survey_binary_choice.dart';
 import '../survey/survey_multiple_choice.dart';
@@ -25,6 +26,8 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  int sessionCount = 0;
+  bool showSurvey = false;
   List<List<int>> collectionTags = [];
   List<ImageItem> imageAssetsUrl = [];
   String styleName = '';
@@ -34,7 +37,6 @@ class _HomeTabState extends State<HomeTab> {
   String selectedTagsString = '';
   bool _twoColumn = true;
   bool isArabic = false;
-  bool showSurvey = true;
 
   @override
   void initState() {
@@ -46,6 +48,21 @@ class _HomeTabState extends State<HomeTab> {
     imageAssetsUrl = searchingTag();
     styleName = getStyleName();
     styleDescriptions = getDesStyle();
+
+    // Initialize the session count and decide if the survey should be shown
+    _initializeSessionCount();
+
+  }
+
+  void _initializeSessionCount() async {
+    // Use SurveyManager to handle session count and survey display logic
+    sessionCount = await SurveyManager.getSessionCount();
+    if (SurveyManager.shouldShowSurveyMultistep(sessionCount)) {
+      setState(() {
+        showSurvey = true;
+      });
+    }
+    SurveyManager.incrementSessionCount();
   }
 
   void getData() {
@@ -175,7 +192,7 @@ class _HomeTabState extends State<HomeTab> {
             body: buildContent(context),
           ),
           if (showSurvey)
-            SurveyMultipleChoice(
+            SurveyMultistep(
               onClose: () {
                 setState(() {
                   showSurvey = false;
