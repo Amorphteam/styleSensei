@@ -24,8 +24,10 @@ import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/analytics_helper.dart';
+import '../../utils/survey_manager.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
+import '../survey/survey_multiple_choice.dart';
 import 'cubit/detail_state.dart';
 
 class Detail extends StatefulWidget {
@@ -40,6 +42,9 @@ class Detail extends StatefulWidget {
 class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Map<String, bool> bookmarkedItems = {};
+  int sessionCount = 0;
+  bool showSurvey = false;
+
 
   @override
   void initState() {
@@ -63,6 +68,25 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
 
     // Load the first tab data initially
     context.read<DetailCubit>().fetchCollectionDetail(CollectionRepository(), widget.collection.id);
+
+    // Initialize the session count and decide if the survey should be shown
+    _initializeSessionCount();
+  }
+
+
+  void _initializeSessionCount() async {
+    // Get session count for Detail screen
+    sessionCount = await SurveyManager.getDetailScreenSessionCount();
+
+    // Check if survey should be shown after 3 sessions
+    if (SurveyManager.shouldShowDetailSurvey(sessionCount)) {
+      setState(() {
+        showSurvey = true;
+      });
+    }
+
+    // Increment session count for Detail screen
+    SurveyManager.incrementDetailScreenSessionCount();
   }
 
   @override
@@ -71,65 +95,79 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              expandedHeight: 600.0,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: CachedNetworkImage(
-                  imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
-                  fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  expandedHeight: 600.0,
+                  floating: false,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: CachedNetworkImage(
+                      imageUrl: replaceNumbersInUrl(widget.collection.image) ?? '',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ];
-        },
-        body: Column(
-          children: [
-            TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(text: AppLocalizations.of(context).translate('collection_detail')),
-                Tab(text: AppLocalizations.of(context).translate('collection_items')),
+              ];
+            },
+            body: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(text: AppLocalizations.of(context).translate('collection_detail')),
+                    Tab(text: AppLocalizations.of(context).translate('collection_items')),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      BlocBuilder<DetailCubit, DetailState>(
+                        builder: (context, state) {
+                          return state.maybeWhen(
+                            loadingDetail: () => SkeletonLoading(),
+                            loadedDetail: (collectionDetail) => buildDetailTab(collectionDetail),
+                            error: (message) => Center(child: Text(message)),
+                            orElse: () => SkeletonLoading(),
+                          );
+                        },
+                      ),
+                      BlocBuilder<DetailCubit, DetailState>(
+                        builder: (context, state) {
+                          return state.maybeWhen(
+                            loadingItems: () => LoadingAnimation(),
+                            loadedItems: (items, collectionDetail) => buildItemsTab(items, collectionDetail),
+                            error: (message) => Center(child: Text(message)),
+                            orElse: () => LoadingAnimation(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  BlocBuilder<DetailCubit, DetailState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        loadingDetail: () => SkeletonLoading(),
-                        loadedDetail: (collectionDetail) => buildDetailTab(collectionDetail),
-                        error: (message) => Center(child: Text(message)),
-                        orElse: () => SkeletonLoading(),
-                      );
-                    },
-                  ),
-                  BlocBuilder<DetailCubit, DetailState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        loadingItems: () => LoadingAnimation(),
-                        loadedItems: (items, collectionDetail) => buildItemsTab(items, collectionDetail),
-                        error: (message) => Center(child: Text(message)),
-                        orElse: () => LoadingAnimation(),
-                      );
-                    },
-                  ),
-                ],
-              ),
+          ),
+          if (showSurvey)
+            SurveyMultipleChoice(
+              onClose: () {
+                setState(() {
+                  showSurvey = false;
+                });
+              },
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
+
 
   Widget buildDetailTab(ProductsModel collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';

@@ -55,14 +55,18 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void _initializeSessionCount() async {
-    // Use SurveyManager to handle session count and survey display logic
-    sessionCount = await SurveyManager.getSessionCount();
-    if (SurveyManager.shouldShowSurveyMultistep(sessionCount)) {
+    // Get the session count for HomeTab
+    sessionCount = await SurveyManager.getHomeTabSessionCount();
+
+    // Check if the survey should be shown after 5 sessions
+    if (SurveyManager.shouldShowHomeTabSurvey(sessionCount)) {
       setState(() {
         showSurvey = true;
       });
     }
-    SurveyManager.incrementSessionCount();
+
+    // Increment the session count
+    SurveyManager.incrementHomeTabSessionCount();
   }
 
   void getData() {
