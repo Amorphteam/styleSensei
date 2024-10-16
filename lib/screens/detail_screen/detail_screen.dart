@@ -23,6 +23,7 @@ import '../../new_models/attribute.dart';
 import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
+import '../../utils/analytics_helper.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
 import 'cubit/detail_state.dart';
@@ -46,8 +47,16 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (_tabController.index == 0) {
+        // Log 'click_collection_details' event
+        AnalyticsHelper.logEvent('click_collection_details', {
+          'collection_id': widget.collection.id.toString(),
+        });
         context.read<DetailCubit>().fetchCollectionDetail(CollectionRepository(), widget.collection.id);
       } else if (_tabController.index == 1) {
+        // Log 'click_collection_items' event
+        AnalyticsHelper.logEvent('click_collection_items', {
+          'collection_id': widget.collection.id.toString(),
+        });
         context.read<DetailCubit>().fetchCollectionItems(CollectionRepository(), widget.collection.id);
       }
     });
@@ -61,7 +70,6 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
     _tabController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

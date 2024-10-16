@@ -59,4 +59,15 @@ class AnalyticsHelper {
       {'selected_body_type': selectedBodyType},
     );
   }
+
+
+  // Specific method for logging AI Assistant queries
+  static Future<void> logAiAssistantQuery(String query) async {
+    // Truncate the query to 50 characters
+    String truncatedQuery = query.length > 50 ? query.substring(0, 50) + '...' : query;
+
+    await logEvent('use_ai_assistant', {
+      'query_text': truncatedQuery,
+    });
+  }
 }

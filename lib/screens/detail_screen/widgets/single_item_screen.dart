@@ -1,15 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gap/gap.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../new_models/attribute.dart';
 import '../../../new_models/product.dart';
 import '../../../utils/AppLocalizations.dart';
+import '../../../utils/analytics_helper.dart'; // Import the AnalyticsHelper for event logging
 import '../../../utils/untitled.dart';
 
 class SingleItemScreen extends StatefulWidget {
@@ -36,6 +34,18 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
   bool isBookmarked = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    // Log the event when the product details screen is loaded
+    AnalyticsHelper.logEvent('view_item_details', {
+      'item_id': widget.product.id.toString(),
+      'item_name': widget.product.name ?? 'Unknown',
+      'category': widget.product.category?.name ?? 'Unknown', // Extract only the name of the category
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
@@ -43,67 +53,62 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
     return Scaffold(
       appBar: AppBar(
           title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: Text(
-                    getBrandName(widget.product.attributes) ?? 'Unknown',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: Text(
+                        getBrandName(widget.product.attributes) ?? 'Unknown',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: Text(
+                        isArabic ? widget.product.arabic_name ?? '' : widget.product.name ?? '',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ),
+                  ],
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: Text( isArabic ? widget.product.arabic_name ?? '' : widget.product.name ?? '',
-                      style: Theme.of(context).textTheme.labelMedium),
+              ),
+              IconButton(
+                icon: widget.bookmarkedItems[widget.product.id.toString()]!
+                    ? SvgPicture.asset(
+                  'assets/images/bookmarked.svg',
+                  color: Theme.of(context).colorScheme.onBackground,
+                )
+                    : SvgPicture.asset(
+                  'assets/images/bookmark.svg',
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: widget.bookmarkedItems[widget.product.id.toString()]!
-                ? SvgPicture.asset(
-                    'assets/images/bookmarked.svg',
-                    color: Theme.of(context).colorScheme.onBackground, // Path to your SVG file
-                  )
-                : SvgPicture.asset(
-                    'assets/images/bookmark.svg', // Path to your SVG file
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-            onPressed: () {
-              setState(() {
-                bool isCurrentlyBookmarked =
-                    widget.bookmarkedItems[widget.product.id.toString()]!;
-                widget.bookmarkedItems[widget.product.id.toString()] =
-                    !isCurrentlyBookmarked;
-              });
-              widget.onBookmarkUpdated!(widget.product.id.toString(),
-                  widget.bookmarkedItems[widget.product.id.toString()]!);
-              saveBookmarkedItems(widget.bookmarkedItems);
-            },
-          ),
-        ],
-      )),
+                onPressed: () {
+                  setState(() {
+                    bool isCurrentlyBookmarked = widget.bookmarkedItems[widget.product.id.toString()]!;
+                    widget.bookmarkedItems[widget.product.id.toString()] = !isCurrentlyBookmarked;
+                  });
+                  widget.onBookmarkUpdated!(widget.product.id.toString(), widget.bookmarkedItems[widget.product.id.toString()]!);
+                  saveBookmarkedItems(widget.bookmarkedItems);
+                },
+              ),
+            ],
+          )),
       body: ListView(
         children: [
-          // Top bar with the title and action icons
-          // Image display with a network image and placeholders
           CachedNetworkImage(
             imageUrl: imageUrls![selectedIndex],
             fit: BoxFit.contain,
             placeholder: (context, url) => Shimmer.fromColors(
               baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-              // Light grey color for the base
-              highlightColor:
-                  Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+              highlightColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
               child: Container(
                 width: double.infinity,
               ),
@@ -135,22 +140,14 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                             imageUrl: getSmallImageUrl(imageUrls[index]),
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Theme.of(context)
-                                  .colorScheme
-                                  .surface
-                                  .withOpacity(0.5),
-                              // Light grey color for the base
-                              highlightColor: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.2),
+                              baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                              highlightColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
                               child: Container(
                                 height: 100,
                                 width: 60,
                               ),
                             ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
                           ),
                           Positioned(
                             bottom: 0,
@@ -159,10 +156,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                             left: 0,
                             child: Container(
                               color: isSelected
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2)
+                                  ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
                                   : Colors.transparent,
                             ),
                           )
@@ -182,13 +176,11 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
                 Gap(16),
                 Text(
                   AppLocalizations.of(context).translate('description'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Gap(8),
-                Text( isArabic ? widget.product.arabic_description ?? widget.product.description ?? '' :
+                Text(
+                  isArabic ? widget.product.arabic_description ?? widget.product.description ?? '' :
                   widget.product.description ?? '',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -197,31 +189,36 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(26.0),
-            child:             TextButton(
+            child: TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100.0),
                 ),
               ),
               onPressed: () {
+                // Log the event when the user clicks to proceed to the store
+                AnalyticsHelper.logEvent('click_proceed_to_store', {
+                  'item_id': widget.product.id.toString(),
+                  'store_name': getBrandName(widget.product.attributes) ?? 'Unknown',
+                });
+
                 showPopupOnce(context, widget.product.corresponding_url!);
               },
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.5,
-                child:  Center(
+                child: Center(
                   child: Text(
                     AppLocalizations.of(context).translate('shopping_bu'),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white, // Choose color that contrasts with the button color
+                      color: Colors.white,
                     ),
                   ),
                 ),
-
               ),
             ),
           )
-
         ],
       ),
     );
@@ -229,7 +226,7 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
 
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
-      return 'Unknown'; // or any default value you want to return if attributes is null
+      return 'Unknown';
     }
 
     for (var attribute in attributes) {
@@ -237,9 +234,6 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
         return attribute.value;
       }
     }
-    return 'Unknown'; // Default value in case the brand name is not found
+    return 'Unknown';
   }
-
-
-
 }

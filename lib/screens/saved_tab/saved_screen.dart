@@ -1,19 +1,17 @@
-import 'dart:ffi';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:style_sensei/screens/saved_tab/cubit/saved_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../new_models/attribute.dart';
 import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/AppLocalizations.dart';
+import '../../utils/analytics_helper.dart'; // Import Analytics Helper
 import '../../utils/untitled.dart';
 import '../detail_screen/widgets/single_item_screen.dart';
 
@@ -30,6 +28,7 @@ class _SavedScreenState extends State<SavedScreen> {
   List<Product>? products;
   Map<String, List<Product>>? groupedProducts;
   List<String>? categories;
+
   @override
   void initState() {
     super.initState();
@@ -78,16 +77,17 @@ class _SavedScreenState extends State<SavedScreen> {
                 if (state is ProductListLoadedState) {
                   products = state.products?.products;
                   groupedProducts = groupProductsByCategory(products ?? []);
-                   categories = groupedProducts?.keys.toList();
+                  categories = groupedProducts?.keys.toList();
+
+                  // Log the view_saved_items event here
+                  _logViewSavedItemsEvent(categories ?? [], products?.length ?? 0);
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: categories!.map((categoryName) {
                       final productsInCategory = groupedProducts![categoryName]!;
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -110,8 +110,6 @@ class _SavedScreenState extends State<SavedScreen> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: productsInCategory.map((productItem) {
-                                  // Initialize the bookmark state for this item if it has not been done yet
-
                                   return Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Stack(
@@ -119,143 +117,67 @@ class _SavedScreenState extends State<SavedScreen> {
                                         Container(
                                           color: Colors.grey[100],
                                           child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Expanded(
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    showImagePopup(
-                                                        context, productItem);
+                                                    showImagePopup(context, productItem);
                                                   },
                                                   child: CachedNetworkImage(
-                                                    imageUrl: productItem.pictures!
-                                                        .split(',')[0],
+                                                    imageUrl: productItem.pictures!.split(',')[0],
                                                     fit: BoxFit.cover,
-                                                    height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                        0.34,
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                        0.44,
-                                                    placeholder: (context, url) =>
-                                                        Shimmer.fromColors(
-                                                          baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-                                                          // Light grey color for the base
-                                                          highlightColor:
-                                                          Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-                                                          // Lighter grey color for the highlight
-                                                          child: Container(
-                                                            height:
-                                                            MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                                0.29,
-                                                            width:
-                                                            MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                                0.33,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                    errorWidget:
-                                                        (context, url, error) {
-                                                      print(
-                                                          error); // This will print the error to the console
+                                                    height: MediaQuery.of(context).size.height * 0.34,
+                                                    width: MediaQuery.of(context).size.width * 0.44,
+                                                    placeholder: (context, url) => Shimmer.fromColors(
+                                                      baseColor: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                                                      highlightColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                                                      child: Container(
+                                                        height: MediaQuery.of(context).size.height * 0.29,
+                                                        width: MediaQuery.of(context).size.width * 0.33,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    errorWidget: (context, url, error) {
                                                       return Icon(Icons.error);
                                                     },
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
+                                              SizedBox(height: 8),
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 12.0),
+                                                padding: const EdgeInsets.only(left: 12.0),
                                                 child: Text(
-                                                  getBrandName(
-                                                      productItem.attributes) ??
-                                                      'Unknown',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelSmall
-                                                      ?.copyWith(
-                                                      fontWeight:
-                                                      FontWeight.bold),
+                                                  getBrandName(productItem.attributes) ?? 'Unknown',
+                                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                                      fontWeight: FontWeight.bold),
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                 ),
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 12.0),
-                                                child: Text( isArabic ? productItem.arabic_name!:
-                                                productItem.name!,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelSmall,
+                                                padding: const EdgeInsets.only(left: 12.0),
+                                                child: Text(
+                                                  isArabic ? productItem.arabic_name! : productItem.name!,
+                                                  style: Theme.of(context).textTheme.labelSmall,
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                 ),
                                               ),
                                               TextButton(
-                                                onPressed: () => _openSourceWebsite(
-                                                    productItem.corresponding_url!),
+                                                onPressed: () => _openSourceWebsite(productItem.corresponding_url!),
                                                 child: Text(
                                                   AppLocalizations.of(context).translate('shopping_bu'),
                                                   style: TextStyle(
                                                     fontSize: 11,
                                                     color: Colors.blueAccent,
-                                                    fontWeight: FontWeight
-                                                        .bold, // You can choose the color that fits your design
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ),
-                                        Positioned(
-                                            top: 8,
-                                            right: 16,
-                                            child: Container(
-                                              width: 30.0,
-                                              height: 30.0,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.circle,
-                                                // Circular shape
-                                              ),
-                                              child: IconButton(
-                                                icon: SvgPicture.asset(
-                                                  'assets/images/remove.svg', // Path to your SVG file
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    final productIdString = productItem.id.toString();
-                                                    // Toggle the bookmark state
-                                                    bool isBookmarked = bookmarkedItems[productIdString] ?? false;
-                                                    bookmarkedItems[productIdString] = !isBookmarked;
-
-                                                    if (!isBookmarked) {
-                                                      // Remove the product from the bookmark list
-                                                      bookmarkedItems.remove(productIdString);
-                                                      bookmarkIds.remove(productItem.id);
-                                                    }
-
-                                                    products?.remove(productItem);
-                                                    groupedProducts = groupProductsByCategory(products ?? []);
-                                                    categories = groupedProducts?.keys.toList();
-                                                    saveBookmarkedItems(bookmarkedItems);
-
-                                                  });
-                                                },
-                                              ),
-
-                                            )),
                                       ],
                                     ),
                                   );
@@ -270,28 +192,21 @@ class _SavedScreenState extends State<SavedScreen> {
                 } else if (state is SavedLoadingState) {
                   return Center(
                     child: Container(
-                        width: 200,
-                        height: 100,
-                        child: Lottie.asset('assets/json/loading.json')),
+                      width: 200,
+                      height: 100,
+                      child: Lottie.asset('assets/json/loading.json'),
+                    ),
                   );
                 } else if (state is SavedErrorState) {
                   return Text(AppLocalizations.of(context).translate('error'));
                 } else {
-                  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-                  // Choose the Lottie animation JSON based on the theme brightness
-                  final String lottieJson = isDarkMode
-                      ? 'assets/json/large_loading_dark.json'
-                      : 'assets/json/large_loading.json';
-
                   return Lottie.asset(
-                    lottieJson,
+                    'assets/json/large_loading.json',
                     repeat: false,
                   );
-
                 }
               },
-            )
+            ),
           ],
         ));
   }
@@ -320,7 +235,6 @@ class _SavedScreenState extends State<SavedScreen> {
 
   Map<String, List<Product>> groupProductsByCategory(List<Product> products) {
     final Map<String, List<Product>> groupedProducts = {};
-
     for (var product in products) {
       final category = product.category?.name ?? 'Other';
       if (!groupedProducts.containsKey(category)) {
@@ -328,20 +242,26 @@ class _SavedScreenState extends State<SavedScreen> {
       }
       groupedProducts[category]!.add(product);
     }
-
     return groupedProducts;
   }
 
   String? getBrandName(List<Attribute>? attributes) {
     if (attributes == null) {
-      return 'Unknown'; // or any default value you want to return if attributes is null
+      return 'Unknown';
     }
-
     for (var attribute in attributes) {
       if (attribute.attribute?.name == 'Brand name') {
         return attribute.value;
       }
     }
-    return 'Unknown'; // Default value in case the brand name is not found
+    return 'Unknown';
+  }
+
+  // Log the view_saved_items event
+  void _logViewSavedItemsEvent(List<String> categories, int itemCount) {
+    AnalyticsHelper.logEvent('view_saved_items', {
+      'item_count': itemCount,
+      'categories': categories.join(', '),  // Join categories into a string
+    });
   }
 }

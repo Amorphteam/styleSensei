@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:style_sensei/utils/analytics_helper.dart'; // Import the AnalyticsHelper here
 import '../../../models/ProductsModel.dart';
 import '../../../utils/AppLocalizations.dart';
 import '../../../utils/ai_helper.dart';
@@ -29,6 +30,10 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   void _askStyleQuestion() async {
     final prompt = createPrompt();
+
+    // Log the AI assistant query event to Firebase Analytics
+    AnalyticsHelper.logAiAssistantQuery(_controller.text);
+
     final response = await getStyleDetails(prompt);
     setState(() {
       _response = response;
