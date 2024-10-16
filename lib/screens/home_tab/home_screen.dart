@@ -27,7 +27,10 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   int sessionCount = 0;
-  bool showSurvey = false;
+  bool showMultistepSurvey = false;
+  bool showSatisfactionSurvey = false;
+  bool showBinaryChoiceSurvey = false;
+
   List<List<int>> collectionTags = [];
   List<ImageItem> imageAssetsUrl = [];
   String styleName = '';
@@ -49,25 +52,61 @@ class _HomeTabState extends State<HomeTab> {
     styleName = getStyleName();
     styleDescriptions = getDesStyle();
 
-    // Initialize the session count and decide if the survey should be shown
+    // Initialize the session count and decide if the surveys should be shown
     _initializeSessionCount();
-
+    _checkSatisfactionSurvey();
+    _checkBinaryChoiceSurvey();
   }
 
   void _initializeSessionCount() async {
     // Get the session count for HomeTab
     sessionCount = await SurveyManager.getHomeTabSessionCount();
 
-    // Check if the survey should be shown after 5 sessions
+    // Check if the Multistep survey should be shown after 5 sessions
     if (SurveyManager.shouldShowHomeTabSurvey(sessionCount)) {
       setState(() {
-        showSurvey = true;
+        showMultistepSurvey = true;
       });
     }
 
     // Increment the session count
     SurveyManager.incrementHomeTabSessionCount();
   }
+
+  // Check if the Satisfaction Survey should be shown
+  void _checkSatisfactionSurvey() async {
+    // Increment interaction count for HomeTab
+    SurveyManager.incrementHomeTabInteractionCount();
+
+    // Determine if the Satisfaction Survey should be shown
+    bool shouldShow = await SurveyManager.shouldShowSatisfactionSurvey();
+
+    if (shouldShow) {
+      setState(() {
+        showSatisfactionSurvey = true;
+      });
+
+      // Reset interaction count and set the last survey timestamp
+      SurveyManager.resetHomeTabInteractionCount();
+      SurveyManager.setLastSatisfactionSurveyTimestamp(DateTime.now().millisecondsSinceEpoch);
+    }
+  }
+
+  // Check if the BinaryChoice Survey should be shown after two purchase clicks
+  void _checkBinaryChoiceSurvey() async {
+    bool shouldShow = await SurveyManager.shouldShowBinaryChoiceSurvey();
+
+    if (shouldShow) {
+      setState(() {
+        showBinaryChoiceSurvey = true;
+      });
+
+      // Reset the purchase link click count after showing the survey
+      SurveyManager.resetPurchaseLinkClickCount();
+    }
+  }
+
+
 
   void getData() {
     widget.homeCubit.fetchData(CollectionRepository(), tags: collectionTags);
@@ -195,11 +234,27 @@ class _HomeTabState extends State<HomeTab> {
             },
             body: buildContent(context),
           ),
-          if (showSurvey)
+          if (showMultistepSurvey)
             SurveyMultistep(
               onClose: () {
                 setState(() {
-                  showSurvey = false;
+                  showMultistepSurvey = false;
+                });
+              },
+            ),
+          if (showSatisfactionSurvey)
+            SurveySatisfactionRating(
+              onClose: () {
+                setState(() {
+                  showSatisfactionSurvey = false;
+                });
+              },
+            ),
+          if (showBinaryChoiceSurvey)
+            SurveyBinaryChoice(
+              onClose: () {
+                setState(() {
+                  showBinaryChoiceSurvey = false;
                 });
               },
             ),
