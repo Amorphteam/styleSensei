@@ -420,12 +420,23 @@ Future<Map<String, bool>> loadBookmarkedItems() async {
 // Function to save bookmarked item IDs to SharedPreferences
 Future<void> saveBookmarkedItems(Map<String, bool> bookmarkedItems) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Load the existing bookmarks
+  List<String>? existingBookmarkedItemIds = prefs.getStringList('bookmarkedItemIds') ?? [];
+
+  // Combine the existing bookmarks with the new ones
   List<String> bookmarkedItemIds = bookmarkedItems.entries
-      .where((entry) => entry.value)
+      .where((entry) => entry.value) // Only add items that are marked as bookmarked (true)
       .map((entry) => entry.key)
       .toList();
-  await prefs.setStringList('bookmarkedItemIds', bookmarkedItemIds);
+
+  // Ensure we're not duplicating bookmarks
+  Set<String> combinedBookmarkedIds = existingBookmarkedItemIds.toSet().union(bookmarkedItemIds.toSet());
+
+  // Save the combined set back to SharedPreferences
+  await prefs.setStringList('bookmarkedItemIds', combinedBookmarkedIds.toList());
 }
+
 
 Future<void> saveSelections({
   List<int>? styleSelections,
