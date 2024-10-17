@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:style_sensei/screens/body/body_screen.dart';
 import 'package:style_sensei/screens/splash/splash_with_video.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/utils/analytics_helper.dart'; // Import the AnalyticsHelper to log events
-import 'package:style_sensei/utils/user_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/untitled.dart';
 import '../color_tones/color_tones_screen.dart';
-import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
+import '../survey/survey_multistep.dart';
+import '../survey/survey_multiple_choice.dart';
+import '../survey/survey_satisfaction_rating.dart';
+import '../survey/survey_binary_choice.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -27,27 +27,21 @@ class ProfileScreen extends StatelessWidget {
             height: 16,
           ),
           _buildSectionTitle(context, AppLocalizations.of(context).translate('appearance_preferences')),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('language'), icon: Icons.language, context: context),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('body_type'), icon: Icons.accessibility, context: context),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('color_tone'), icon: Icons.palette, context: context),
-          _buildListTile(title: AppLocalizations.of(context).translate('styles'), icon: Icons.style, context: context),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('comfort_zone'),
-              icon: Icons.view_comfortable,
-              context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('language'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('body_type'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('color_tone'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('styles'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('comfort_zone'), context: context),
           _buildSectionTitle(context, AppLocalizations.of(context).translate('activity')),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('likes'), icon: Icons.thumb_up, context: context),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('dislikes'), icon: Icons.thumb_down, context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('likes'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('dislikes'), context: context),
+          _buildSectionTitle(context, AppLocalizations.of(context).translate('surveys')),
+          _buildListTile(title: AppLocalizations.of(context).translate('multi_step_survey'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('multiple_choice_survey'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('satisfaction_rating_survey'), context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('binary_choice_survey'), context: context),
           _buildSectionTitle(context, AppLocalizations.of(context).translate('about')),
-          _buildListTile(
-              title: AppLocalizations.of(context).translate('privacy_policy'),
-              icon: Icons.privacy_tip,
-              context: context),
+          _buildListTile(title: AppLocalizations.of(context).translate('privacy_policy'), context: context),
         ],
       ),
     );
@@ -78,10 +72,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile(
-      {required BuildContext context,
-        required String title,
-        required IconData icon}) {
+  Widget _buildListTile({required BuildContext context, required String title}) {
     return ListTile(
       title: Text(title),
       onTap: () {
@@ -97,6 +88,20 @@ class ProfileScreen extends StatelessWidget {
       AppLocalizations.of(context).translate('color_tone'): ColorTonesScreen(isFromSettings: true),
       AppLocalizations.of(context).translate('styles'): StyleScreen(isFromSettings: true),
       AppLocalizations.of(context).translate('privacy_policy'): 'https://amorphteam.com/style_sensei/privacy_policy.html',
+
+      // Surveys
+      AppLocalizations.of(context).translate('multi_step_survey'): SurveyMultistep(onClose: () {
+        Navigator.pop(context);
+      }),
+      AppLocalizations.of(context).translate('multiple_choice_survey'): SurveyMultipleChoice(onClose: () {
+        Navigator.pop(context);
+      }),
+      AppLocalizations.of(context).translate('satisfaction_rating_survey'): SurveySatisfactionRating(onClose: () {
+        Navigator.pop(context);
+      }),
+      AppLocalizations.of(context).translate('binary_choice_survey'): SurveyBinaryChoice(onClose: () {
+        Navigator.pop(context);
+      }),
     };
 
     final screen = screens[title];

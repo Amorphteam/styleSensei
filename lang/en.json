@@ -1533,5 +1533,10 @@
   "agree": "100% agree",
   "survey_initial_message": "We’d love to hear what you think about Style Sensei. Got a second?",
   "nah_not_in_the_mood": "Nah, not in the mood",
-  "absolutely": "Absolutely!"
+  "absolutely": "Absolutely!",
+  "surveys": "Surveys",
+  "multi_step_survey": "Outfit and Clothing Suitability",
+  "multiple_choice_survey": "Preferred Learning Method",
+  "satisfaction_rating_survey": "App Satisfaction",
+  "binary_choice_survey": "Purchase Experience"
 }

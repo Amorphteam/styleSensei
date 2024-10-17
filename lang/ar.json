@@ -1337,5 +1337,10 @@
   "agree": "أوافق 100%",
   "survey_initial_message": "نود أن نعرف رأيك حول Style Sensei. هل لديك دقيقة؟",
   "nah_not_in_the_mood": "لا، لست في المزاج الآن",
-  "absolutely": "بالطبع!"
+  "absolutely": "بالطبع!",
+  "surveys": "الاستبيانات",
+  "multi_step_survey": "ملاءمة الملابس وتنسيقها",
+  "multiple_choice_survey": "طريقة التعلم المفضلة",
+  "satisfaction_rating_survey": "رضا المستخدم عن التطبيق",
+  "binary_choice_survey": "تجربة الشراء"
 }
