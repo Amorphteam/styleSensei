@@ -1538,5 +1538,8 @@
   "multi_step_survey": "Outfit and Clothing Suitability",
   "multiple_choice_survey": "Preferred Learning Method",
   "satisfaction_rating_survey": "App Satisfaction",
-  "binary_choice_survey": "Purchase Experience"
+  "binary_choice_survey": "Purchase Experience",
+  "tell_us_what_you_think": "Tell us what you think",
+  "start_survey": "Start Survey"
+
 }

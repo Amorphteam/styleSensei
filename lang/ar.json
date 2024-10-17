@@ -1342,5 +1342,8 @@
   "multi_step_survey": "ملاءمة الملابس وتنسيقها",
   "multiple_choice_survey": "طريقة التعلم المفضلة",
   "satisfaction_rating_survey": "رضا المستخدم عن التطبيق",
-  "binary_choice_survey": "تجربة الشراء"
+  "binary_choice_survey": "تجربة الشراء",
+  "tell_us_what_you_think": "أخبرنا برأيك",
+  "start_survey": "ابدأ الاستبيان"
+
 }
