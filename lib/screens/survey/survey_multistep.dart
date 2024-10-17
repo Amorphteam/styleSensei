@@ -21,6 +21,7 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
 
   // List of survey steps (questions)
   final List<String> surveyQuestions = [
+    'survey_initial_message', // Initial message dialog
     'outfit_alignment',  // Localization key
     'discover_clothing_suitability',  // Localization key
   ];
@@ -66,9 +67,11 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
     }
   }
 
-  // Method to go to the previous step
-  void previousStep() {
-    if (currentStep > 0) {
+  // Method to go to the previous step or handle "Nah, I'm not in the mood"
+  void previousStepOrAskMeLater() {
+    if (currentStep == 0) {
+      widget.onClose();  // Close survey when "Nah, I'm not in the mood" is clicked
+    } else {
       setState(() {
         currentStep--;
         selectedOption = ''; // Reset selection for the previous step
@@ -102,7 +105,7 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                 children: [
                   SizedBox(height: 50),
 
-                  // Progress Indicator (Simulated by colored lines)
+                  // Progress Indicator (Including the initial message dialog)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -120,57 +123,65 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                   ),
                   SizedBox(height: 20),
 
-                  // Question Text
-                  Text(
+                  // Conditionally show the initial dialog or the survey questions
+                  currentStep == 0
+                      ? Text(
+                    AppLocalizations.of(context).translate('survey_initial_message'),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  )
+                      : Text(
                     AppLocalizations.of(context).translate(surveyQuestions[currentStep]),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20),
 
-                  // Emoji Options
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildEmojiOption(
-                        'way_off',  // Localization key for "Way off"
-                        Icons.sentiment_very_dissatisfied_rounded,
-                        Colors.red,
-                      ),
-                      _buildEmojiOption(
-                        'meh_kinda',  // Localization key for "Meh, kinda"
-                        Icons.sentiment_neutral_rounded,
-                        Colors.blue,
-                      ),
-                      _buildEmojiOption(
-                        'totally_me',  // Localization key for "Totally me"
-                        Icons.sentiment_satisfied_alt_rounded,
-                        Colors.orange,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
+                  if (currentStep != 0) ...[
+                    SizedBox(height: 20),
+                    // Emoji Options (Survey Steps)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildEmojiOption(
+                          'way_off',  // Localization key for "Way off"
+                          Icons.sentiment_very_dissatisfied_rounded,
+                          Colors.red,
+                        ),
+                        _buildEmojiOption(
+                          'meh_kinda',  // Localization key for "Meh, kinda"
+                          Icons.sentiment_neutral_rounded,
+                          Colors.blue,
+                        ),
+                        _buildEmojiOption(
+                          'totally_me',  // Localization key for "Totally me"
+                          Icons.sentiment_satisfied_alt_rounded,
+                          Colors.orange,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                  ],
 
-                  // Buttons (Previous, Next/Submit)
+                  // Navigation Buttons (Nah, I'm not in the mood / Previous, Next/Submit)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Previous button
-                      if (currentStep > 0)
-                        TextButton(
-                          onPressed: previousStep,
-                          child: Text(
-                            AppLocalizations.of(context).translate('previous'),
-                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                          ),
+                      // "Nah, I'm not in the mood" or "Previous" button
+                      TextButton(
+                        onPressed: previousStepOrAskMeLater,
+                        child: Text(
+                          currentStep == 0
+                              ? AppLocalizations.of(context).translate('nah_not_in_the_mood')
+                              : AppLocalizations.of(context).translate('previous'),
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
-                      if (currentStep == 0) SizedBox(), // Placeholder to align buttons
+                      ),
 
                       // Next/Submit button
                       ElevatedButton(
-                        onPressed: selectedOption.isNotEmpty ? nextStep : null, // Only enable when an option is selected
+                        onPressed: currentStep == 0 || selectedOption.isNotEmpty ? nextStep : null,  // Allow advancing from the first dialog
                         child: Text(
                           currentStep == surveyQuestions.length - 1
                               ? AppLocalizations.of(context).translate('send_bu')
@@ -179,9 +190,8 @@ class _MultiStepSurveyState extends State<SurveyMultistep> {
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor:
-                          selectedOption.isNotEmpty ? Colors.black : Colors.grey,
-                          padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          selectedOption.isNotEmpty || currentStep == 0 ? Colors.black : Colors.grey,
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
                       ),
                     ],

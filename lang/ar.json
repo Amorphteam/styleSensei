@@ -22,7 +22,7 @@
   "body_types": "أنواع الجسم",
   "seasonal_style": "الأنماط الموسمية",
   "clothing_preferences": "تفضيلات الملابس",
-  "hijab_preferences": "تفضيلات الحجاب",
+  "hijab_preferences": "تغطية محتشمة",
   "splash_title": "هذه الرحلة تدور حولك أنت. \nأخبرنا المزيد عن نفسك.",
   "splash_title2": "نصمم أسلوبك الشخصي بما يتناسب مع الكمال للنساء وأي شخص مهتم بالأزياء النسائية.",
   "google_login": "استمر بحساب جوجل",
@@ -1334,5 +1334,8 @@
   "satisfaction_question": "إلى أي مدى توافق على العبارة:\n'تصميم التطبيق بسيط وسهل الاستخدام؟'",
   "nope": "لا",
   "okay": "مقبول",
-  "agree": "أوافق 100%"
+  "agree": "أوافق 100%",
+  "survey_initial_message": "نود أن نعرف رأيك حول Style Sensei. هل لديك دقيقة؟",
+  "nah_not_in_the_mood": "لا، لست في المزاج الآن",
+  "absolutely": "بالطبع!"
 }

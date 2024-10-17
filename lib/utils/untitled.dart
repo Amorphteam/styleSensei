@@ -393,7 +393,9 @@ Map<int, String> createTagDescriptionMap(List<ImageItem> items) {
 
 
 final List<ImageItem> hijabPreferences = [
-  ImageItem('assets/images/dark.jpg', 301, 'Hijab-friendly styles',
+  ImageItem('assets/images/dark.jpg', 416, 'Modest styles',
+      'أنماط محتشمة'),
+  ImageItem('assets/images/dark.jpg', 301, 'Hijab styles',
       'أنماط تناسب الحجاب'),
 ];
 

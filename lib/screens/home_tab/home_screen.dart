@@ -147,32 +147,34 @@ class _HomeTabState extends State<HomeTab> {
   void _showOptions(
       BuildContext context, String title, List<ImageItem> options) {
 
-
     showModalBottomSheet(
       backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
       builder: (BuildContext context) {
         return Padding(
           padding: const EdgeInsets.all(28.0),
-          child: Wrap(
-            children: options.map((ImageItem option) {
-              String displayText = isArabic ? option.arDes : option.des;
-              return ListTile(
-                title: Text(displayText),
-                onTap: () {
-                  setState(() {
-                    selectedChoices[title] = option;
-                  });
-                  addTags(getSelectedOptionIds());
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
+          child: SingleChildScrollView( // Add scrolling capability
+            child: Wrap(
+              children: options.map((ImageItem option) {
+                String displayText = isArabic ? option.arDes : option.des;
+                return ListTile(
+                  title: Text(displayText),
+                  onTap: () {
+                    setState(() {
+                      selectedChoices[title] = option;
+                    });
+                    addTags(getSelectedOptionIds());
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ),
           ),
         );
       },
     );
   }
+
 
   List<int> getSelectedOptionIds() {
     List<int> flattenedTags =

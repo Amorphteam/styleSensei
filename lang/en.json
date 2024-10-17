@@ -22,7 +22,7 @@
   "body_types": "Body Types",
   "seasonal_style": "Seasonal Style",
   "clothing_preferences": "Clothing Preferences",
-  "hijab_preferences": "Hijab Preferences",
+  "hijab_preferences": "Modest Coverage",
   "splash_title": "This journey is all about YOU. \nTell us more about yourself.",
   "splash_title2": "We tailor your personal style to perfection for women and anyone interested in women's fashion.",
   "google_login": "Continue with Google",
@@ -1530,5 +1530,8 @@
   "satisfaction_question": "How much do you agree with the statement:\n'The app's design is simple and easy to use?'",
   "nope": "Nope",
   "okay": "It’s okay",
-  "agree": "100% agree"
+  "agree": "100% agree",
+  "survey_initial_message": "We’d love to hear what you think about Style Sensei. Got a second?",
+  "nah_not_in_the_mood": "Nah, not in the mood",
+  "absolutely": "Absolutely!"
 }

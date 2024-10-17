@@ -71,7 +71,8 @@ class _ChatWidgetState extends State<ChatWidget> {
             prefixIcon: Padding(
               padding: const EdgeInsets.all(12.0),
               child: SvgPicture.asset(
-                'assets/images/ai.svg', color: Theme.of(context).colorScheme.onBackground,
+                'assets/images/ai.svg',
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
             suffixIcon: _controller.text.isNotEmpty
@@ -95,9 +96,9 @@ class _ChatWidgetState extends State<ChatWidget> {
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0), // Adjust this value to change the height
-
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0),
           ),
+          maxLines: null,  // Allows the textfield to expand with more lines
           onChanged: _onTextChanged,
           onSubmitted: (text) {
             if (text.isNotEmpty) {
@@ -107,11 +108,10 @@ class _ChatWidgetState extends State<ChatWidget> {
                 _showResponse = true;
                 _response = '';
               });
-              FocusScope.of(context).unfocus(); // Hide the keyboard
+              FocusScope.of(context).unfocus();  // Hide the keyboard after submission
             }
           },
-        ),
-        if (_showResponse)
+        ),        if (_showResponse)
           Container(
             margin: EdgeInsets.only(top: 16),
             color: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
