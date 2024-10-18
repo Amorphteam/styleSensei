@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/repositories/collection_repository.dart';
 import 'package:style_sensei/screens/home_tab/cubit/home_cubit.dart';
 import 'package:style_sensei/screens/survey/survey_satisfaction_rating.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import '../../models/Collections.dart';
-import '../../utils/survey_manager.dart';
+import '../../utils/survey_helper.dart';
+import '../survey/survey_config.dart';
 import '../../utils/untitled.dart';
 import '../survey/survey_binary_choice.dart';
 import '../survey/survey_multiple_choice.dart';
@@ -27,9 +29,6 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   int sessionCount = 0;
-  bool showMultistepSurvey = false;
-  bool showSatisfactionSurvey = false;
-  bool showBinaryChoiceSurvey = false;
 
   List<List<int>> collectionTags = [];
   List<ImageItem> imageAssetsUrl = [];
@@ -40,12 +39,14 @@ class _HomeTabState extends State<HomeTab> {
   String selectedTagsString = '';
   bool _twoColumn = true;
   bool isArabic = false;
+  final SurveyHelper _surveyHelper = SurveyHelper();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getData();
+      _handleSessionCountAndSurvey();
     });
 
     imageAssetsUrl = searchingTag();
@@ -53,60 +54,7 @@ class _HomeTabState extends State<HomeTab> {
     styleDescriptions = getDesStyle();
 
     // Initialize the session count and decide if the surveys should be shown
-    _initializeSessionCount();
-    _checkSatisfactionSurvey();
-    _checkBinaryChoiceSurvey();
   }
-
-  void _initializeSessionCount() async {
-    // Get the session count for HomeTab
-    sessionCount = await SurveyManager.getHomeTabSessionCount();
-
-    // Check if the Multistep survey should be shown after 5 sessions
-    if (SurveyManager.shouldShowHomeTabSurvey(sessionCount)) {
-      setState(() {
-        showMultistepSurvey = true;
-      });
-    }
-
-    // Increment the session count
-    SurveyManager.incrementHomeTabSessionCount();
-  }
-
-  // Check if the Satisfaction Survey should be shown
-  void _checkSatisfactionSurvey() async {
-    // Increment interaction count for HomeTab
-    SurveyManager.incrementHomeTabInteractionCount();
-
-    // Determine if the Satisfaction Survey should be shown
-    bool shouldShow = await SurveyManager.shouldShowSatisfactionSurvey();
-
-    if (shouldShow) {
-      setState(() {
-        showSatisfactionSurvey = true;
-      });
-
-      // Reset interaction count and set the last survey timestamp
-      SurveyManager.resetHomeTabInteractionCount();
-      SurveyManager.setLastSatisfactionSurveyTimestamp(DateTime.now().millisecondsSinceEpoch);
-    }
-  }
-
-  // Check if the BinaryChoice Survey should be shown after two purchase clicks
-  void _checkBinaryChoiceSurvey() async {
-    bool shouldShow = await SurveyManager.shouldShowBinaryChoiceSurvey();
-
-    if (shouldShow) {
-      setState(() {
-        showBinaryChoiceSurvey = true;
-      });
-
-      // Reset the purchase link click count after showing the survey
-      SurveyManager.resetPurchaseLinkClickCount();
-    }
-  }
-
-
 
   void getData() {
     widget.homeCubit.fetchData(CollectionRepository(), tags: collectionTags);
@@ -146,14 +94,14 @@ class _HomeTabState extends State<HomeTab> {
 
   void _showOptions(
       BuildContext context, String title, List<ImageItem> options) {
-
     showModalBottomSheet(
       backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
       builder: (BuildContext context) {
         return Padding(
           padding: const EdgeInsets.all(28.0),
-          child: SingleChildScrollView( // Add scrolling capability
+          child: SingleChildScrollView(
+            // Add scrolling capability
             child: Wrap(
               children: options.map((ImageItem option) {
                 String displayText = isArabic ? option.arDes : option.des;
@@ -175,7 +123,6 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-
   List<int> getSelectedOptionIds() {
     List<int> flattenedTags =
         collectionTags.expand((sublist) => sublist).toList();
@@ -193,8 +140,6 @@ class _HomeTabState extends State<HomeTab> {
     super.dispose();
   }
 
-
-
   void _handleChipSelection(int tag, bool isSelected) {
     setState(() {
       if (isSelected) {
@@ -206,6 +151,7 @@ class _HomeTabState extends State<HomeTab> {
       // For example, you could call a Bloc event to fetch filtered data
     });
   }
+
   @override
   @override
   Widget build(BuildContext context) {
@@ -221,10 +167,7 @@ class _HomeTabState extends State<HomeTab> {
               return [
                 SliverAppBar(
                   title: Column(
-                    children: [
-                      buildAppBarTitle(context),
-                      buildChips(context)
-                    ],
+                    children: [buildAppBarTitle(context), buildChips(context)],
                   ),
                   floating: true,
                   snap: true,
@@ -236,30 +179,6 @@ class _HomeTabState extends State<HomeTab> {
             },
             body: buildContent(context),
           ),
-          if (showMultistepSurvey)
-            SurveyMultistep(
-              onClose: () {
-                setState(() {
-                  showMultistepSurvey = false;
-                });
-              },
-            ),
-          if (showSatisfactionSurvey)
-            SurveySatisfactionRating(
-              onClose: () {
-                setState(() {
-                  showSatisfactionSurvey = false;
-                });
-              },
-            ),
-          if (showBinaryChoiceSurvey)
-            SurveyBinaryChoice(
-              onClose: () {
-                setState(() {
-                  showBinaryChoiceSurvey = false;
-                });
-              },
-            ),
         ],
       ),
     );
@@ -267,41 +186,41 @@ class _HomeTabState extends State<HomeTab> {
 
   Row buildAppBarTitle(BuildContext context) {
     return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context).translate('home_title'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  // Text(
-                  //   AppLocalizations.of(context).translate('home_des'),
-                  //   style: Theme.of(context)
-                  //       .textTheme
-                  //       .bodyMedium
-                  //       ?.copyWith(fontWeight: FontWeight.normal),
-                  // ),
-
-                ],
-              ),
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context).translate('home_title'),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                // Text(
+                //   AppLocalizations.of(context).translate('home_des'),
+                //   style: Theme.of(context)
+                //       .textTheme
+                //       .bodyMedium
+                //       ?.copyWith(fontWeight: FontWeight.normal),
+                // ),
+              ],
             ),
-            IconButton(onPressed: (){
+          ),
+          IconButton(
+            onPressed: () {
               setState(() {
                 _twoColumn = !_twoColumn;
               });
-
-            }, icon: SvgPicture.asset(_twoColumn ? 'assets/images/cat.svg' : 'assets/images/full.svg', color: Theme.of(context).colorScheme.onSurface),
-            ),
-
-          ]
-        );
+            },
+            icon: SvgPicture.asset(
+                _twoColumn ? 'assets/images/cat.svg' : 'assets/images/full.svg',
+                color: Theme.of(context).colorScheme.onSurface),
+          ),
+        ]);
   }
 
   Widget buildChips(BuildContext context) {
@@ -312,18 +231,16 @@ class _HomeTabState extends State<HomeTab> {
         child: Row(
           children: [
             {
-              'title':
-                  AppLocalizations.of(context).translate('occasion_wear'),
+              'title': AppLocalizations.of(context).translate('occasion_wear'),
               'options': occasionWear
             },
             {
-              'title': AppLocalizations.of(context)
-                  .translate('seasonal_style'),
+              'title': AppLocalizations.of(context).translate('seasonal_style'),
               'options': seasonalStyle
             },
             {
-              'title': AppLocalizations.of(context)
-                  .translate('hijab_preferences'),
+              'title':
+                  AppLocalizations.of(context).translate('hijab_preferences'),
               'options': hijabPreferences
             },
           ].map((Map<String, dynamic> filter) {
@@ -332,16 +249,26 @@ class _HomeTabState extends State<HomeTab> {
             bool isSelected = selectedChoices.containsKey(title);
 
             Widget chipLabel = isSelected
-                ? Text((isArabic)?selectedChoices[title]!.arDes:selectedChoices[title]!.des, style: Theme.of(context).textTheme.bodyMedium,)
+                ? Text(
+                    (isArabic)
+                        ? selectedChoices[title]!.arDes
+                        : selectedChoices[title]!.des,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )
                 : Container(
-                  child: Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.bodyMedium,),
-                        Icon(Icons.arrow_drop_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        Icon(Icons.arrow_drop_down,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.onSurface),
                       ],
                     ),
-                );
+                  );
 
             return GestureDetector(
               onTap: () => _showOptions(context, title, options),
@@ -350,8 +277,14 @@ class _HomeTabState extends State<HomeTab> {
                 child: Chip(
                   label: chipLabel,
                   backgroundColor: isSelected
-                      ? Theme.of(context).colorScheme.inversePrimary.withOpacity(0.4)
-                      : Theme.of(context).colorScheme.onInverseSurface.withOpacity(0.3),
+                      ? Theme.of(context)
+                          .colorScheme
+                          .inversePrimary
+                          .withOpacity(0.4)
+                      : Theme.of(context)
+                          .colorScheme
+                          .onInverseSurface
+                          .withOpacity(0.3),
                   deleteIcon: isSelected
                       ? Icon(
                           Icons.close,
@@ -404,18 +337,21 @@ class _HomeTabState extends State<HomeTab> {
           return BlocBuilder<HomeCubit, HomeState>(
             builder: (context, state) {
               if (state is CollectionListLoadedState) {
-                List<Collections> collections = state.collectionModel.collections;
+                List<Collections> collections =
+                    state.collectionModel.collections;
                 collections.shuffle(Random());
                 return StaggeredGridView(
                   collections: collections,
                   twoColumn: _twoColumn,
                 );
               } else if (state is HomeErrorState) {
-                return Center( // Center the error message
+                return Center(
+                  // Center the error message
                   child: Text(AppLocalizations.of(context).translate('error')),
                 );
               } else {
-                return Center( // Center the loading indicator or empty state
+                return Center(
+                  // Center the loading indicator or empty state
                   child: Text(''),
                 );
               }
@@ -470,4 +406,33 @@ class _HomeTabState extends State<HomeTab> {
     getData();
   }
 
+// Method to handle session count increment and survey display check
+  Future<void> _handleSessionCountAndSurvey() async {
+    // Increment the session count each time HomeTab is opened
+    await _surveyHelper.incrementSessionCount();
+
+    // Create an instance of SurveyMultistep to access its SurveyConfig
+    final surveyConfig = SurveyMultistep(
+      onClose: () {},
+      onAskMeLater: () {},
+      onSend: () {},
+    ).surveyConfig;
+
+    // Check if the survey should be shown based on the SurveyConfig's initialDelay
+    if (await _surveyHelper.shouldShowSurvey(surveyConfig)) {
+      _surveyHelper.showSurveyMultistep(
+        context: context,
+        onClose: () async {
+          await _surveyHelper.resetNextSurveySession(surveyConfig.closeDelay);
+        },
+        onAskMeLater: () async {
+          await _surveyHelper
+              .resetNextSurveySession(surveyConfig.askMeLaterDelay);
+        },
+        onSend: () async {
+          await _surveyHelper.markSurveyAsCompleted();
+        },
+      );
+    }
+  }
 }

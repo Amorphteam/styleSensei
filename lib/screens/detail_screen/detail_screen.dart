@@ -24,7 +24,7 @@ import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/analytics_helper.dart';
-import '../../utils/survey_manager.dart';
+import '../survey/survey_config.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
 import '../survey/survey_multiple_choice.dart';
@@ -43,7 +43,6 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Map<String, bool> bookmarkedItems = {};
   int sessionCount = 0;
-  bool showSurvey = false;
 
 
   @override
@@ -69,25 +68,10 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
     // Load the first tab data initially
     context.read<DetailCubit>().fetchCollectionDetail(CollectionRepository(), widget.collection.id);
 
-    // Initialize the session count and decide if the survey should be shown
-    _initializeSessionCount();
-  }
-
-
-  void _initializeSessionCount() async {
-    // Get session count for Detail screen
-    sessionCount = await SurveyManager.getDetailScreenSessionCount();
-
-    // Check if survey should be shown after 3 sessions
-    if (SurveyManager.shouldShowDetailSurvey(sessionCount)) {
-      setState(() {
-        showSurvey = true;
-      });
     }
 
-    // Increment session count for Detail screen
-    SurveyManager.incrementDetailScreenSessionCount();
-  }
+
+
 
   @override
   void dispose() {
@@ -155,14 +139,7 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
-          if (showSurvey)
-            SurveyMultipleChoice(
-              onClose: () {
-                setState(() {
-                  showSurvey = false;
-                });
-              },
-            ),
+
         ],
       ),
     );

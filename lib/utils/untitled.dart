@@ -12,7 +12,7 @@ import 'package:style_sensei/screens/detail_screen/cubit/detail_cubit.dart';
 import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
-import 'package:style_sensei/utils/survey_manager.dart';
+import 'package:style_sensei/screens/survey/survey_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
@@ -734,8 +734,6 @@ Future<void> openSourceWebsite(String url) async {
   if (!await launchUrl(_url)) {
     throw Exception('Could not launch $_url');
   }
-  // Increment the purchase link click count
-  await SurveyManager.incrementPurchaseLinkClickCount();
 }
 
 void showSnackbar(BuildContext context, String message, {int seconds = 2}) {
