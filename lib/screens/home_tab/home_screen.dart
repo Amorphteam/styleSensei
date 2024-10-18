@@ -47,6 +47,8 @@ class _HomeTabState extends State<HomeTab> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getData();
       _handleSessionCountAndSurvey();
+      _handleSessionCountAndSurveySatisfy();
+
     });
 
     imageAssetsUrl = searchingTag();
@@ -435,4 +437,35 @@ class _HomeTabState extends State<HomeTab> {
       );
     }
   }
+
+
+  Future<void> _handleSessionCountAndSurveySatisfy() async {
+    // Increment the session count each time HomeTab is opened
+    await _surveyHelper.incrementSessionCountSatisfy();
+
+    // Create an instance of SurveyMultistep to access its SurveyConfig
+    final surveyConfig = SurveySatisfactionRating(
+      onClose: () {},
+      onAskMeLater: () {},
+      onSend: () {},
+    ).surveyConfig;
+
+    // Check if the survey should be shown based on the SurveyConfig's initialDelay
+    if (await _surveyHelper.shouldShowSurveySatisfy(surveyConfig)) {
+      _surveyHelper.showSurveySatisfy(
+        context: context,
+        onClose: () async {
+          await _surveyHelper.resetNextSurveySessionSatisfy(surveyConfig.closeDelay);
+        },
+        onAskMeLater: () async {
+          await _surveyHelper
+              .resetNextSurveySessionSatisfy(surveyConfig.askMeLaterDelay);
+        },
+        onSend: () async {
+          await _surveyHelper.markSurveyAsCompletedSatisfy();
+        },
+      );
+    }
+  }
+
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:style_sensei/screens/survey/survey_binary_choice.dart';
 import 'package:style_sensei/screens/survey/survey_multiple_choice.dart';
+import 'package:style_sensei/screens/survey/survey_satisfaction_rating.dart';
 import '../screens/survey/survey_config.dart';
 import '../screens/survey/survey_multistep.dart';
 
@@ -15,6 +16,10 @@ class SurveyHelper {
   static const String sessionCountKeyPurchase = 'sessionCountPurchase';
   static const String lastSurveySessionKeyPurchase = 'lastSurveySessionPurchase';
   static const String surveyCompletedKeyPurchase = 'surveyCompletedPurchase';
+
+  static const String sessionCountKeySatisfy = 'sessionCountSatisfy';
+  static const String lastSurveySessionKeySatisfy = 'lastSurveySessionSatisfy';
+  static const String surveyCompletedKeySatisfy = 'surveyCompletedSatisfy';
 
   Future<bool> shouldShowSurvey(SurveyConfig config) async {
     final prefs = await SharedPreferences.getInstance();
@@ -60,6 +65,21 @@ class SurveyHelper {
     return !isSurveyCompleted && (sessionCount >= lastSurveySession);
   }
 
+  Future<bool> shouldShowSurveySatisfy(SurveyConfig config) async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionCount = prefs.getInt(sessionCountKeySatisfy) ?? 0;
+    var lastSurveySession = prefs.getInt(lastSurveySessionKeySatisfy) ?? 0;
+    if (lastSurveySession == 0) {
+      prefs.setInt(lastSurveySessionKeySatisfy, config.initialDelay);
+      lastSurveySession = config.initialDelay;
+    }
+
+    final isSurveyCompleted = prefs.getBool(surveyCompletedKeySatisfy) ?? false;
+
+    // Show the survey only if it hasn't been completed and the session count is greater than or equal to the next scheduled session
+    return !isSurveyCompleted && (sessionCount >= lastSurveySession);
+  }
+
   // Increment the session count whenever HomeTab is opened
   Future<void> incrementSessionCount() async {
     final prefs = await SharedPreferences.getInstance();
@@ -82,6 +102,13 @@ class SurveyHelper {
     await prefs.setInt(sessionCountKeyPurchase, sessionCount);
   }
 
+  Future<void> incrementSessionCountSatisfy() async {
+    final prefs = await SharedPreferences.getInstance();
+    int sessionCount = prefs.getInt(sessionCountKeySatisfy) ?? 0;
+    sessionCount++;
+    await prefs.setInt(sessionCountKeySatisfy, sessionCount);
+  }
+
   // Mark the survey as completed
   Future<void> markSurveyAsCompleted() async {
     final prefs = await SharedPreferences.getInstance();
@@ -97,6 +124,11 @@ class SurveyHelper {
   Future<void> markSurveyAsCompletedPurchase() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(surveyCompletedKeyPurchase, true);
+  }
+
+  Future<void> markSurveyAsCompletedSatisfy() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(surveyCompletedKeySatisfy, true);
   }
 
 
@@ -164,6 +196,26 @@ class SurveyHelper {
       },
     );
   }
+  void showSurveySatisfy({required BuildContext context, required VoidCallback onClose, required VoidCallback onAskMeLater, required VoidCallback onSend}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SurveySatisfactionRating(
+          onClose: () {
+            onClose();
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          onAskMeLater: () {
+            onAskMeLater();
+            Navigator.of(context).pop(); // Close the dialog
+          }, onSend: () {
+          onSend();
+          Navigator.of(context).pop();
+        },
+        );
+      },
+    );
+  }
 
   // Reset the next survey session to a specific delay from now
   Future<void> resetNextSurveySession(int delayInSessions) async {
@@ -183,5 +235,11 @@ class SurveyHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(sessionCountKeyPurchase, 0);
     await prefs.setInt(lastSurveySessionKeyPurchase, delayInSessions);
+  }
+
+  Future<void> resetNextSurveySessionSatisfy(int delayInSessions) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(sessionCountKeySatisfy, 0);
+    await prefs.setInt(lastSurveySessionKeySatisfy, delayInSessions);
   }
 }
