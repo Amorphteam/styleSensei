@@ -24,6 +24,7 @@ import '../../new_models/collection_item.dart';
 import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/analytics_helper.dart';
+import '../../utils/survey_helper.dart';
 import '../survey/survey_config.dart';
 import '../../utils/untitled.dart';
 import '../home_tab/widgets/tab_bar_widget.dart';
@@ -43,11 +44,15 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   Map<String, bool> bookmarkedItems = {};
   int sessionCount = 0;
+  final SurveyHelper _surveyHelper = SurveyHelper();
 
 
   @override
   void initState() {
     super.initState();
+
+    _handleSessionCountAndSurvey();
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (_tabController.index == 0) {
@@ -71,6 +76,34 @@ class _DetailState extends State<Detail> with SingleTickerProviderStateMixin {
     }
 
 
+  Future<void> _handleSessionCountAndSurvey() async {
+    // Increment the session count each time HomeTab is opened
+    await _surveyHelper.incrementSessionCountMultipleChoise();
+
+    // Create an instance of SurveyMultistep to access its SurveyConfig
+    final surveyConfig = SurveyMultipleChoice(
+      onClose: () {},
+      onAskMeLater: () {},
+      onSend: () {},
+    ).surveyConfig;
+
+    // Check if the survey should be shown based on the SurveyConfig's initialDelay
+    if (await _surveyHelper.shouldShowSurveyMultipleChoise(surveyConfig)) {
+      _surveyHelper.showSurveyMultipleChoise(
+        context: context,
+        onClose: () async {
+          await _surveyHelper.resetNextSurveySessionMultipleChoise(surveyConfig.closeDelay);
+        },
+        onAskMeLater: () async {
+          await _surveyHelper
+              .resetNextSurveySessionMultipleChoise(surveyConfig.askMeLaterDelay);
+        },
+        onSend: () async {
+          await _surveyHelper.markSurveyAsCompletedMultipleChoise();
+        },
+      );
+    }
+  }
 
 
   @override
