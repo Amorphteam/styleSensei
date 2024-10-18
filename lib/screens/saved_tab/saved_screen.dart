@@ -12,6 +12,7 @@ import '../../new_models/product.dart';
 import '../../repositories/collection_repository.dart';
 import '../../utils/AppLocalizations.dart';
 import '../../utils/analytics_helper.dart'; // Import Analytics Helper
+import '../../utils/survey_helper.dart';
 import '../../utils/untitled.dart';
 import '../detail_screen/widgets/single_item_screen.dart';
 
@@ -231,6 +232,8 @@ class _SavedScreenState extends State<SavedScreen> {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
     }
+    final SurveyHelper _surveyHelper = SurveyHelper();
+    await _surveyHelper.incrementSessionCountPurchase();
   }
 
   Map<String, List<Product>> groupProductsByCategory(List<Product> products) {

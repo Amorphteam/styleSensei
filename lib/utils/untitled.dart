@@ -13,6 +13,7 @@ import 'package:style_sensei/screens/detail_screen/detail_screen.dart';
 import 'package:style_sensei/screens/home_tab/widgets/image_card.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:style_sensei/screens/survey/survey_config.dart';
+import 'package:style_sensei/utils/survey_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
@@ -679,6 +680,9 @@ Future<void> showPopupOnce(BuildContext context, String url) async {
   final prefs = await SharedPreferences.getInstance();
   final hasShownPopup = prefs.getBool('hasShownPopup') ?? false;
 
+  final SurveyHelper _surveyHelper = SurveyHelper();
+  await _surveyHelper.incrementSessionCountPurchase();
+
   if (!hasShownPopup) {
     showDialog<void>(
       context: context,
@@ -734,6 +738,8 @@ Future<void> openSourceWebsite(String url) async {
   if (!await launchUrl(_url)) {
     throw Exception('Could not launch $_url');
   }
+
+
 }
 
 void showSnackbar(BuildContext context, String message, {int seconds = 2}) {

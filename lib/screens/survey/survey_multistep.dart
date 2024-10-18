@@ -12,8 +12,8 @@ class SurveyMultistep extends BaseSurveyWidget {
     surveyConfig: SurveyConfig(
       surveyId: 'MultiStep',
       initialDelay: 5,
-      closeDelay: 4,
-      askMeLaterDelay: 6,
+      closeDelay: 15,
+      askMeLaterDelay: 10,
     ),
     onClose: onClose,
     onAskMeLater: onAskMeLater,

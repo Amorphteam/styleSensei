@@ -483,6 +483,9 @@ Text(
     } else {
       throw 'Could not launch $url';
     }
+
+    final SurveyHelper _surveyHelper = SurveyHelper();
+    await _surveyHelper.incrementSessionCountPurchase();
   }
 
   void showImagePopup(BuildContext context, Product product) {

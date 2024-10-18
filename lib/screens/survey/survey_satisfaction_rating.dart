@@ -15,9 +15,9 @@ class SurveySatisfactionRating extends BaseSurveyWidget {
   }) : super(
     surveyConfig: SurveyConfig(
       surveyId: 'SatisfactionRating',
-      initialDelay: 7,
-      closeDelay: 30,
-      askMeLaterDelay: 14,
+      initialDelay: 5,
+      closeDelay: 15,
+      askMeLaterDelay: 10,
     ),
     onClose: onClose,
     onSend: onSend,

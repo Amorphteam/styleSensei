@@ -12,9 +12,9 @@ class SurveyBinaryChoice extends BaseSurveyWidget {
   }) : super(
     surveyConfig: SurveyConfig(
       surveyId: 'BinaryChoice',
-      initialDelay: 10,
-      closeDelay: 20,
-      askMeLaterDelay: 15,
+      initialDelay: 2,
+      closeDelay: 15,
+      askMeLaterDelay: 10,
     ),
     onClose: onClose,
     onSend: onSend,

@@ -3,11 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gap/gap.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:style_sensei/screens/survey/survey_binary_choice.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../new_models/attribute.dart';
 import '../../../new_models/product.dart';
 import '../../../utils/AppLocalizations.dart';
 import '../../../utils/analytics_helper.dart'; // Import the AnalyticsHelper for event logging
+import '../../../utils/survey_helper.dart';
 import '../../../utils/untitled.dart';
 
 class SingleItemScreen extends StatefulWidget {
@@ -32,10 +34,12 @@ class SingleItemScreen extends StatefulWidget {
 class _SingleItemScreenState extends State<SingleItemScreen> {
   int selectedIndex = 0;
   bool isBookmarked = false;
+  final SurveyHelper _surveyHelper = SurveyHelper();
 
   @override
   void initState() {
     super.initState();
+    _handleSessionCountAndSurvey();
 
     // Log the event when the product details screen is loaded
     AnalyticsHelper.logEvent('view_item_details', {
@@ -235,5 +239,32 @@ class _SingleItemScreenState extends State<SingleItemScreen> {
       }
     }
     return 'Unknown';
+  }
+
+  Future<void> _handleSessionCountAndSurvey() async {
+
+    // Create an instance of SurveyMultistep to access its SurveyConfig
+    final surveyConfig = SurveyBinaryChoice(
+      onClose: () {},
+      onAskMeLater: () {},
+      onSend: () {},
+    ).surveyConfig;
+
+    // Check if the survey should be shown based on the SurveyConfig's initialDelay
+    if (await _surveyHelper.shouldShowSurveyPurchase(surveyConfig)) {
+      _surveyHelper.showSurveyPurchase(
+        context: context,
+        onClose: () async {
+          await _surveyHelper.resetNextSurveySessionPurchase(surveyConfig.closeDelay);
+        },
+        onAskMeLater: () async {
+          await _surveyHelper
+              .resetNextSurveySessionPurchase(surveyConfig.askMeLaterDelay);
+        },
+        onSend: () async {
+          await _surveyHelper.markSurveyAsCompletedPurchase();
+        },
+      );
+    }
   }
 }

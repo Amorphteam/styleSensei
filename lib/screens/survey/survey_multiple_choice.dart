@@ -11,9 +11,9 @@ class SurveyMultipleChoice extends BaseSurveyWidget {
   }) : super(
     surveyConfig: SurveyConfig(
       surveyId: 'MultipleChoice',
-      initialDelay: 4,
-      closeDelay: 10,
-      askMeLaterDelay: 6,
+      initialDelay: 5,
+      closeDelay: 15,
+      askMeLaterDelay: 10,
     ),
     onClose: onClose,
     onAskMeLater: onAskMeLater,
