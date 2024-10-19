@@ -94,8 +94,23 @@ class _HomeTabState extends State<HomeTab> {
     getData();
   }
 
-  void _showOptions(
-      BuildContext context, String title, List<ImageItem> options) {
+  void _clearPreviousSelection(String groupTitle) {
+    setState(() {
+      // Remove the previous selection for the specified group
+      if (selectedChoices.containsKey(groupTitle)) {
+        int tagToRemove = selectedChoices[groupTitle]!.tag;
+        selectedChoices.remove(groupTitle);
+        collectionTags = collectionTags
+            .map((tagsList) {
+          return tagsList.where((tag) => tag != tagToRemove).toList();
+        })
+            .where((tagsList) => tagsList.isNotEmpty)
+            .toList(); // Remove empty lists
+      }
+    });
+  }
+
+  void _showOptions(BuildContext context, String title, List<ImageItem> options) {
     showModalBottomSheet(
       backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
@@ -103,7 +118,6 @@ class _HomeTabState extends State<HomeTab> {
         return Padding(
           padding: const EdgeInsets.all(28.0),
           child: SingleChildScrollView(
-            // Add scrolling capability
             child: Wrap(
               children: options.map((ImageItem option) {
                 String displayText = isArabic ? option.arDes : option.des;
@@ -111,9 +125,16 @@ class _HomeTabState extends State<HomeTab> {
                   title: Text(displayText),
                   onTap: () {
                     setState(() {
+                      // Clear previous selection for this group
+                      _clearPreviousSelection(title);
+
+                      // Add the new selection
                       selectedChoices[title] = option;
+                      collectionTags.add([option.tag]);
                     });
-                    addTags(getSelectedOptionIds());
+
+                    // Refresh the data after updating selections
+                    getData();
                     Navigator.pop(context);
                   },
                 );
@@ -124,6 +145,8 @@ class _HomeTabState extends State<HomeTab> {
       },
     );
   }
+
+
 
   List<int> getSelectedOptionIds() {
     List<int> flattenedTags =
