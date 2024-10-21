@@ -14,7 +14,56 @@ import '../detail_screen/widgets/combine_surveys.dart';
 import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isSurveyButtonDisabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSurveyCompletion();
+  }
+
+  Future<void> _checkSurveyCompletion() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool surveyCompletedKey = prefs.getBool('surveyCompleted') ?? false;
+    bool surveyCompletedKeyMultipleChoice = prefs.getBool('surveyCompletedMultipleChoise') ?? false;
+    bool surveyCompletedKeyPurchase = prefs.getBool('surveyCompletedPurchase') ?? false;
+    bool surveyCompletedKeySatisfy = prefs.getBool('surveyCompletedSatisfy') ?? false;
+
+    // Check if all survey completion flags are true
+    setState(() {
+      _isSurveyButtonDisabled = surveyCompletedKey &&
+          surveyCompletedKeyMultipleChoice &&
+          surveyCompletedKeyPurchase &&
+          surveyCompletedKeySatisfy;
+    });
+  }
+
+
+  Future<void> _setSurveyCompleted() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('survey_completed', true);
+    setState(() {
+      _isSurveyButtonDisabled = true;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context).translate('feedback_received'),
+        ),
+        backgroundColor: Colors.black87,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,39 +110,53 @@ class ProfileScreen extends StatelessWidget {
 
           // Section for the "Tell Us What You Think" and survey button
           Container(
-              color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withOpacity(0.1),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns the text and button on the same row
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     AppLocalizations.of(context).translate('tell_us_what_you_think'),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CombinedSurveyScreen(onClose: () {
-                          Navigator.pop(context); // Close survey and return to profile
-                        })),
+                    onPressed: _isSurveyButtonDisabled ? null : () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false, // Prevents closing the dialog by tapping outside
+                        builder: (BuildContext context) {
+                          return CombinedSurveyScreen(
+                            onClose: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            onSend: () async {
+                              await _setSurveyCompleted(); // Set the survey as completed
+                              if (mounted) {
+                                Navigator.of(context).pop(); // Close the dialog after setting the state
+                              }
+                            },
+
+                          );
+                        },
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, // Text color
-                      backgroundColor: Colors.black, // Background color
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.black,
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8), // Slightly rounded corners
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      elevation: 0, // Remove shadow/elevation if required
+                      elevation: 0,
                     ),
                     child: Text(
-                      AppLocalizations.of(context).translate('start_survey'),
+                      _isSurveyButtonDisabled
+                          ? AppLocalizations.of(context).translate('survey_completed')
+                          : AppLocalizations.of(context).translate('start_survey'),
                       style: TextStyle(
-                        fontSize: 16, // Text size
-                        color: Colors.white, // Ensure the text color is white
+                        fontSize: 16,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -155,7 +218,6 @@ class ProfileScreen extends StatelessWidget {
 
     final screen = screens[title];
 
-    // Log the event when a setting option is clicked
     AnalyticsHelper.logEvent('click_settings_option', {
       'option_name': title,
     });

@@ -1,8 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../utils/AppLocalizations.dart';
 import 'survey_config.dart';
 import 'survey_response_service.dart';
@@ -38,7 +34,16 @@ abstract class BaseSurveyState<T extends BaseSurveyWidget> extends State<T> {
         widget.surveyConfig.surveyId,
         selectedOption,
       );
-      widget.onClose();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).translate('feedback_received'),
+          ),
+          backgroundColor: Colors.black87,
+        ),
+      );
+
+      widget.onSend();
     }
   }
 
@@ -90,7 +95,7 @@ abstract class BaseSurveyState<T extends BaseSurveyWidget> extends State<T> {
           child: Text(AppLocalizations.of(context).translate('send_bu')),
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.black,
+            backgroundColor: selectedOption.isNotEmpty ? Colors.black : Colors.grey,
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
         ),

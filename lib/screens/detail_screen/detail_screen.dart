@@ -477,16 +477,7 @@ Text(
     return 'Unknown';
   }
 
-  void showPopupOnce(BuildContext context, String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
 
-    final SurveyHelper _surveyHelper = SurveyHelper();
-    await _surveyHelper.incrementSessionCountPurchase();
-  }
 
   void showImagePopup(BuildContext context, Product product) {
     Navigator.push(

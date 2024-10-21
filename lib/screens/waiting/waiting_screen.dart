@@ -125,7 +125,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
             ),
           ],
         )
-            : CircularProgressIndicator(),
+            : Container(width: 100, height: 100, child: CircularProgressIndicator()),
       ),
     );
   }

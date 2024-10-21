@@ -738,8 +738,8 @@ Future<void> openSourceWebsite(String url) async {
   if (!await launchUrl(_url)) {
     throw Exception('Could not launch $_url');
   }
-
-
+  final SurveyHelper _surveyHelper = SurveyHelper();
+  await _surveyHelper.incrementSessionCountPurchase();
 }
 
 void showSnackbar(BuildContext context, String message, {int seconds = 2}) {

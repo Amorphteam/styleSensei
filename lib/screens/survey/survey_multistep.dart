@@ -103,9 +103,11 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
                       ElevatedButton(
                         onPressed: currentStep == 0 || selectedOption.isNotEmpty ? nextStep : null,
                         child: Text(
-                          currentStep == surveyQuestions.length - 1
-                              ? AppLocalizations.of(context).translate('send_bu')
-                              : AppLocalizations.of(context).translate('next'),
+                          currentStep == 0
+                              ? AppLocalizations.of(context).translate('absolutely') // Show "Absolutely" on the first step
+                              : currentStep == surveyQuestions.length - 1
+                              ? AppLocalizations.of(context).translate('send_bu') // Show "Send" on the last step
+                              : AppLocalizations.of(context).translate('next'), // Show "Next" for other steps
                         ),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -139,7 +141,6 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
         selectedOption = '';
       });
     } else {
-      // Call the _sendSurveyResponse method from the base class
       sendSurveyResponse();
     }
   }
@@ -162,6 +163,15 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
       widget.surveyConfig.surveyId,
       selectedOption,
     );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context).translate('feedback_received'),
+        ),
+        backgroundColor: Colors.black87,
+      ),
+    );
+
     widget.onSend(); // Close the survey after submission
   }
 }

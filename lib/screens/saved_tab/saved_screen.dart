@@ -166,7 +166,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                                 ),
                                               ),
                                               TextButton(
-                                                onPressed: () => _openSourceWebsite(productItem.corresponding_url!),
+                                                onPressed: () => showPopupOnce(context, productItem.corresponding_url!),
                                                 child: Text(
                                                   AppLocalizations.of(context).translate('shopping_bu'),
                                                   style: TextStyle(
@@ -201,10 +201,23 @@ class _SavedScreenState extends State<SavedScreen> {
                 } else if (state is SavedErrorState) {
                   return Text(AppLocalizations.of(context).translate('error'));
                 } else {
-                  return Lottie.asset(
-                    'assets/json/large_loading.json',
-                    repeat: false,
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/json/large_loading.json',
+                        repeat: false,
+                      ),
+                      SizedBox(height: 20), // Adds some space between the animation and the message
+                      Text(
+                        AppLocalizations.of(context).translate('no_saved_items_message'),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+
+                    ],
                   );
+
                 }
               },
             ),
