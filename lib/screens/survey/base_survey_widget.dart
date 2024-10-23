@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import '../../utils/AppLocalizations.dart';
 import 'survey_config.dart';
@@ -30,20 +31,58 @@ abstract class BaseSurveyState<T extends BaseSurveyWidget> extends State<T> {
 
   Future<void> sendSurveyResponse() async {
     if (selectedOption.isNotEmpty) {
-      await surveyResponseService.sendSurveyResponse(
-        widget.surveyConfig.surveyId,
-        selectedOption,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context).translate('feedback_received'),
-          ),
-          backgroundColor: Colors.black87,
-        ),
-      );
+      final connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectivityResult.none) {
+        // No internet connection
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).translate('no_internet'),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
 
-      widget.onSend();
+      try {
+        // Attempt to send the survey response to Firestore
+        await surveyResponseService.sendSurveyResponse(
+          widget.surveyConfig.surveyId,
+          selectedOption,
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).translate('feedback_received'),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+              ),
+              backgroundColor: Colors.black,
+            ),
+          );
+        }
+        widget.onSend();
+
+      } catch (e) {
+        // Firebase-related error handling
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).translate('firebase_error'),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        print("Error sending survey response to Firebase: $e");
+      }
     }
   }
 

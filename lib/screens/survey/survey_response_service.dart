@@ -11,7 +11,7 @@ class SurveyResponseService {
         'timestamp': Timestamp.now(),
       });
     } catch (e) {
-      print("Error saving survey response: $e");
+      throw Exception("Error saving survey response: $e");
     }
   }
 }

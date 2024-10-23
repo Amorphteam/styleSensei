@@ -50,6 +50,8 @@ class _SavedScreenState extends State<SavedScreen> {
   @override
   Widget build(BuildContext context) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    bool isDarkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+
     return Container(
         child: ListView(
           children: [
@@ -116,7 +118,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                     child: Stack(
                                       children: [
                                         Container(
-                                          color: Colors.grey[100],
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -136,7 +138,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                                       child: Container(
                                                         height: MediaQuery.of(context).size.height * 0.29,
                                                         width: MediaQuery.of(context).size.width * 0.33,
-                                                        color: Colors.white,
+                                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
                                                       ),
                                                     ),
                                                     errorWidget: (context, url, error) {
@@ -205,7 +207,7 @@ class _SavedScreenState extends State<SavedScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Lottie.asset(
-                        'assets/json/large_loading.json',
+                        isDarkMode ? 'assets/json/large_loading_dark.json' : 'assets/json/large_loading.json',
                         repeat: false,
                       ),
                       SizedBox(height: 20), // Adds some space between the animation and the message

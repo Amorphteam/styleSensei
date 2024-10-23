@@ -1543,6 +1543,9 @@
   "start_survey": "Start Survey",
   "no_saved_items_message": "No saved items yet. \nStart adding your favourites to see them here!",
   "survey_completed": "Survey Completed",
-  "feedback_received": "Thanks for your feedback! We've got it."
+  "feedback_received": "Thanks for your feedback! We've got it.",
+  "feedback_not_received": "Sorry, we couldn't submit your feedback. Please try again.",
+  "no_internet": "No internet connection. Please check your network.",
+  "firebase_error": "Unable to send your response. Please try again later."
 
 }

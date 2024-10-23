@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import '../../utils/AppLocalizations.dart';
 import 'survey_config.dart';
@@ -39,7 +40,7 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
       body: Center(
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
           ),
@@ -86,8 +87,9 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
                         buildOption('totally_me', Icons.sentiment_satisfied_alt_rounded, Colors.orange),
                       ],
                     ),
-                    SizedBox(height: 30),
                   ],
+                  SizedBox(height: 60),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -97,7 +99,7 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
                           currentStep == 0
                               ? AppLocalizations.of(context).translate('nah_not_in_the_mood')
                               : AppLocalizations.of(context).translate('previous'),
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                          style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ),
                       ElevatedButton(
@@ -158,20 +160,60 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
 
   @override
   Future<void> sendSurveyResponse() async {
-    // Override the method to handle multi-step survey responses
-    await surveyResponseService.sendSurveyResponse(
-      widget.surveyConfig.surveyId,
-      selectedOption,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          AppLocalizations.of(context).translate('feedback_received'),
-        ),
-        backgroundColor: Colors.black87,
-      ),
-    );
+    // Check internet connectivity before attempting to send the response
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      // No internet connection
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).translate('no_internet'),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
 
-    widget.onSend(); // Close the survey after submission
+    try {
+      // Attempt to send the survey response to Firestore
+      await surveyResponseService.sendSurveyResponse(
+        widget.surveyConfig.surveyId,
+        selectedOption,
+      );
+
+      // Display success message if the response is sent successfully
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).translate('feedback_received'),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+            ),
+            backgroundColor: Colors.black,
+          ),
+        );
+      }
+
+      widget.onSend(); // Close the survey after successful submission
+
+    } catch (e) {
+      // Handle errors related to Firebase
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).translate('firebase_error'),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      print("Error sending survey response to Firebase: $e");
+    }
   }
 }

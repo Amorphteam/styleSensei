@@ -94,7 +94,7 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.background,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -158,7 +158,6 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
                     ),
                     maxLines: 3,
                   ),
-                  SizedBox(height: 30),
                 ] else if (currentStep == 3) ...[
                   // Satisfaction rating options
                   _buildSatisfactionRatingOptions(),
@@ -166,6 +165,7 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
                   // Binary choice options
                   _buildBinaryChoiceOptions(),
                 ],
+                SizedBox(height: 30),
 
                 // Navigation Buttons
                 Row(
@@ -183,20 +183,17 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
                     if (currentStep == 0) SizedBox(), // Placeholder to align buttons
 
                     // Next/Submit button
-                    Padding(
-                      padding: const EdgeInsets.only(top: 38.0),
-                      child: ElevatedButton(
-                        onPressed: selectedOption.isNotEmpty || currentStep == 2 ? nextStep : null,
-                        child: Text(
-                          currentStep == surveyQuestions.length - 1
-                              ? AppLocalizations.of(context).translate('send_bu')
-                              : AppLocalizations.of(context).translate('next'),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.black,
-                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        ),
+                    ElevatedButton(
+                      onPressed: selectedOption.isNotEmpty || currentStep == 2 ? nextStep : null,
+                      child: Text(
+                        currentStep == surveyQuestions.length - 1
+                            ? AppLocalizations.of(context).translate('send_bu')
+                            : AppLocalizations.of(context).translate('next'),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black,
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                     ),
                   ],
@@ -238,14 +235,11 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
             padding: EdgeInsets.all(12),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: selectedOption == optionKey ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
+              color: selectedOption == optionKey ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface.withAlpha(9),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               AppLocalizations.of(context).translate(optionKey),
-              style: TextStyle(
-                color: selectedOption == optionKey ? Colors.white : Colors.black,
-              ),
               textAlign: isRtl ? TextAlign.right : TextAlign.left,
             ),
           ),

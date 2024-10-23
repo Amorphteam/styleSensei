@@ -37,7 +37,7 @@ class _SurveyMultipleChoiceState extends BaseSurveyState<SurveyMultipleChoice> {
       body: Center(
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
           ),

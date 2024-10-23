@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/untitled.dart';
 import '../color_tones/color_tones_screen.dart';
-import '../detail_screen/widgets/combine_surveys.dart';
+import '../survey/combine_surveys.dart';
 import '../style/cubit/style_cubit.dart';
 import '../style/style_screen.dart';
 
@@ -57,9 +57,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          AppLocalizations.of(context).translate('feedback_received'),
+          AppLocalizations.of(context).translate('feedback_received'), style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
         ),
-        backgroundColor: Colors.black87,
+        backgroundColor: Colors.black,
       ),
     );
   }
