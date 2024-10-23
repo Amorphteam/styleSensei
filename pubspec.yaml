@@ -61,7 +61,7 @@ dependencies:
   json_annotation: ^4.8.1
   animated_text_kit: ^4.2.1
   flutter_dotenv: ^5.0.2
-  connectivity_plus: ^3.0.3
+  connectivity_plus: ^6.1.0
 
 dev_dependencies:
   flutter_test:

@@ -50,7 +50,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _setSurveyCompleted() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('survey_completed', true);
+    await prefs.setBool('surveyCompleted', true);
+    await prefs.setBool('surveyCompletedMultipleChoise', true);
+    await prefs.setBool('surveyCompletedPurchase', true);
+    await prefs.setBool('surveyCompletedSatisfy', true);
+
+
     setState(() {
       _isSurveyButtonDisabled = true;
     });

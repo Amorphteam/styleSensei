@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:style_sensei/screens/survey/survey_response_service.dart';
 import 'package:style_sensei/utils/AppLocalizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,6 +18,7 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
   String selectedOption = '';
   bool isRtl = false;
   TextEditingController _suggestionController = TextEditingController();
+  final SurveyResponseService surveyResponseService = SurveyResponseService();
 
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -39,17 +41,38 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
 
   // Sends survey response to Firestore
   Future<void> _sendSurveyResponse() async {
-    try {
-      await _firestore.collection('survey_responses').add({
-        'survey_type': 'CombinedSurvey',
-        'responses': _buildResponses(),
-        'suggestion': _suggestionController.text.isNotEmpty ? _suggestionController.text : null,
-        'timestamp': Timestamp.now(),
-      });
-      widget.onSend(); // Close survey after submission
-    } catch (e) {
-      print("Error saving survey response: $e");
-      widget.onSend(); // Close survey after submission
+    final responses = _buildResponses();
+    final isSuccess = await surveyResponseService.sendSurveyResponse(
+      'CombinedSurvey',
+      responses.toString(), // Convert the responses map to a string
+    );
+
+    if (isSuccess) {
+      if (mounted) {
+        widget.onSend();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).translate('feedback_received'),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+            ),
+            backgroundColor: Colors.black,
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        widget.onClose();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).translate('firebase_error'),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -57,6 +80,7 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
   Map<String, dynamic> _buildResponses() {
     return {
       surveyQuestions[currentStep]: selectedOption,
+      'suggestion': _suggestionController.text.isNotEmpty ? _suggestionController.text : null,
     };
   }
 

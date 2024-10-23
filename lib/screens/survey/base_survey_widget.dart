@@ -31,31 +31,16 @@ abstract class BaseSurveyState<T extends BaseSurveyWidget> extends State<T> {
 
   Future<void> sendSurveyResponse() async {
     if (selectedOption.isNotEmpty) {
-      final connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
-        // No internet connection
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context).translate('no_internet'),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return;
-      }
+      // Try to send the survey response and check the result
+      final isSuccess = await surveyResponseService.sendSurveyResponse(
+        widget.surveyConfig.surveyId,
+        selectedOption,
+      );
 
-      try {
-        // Attempt to send the survey response to Firestore
-        await surveyResponseService.sendSurveyResponse(
-          widget.surveyConfig.surveyId,
-          selectedOption,
-        );
-
+      if (isSuccess) {
+        // If the response was sent successfully
         if (mounted) {
+          widget.onSend(); // Trigger the send callback
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -66,11 +51,10 @@ abstract class BaseSurveyState<T extends BaseSurveyWidget> extends State<T> {
             ),
           );
         }
-        widget.onSend();
-
-      } catch (e) {
-        // Firebase-related error handling
+      } else {
+        // Handle failure to send response
         if (mounted) {
+          widget.onClose(); // Dismiss the dialog first
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -81,7 +65,6 @@ abstract class BaseSurveyState<T extends BaseSurveyWidget> extends State<T> {
             ),
           );
         }
-        print("Error sending survey response to Firebase: $e");
       }
     }
   }

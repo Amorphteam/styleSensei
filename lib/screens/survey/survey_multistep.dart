@@ -160,60 +160,43 @@ class _SurveyMultistepState extends BaseSurveyState<SurveyMultistep> {
 
   @override
   Future<void> sendSurveyResponse() async {
-    // Check internet connectivity before attempting to send the response
-    final connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      // No internet connection
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).translate('no_internet'),
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      return;
-    }
-
-    try {
-      // Attempt to send the survey response to Firestore
-      await surveyResponseService.sendSurveyResponse(
+    if (selectedOption.isNotEmpty) {
+      // Try to send the survey response and check the result
+      final isSuccess = await surveyResponseService.sendSurveyResponse(
         widget.surveyConfig.surveyId,
         selectedOption,
       );
 
-      // Display success message if the response is sent successfully
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).translate('feedback_received'),
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+      if (isSuccess) {
+        // If the response was sent successfully
+        if (mounted) {
+          widget.onSend(); // Trigger the send callback
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).translate('feedback_received'),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+              ),
+              backgroundColor: Colors.black,
             ),
-            backgroundColor: Colors.black,
-          ),
-        );
-      }
-
-      widget.onSend(); // Close the survey after successful submission
-
-    } catch (e) {
-      // Handle errors related to Firebase
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).translate('firebase_error'),
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+          );
+        }
+      } else {
+        // Handle failure to send response
+        if (mounted) {
+          widget.onClose(); // Dismiss the dialog first
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).translate('firebase_error'),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
             ),
-            backgroundColor: Colors.red,
-          ),
-        );
+          );
+        }
       }
-      print("Error sending survey response to Firebase: $e");
     }
   }
+
 }
