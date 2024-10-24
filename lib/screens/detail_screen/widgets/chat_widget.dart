@@ -18,9 +18,17 @@ class ChatWidget extends StatefulWidget {
 
 class _ChatWidgetState extends State<ChatWidget> {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   bool _showResponse = false;
   String _response = "";
   String _selectedQuestion = "";
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _onTextChanged(String text) {
     setState(() {
@@ -39,6 +47,22 @@ class _ChatWidgetState extends State<ChatWidget> {
       _response = response;
       _showResponse = true;
     });
+
+    // Scroll to the bottom to show the response
+    _scrollToBottom();
+
+    // Dismiss the keyboard
+    FocusScope.of(context).unfocus();
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   String createPrompt() {
@@ -57,102 +81,107 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          AppLocalizations.of(context).translate('ask_ai_title'),
-        ),
-        Gap(10),
-        TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            hintText: AppLocalizations.of(context).translate('ai_field_hint'),
-            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SvgPicture.asset(
-                'assets/images/ai.svg',
-                color: Theme.of(context).colorScheme.onBackground,
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        children: [
+          Text(
+            AppLocalizations.of(context).translate('ask_ai_title'),
+          ),
+          Gap(10),
+          TextField(
+            controller: _controller,
+            textInputAction: TextInputAction.go, // Set the keyboard action to "Go"
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context).translate('ai_field_hint'),
+              hintStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SvgPicture.asset(
+                  'assets/images/ai.svg',
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
               ),
+              suffixIcon: _controller.text.isNotEmpty
+                  ? IconButton(
+                icon: SvgPicture.asset(
+                  'assets/images/arrow_top.svg',
+                ),
+                onPressed: () {
+                  _askStyleQuestion();
+                  setState(() {
+                    _selectedQuestion = _controller.text;
+                    _showResponse = true;
+                    _response = '';
+                  });
+                },
+              )
+                  : null,
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 10.0),
             ),
-            suffixIcon: _controller.text.isNotEmpty
-                ? IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/arrow_top.svg',
-              ),
-              onPressed: () {
+            maxLines: null,
+            onChanged: _onTextChanged,
+            onSubmitted: (text) {
+              if (text.isNotEmpty) {
                 _askStyleQuestion();
                 setState(() {
-                  _selectedQuestion = _controller.text;
+                  _selectedQuestion = text;
                   _showResponse = true;
                   _response = '';
                 });
-              },
-            )
-                : null,
-            filled: true,
-            fillColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0),
+              }
+            },
           ),
-          maxLines: null,  // Allows the textfield to expand with more lines
-          onChanged: _onTextChanged,
-          onSubmitted: (text) {
-            if (text.isNotEmpty) {
-              _askStyleQuestion();
-              setState(() {
-                _selectedQuestion = text;
-                _showResponse = true;
-                _response = '';
-              });
-              FocusScope.of(context).unfocus();  // Hide the keyboard after submission
-            }
-          },
-        ),        if (_showResponse)
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          _selectedQuestion,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground, fontWeight: FontWeight.bold),
+          if (_showResponse)
+            Container(
+              margin: EdgeInsets.only(top: 16),
+              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            _selectedQuestion,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onBackground,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onBackground),
-                      onPressed: () {
-                        setState(() {
-                          _showResponse = false;
-                          _controller.clear();
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16, left: 16, bottom: 26),
-                  child: Text(
-                    _response,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+                      IconButton(
+                        icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onBackground),
+                        onPressed: () {
+                          setState(() {
+                            _showResponse = false;
+                            _controller.clear();
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16, left: 16, bottom: 26),
+                    child: Text(
+                      _response,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
