@@ -235,14 +235,22 @@ Text(
   Widget buildItemsTab(List<CollectionItem> items, ProductsModel? collectionDetail) {
     bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
+    // Separate items into non-empty and empty lists
+    List<CollectionItem> nonEmptyItems = items.where((item) => item.products != null && item.products!.isNotEmpty).toList();
+    List<CollectionItem> emptyItems = items.where((item) => item.products == null || item.products!.isEmpty).toList();
+
+    // Combine the lists, with non-empty items first
+    List<CollectionItem> sortedItems = [...nonEmptyItems, ...emptyItems];
+
     return ListView.builder(
       padding: EdgeInsets.only(top: 20),
-      itemCount: items.length,
+      itemCount: sortedItems.length,
       itemBuilder: (BuildContext context, int index) {
-        return buildCollectionItem(context, items[index], isArabic, index, collectionDetail);
+        return buildCollectionItem(context, sortedItems[index], isArabic, index, collectionDetail);
       },
     );
   }
+
 
   Widget buildCollectionItem(BuildContext context, CollectionItem item, bool isArabic, int parentIndex, ProductsModel? collectionDetail) {
     List<Product> orderedProducts = item.products != null ? reorderProducts(item.products!, item.match_count ?? {}) : [];
@@ -326,38 +334,42 @@ Text(
             Gap(40)
           ],
         )
-            : Container(
-          width: double.infinity,
-          margin: EdgeInsets.only(bottom: 40, top: 20),
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
-          padding: EdgeInsets.symmetric(horizontal: 26, vertical: 58),
-          child: Column(
-            children: [
-              SvgPicture.asset(
-                'assets/images/ai.svg',
-                height: 30,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
-                child: Text(
-                  AppLocalizations.of(context).translate('no_products'),
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
-                child: Text(
-                  textAlign: TextAlign.center,
-                  AppLocalizations.of(context).translate('no_products_desc'),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal),
-                ),
-              ),
-            ],
-          ),
-        ),
+            : buildEmptyItemsContainer(context),
       ],
     );
+  }
+
+  Container buildEmptyItemsContainer(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(bottom: 40, top: 20),
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
+        padding: EdgeInsets.symmetric(horizontal: 26, vertical: 58),
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              'assets/images/ai.svg',
+              height: 30,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, right: 16, left: 16, bottom: 8),
+              child: Text(
+                AppLocalizations.of(context).translate('no_products'),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16, bottom: 8),
+              child: Text(
+                textAlign: TextAlign.center,
+                AppLocalizations.of(context).translate('no_products_desc'),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal),
+              ),
+            ),
+          ],
+        ),
+      );
   }
 
   List<Product> reorderProducts(List<Product> products, Map<String, int> matchCount) {

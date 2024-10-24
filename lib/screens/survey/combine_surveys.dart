@@ -107,134 +107,139 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     // Check if the language is RTL
     isRtl = Directionality.of(context) == TextDirection.rtl;
 
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 8,
-            ),
-          ],
-        ),
-        padding: EdgeInsets.all(16),
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: Stack(
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 50),
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.5),
+      resizeToAvoidBottomInset: true, // Ensures content adjusts when keyboard appears
+      body: Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.all(16),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Stack(
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 50),
 
-                // Progress Indicator
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (int i = 0; i < surveyQuestions.length; i++)
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 4),
-                          height: 4,
-                          color: i <= currentStep
-                              ? Colors.red
-                              : Colors.grey.shade300,
+                          // Progress Indicator
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              for (int i = 0; i < surveyQuestions.length; i++)
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 4),
+                                    height: 4,
+                                    color: i <= currentStep
+                                        ? Colors.red
+                                        : Colors.grey.shade300,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+
+                          // Display survey question for the current step
+                          Text(
+                            AppLocalizations.of(context).translate(surveyQuestions[currentStep]),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 20),
+
+                          // Render different options based on the current step
+                          if (currentStep == 0 || currentStep == 1) ...[
+                            _buildEmojiOptions(),
+                          ] else if (currentStep == 2) ...[
+                            _buildMultipleChoiceOptions(),
+                            SizedBox(height: 20),
+                            TextField(
+                              controller: _suggestionController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: AppLocalizations.of(context).translate('type_answer'),
+                              ),
+                              maxLines: 3,
+                              keyboardType: TextInputType.multiline,
+                            ),
+                          ] else if (currentStep == 3) ...[
+                            _buildSatisfactionRatingOptions(),
+                          ] else if (currentStep == 4) ...[
+                            _buildBinaryChoiceOptions(),
+                          ],
+                          SizedBox(height: 30),
+
+                          // Navigation Buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (currentStep > 0)
+                                TextButton(
+                                  onPressed: previousStep,
+                                  child: Text(
+                                    AppLocalizations.of(context).translate('previous'),
+                                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                                  ),
+                                ),
+                              if (currentStep == 0) SizedBox(),
+
+                              ElevatedButton(
+                                onPressed: selectedOption.isNotEmpty || currentStep == 2 ? nextStep : null,
+                                child: Text(
+                                  currentStep == surveyQuestions.length - 1
+                                      ? AppLocalizations.of(context).translate('send_bu')
+                                      : AppLocalizations.of(context).translate('next'),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.black,
+                                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      // Close Icon
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(Icons.close, color: Colors.grey),
+                          onPressed: widget.onClose,
                         ),
                       ),
-                  ],
-                ),
-                SizedBox(height: 20),
-
-                // Display survey question for the current step
-                Text(
-                  AppLocalizations.of(context).translate(surveyQuestions[currentStep]),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
-
-                // Render different options based on the current step
-                if (currentStep == 0 || currentStep == 1) ...[
-                  // Emoji options (Multi-step Survey)
-                  _buildEmojiOptions(),
-                ] else if (currentStep == 2) ...[
-                  // Multiple choice options
-                  _buildMultipleChoiceOptions(),
-                  SizedBox(height: 20),
-                  // TextField for suggestions (only on the multiple choice step)
-                  TextField(
-                    controller: _suggestionController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: AppLocalizations.of(context).translate('type_answer'),
-                    ),
-                    maxLines: 3,
-                  ),
-                ] else if (currentStep == 3) ...[
-                  // Satisfaction rating options
-                  _buildSatisfactionRatingOptions(),
-                ] else if (currentStep == 4) ...[
-                  // Binary choice options
-                  _buildBinaryChoiceOptions(),
-                ],
-                SizedBox(height: 30),
-
-                // Navigation Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Previous button
-                    if (currentStep > 0)
-                      TextButton(
-                        onPressed: previousStep,
-                        child: Text(
-                          AppLocalizations.of(context).translate('previous'),
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
-                        ),
-                      ),
-                    if (currentStep == 0) SizedBox(), // Placeholder to align buttons
-
-                    // Next/Submit button
-                    ElevatedButton(
-                      onPressed: selectedOption.isNotEmpty || currentStep == 2 ? nextStep : null,
-                      child: Text(
-                        currentStep == surveyQuestions.length - 1
-                            ? AppLocalizations.of(context).translate('send_bu')
-                            : AppLocalizations.of(context).translate('next'),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.black,
-                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // Close Icon
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: Icon(Icons.close, color: Colors.grey),
-                onPressed: widget.onClose,
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -309,6 +314,7 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
   }
 
   // Build binary choice options
+// Build binary choice options
   Widget _buildBinaryChoiceOptions() {
     List<Map<String, dynamic>> binaryOptions = [
       {
@@ -325,36 +331,40 @@ class _CombinedSurveyScreenState extends State<CombinedSurveyScreen> {
       },
     ];
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: binaryOptions.map((option) {
-        return GestureDetector(
-          onTap: () => handleOptionSelection(option['key']),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: selectedOption == option['key'] ? option['color'].withOpacity(0.2) : Colors.transparent,
-                  shape: BoxShape.circle,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0), // Add vertical padding to avoid overflow
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: binaryOptions.map((option) {
+          return GestureDetector(
+            onTap: () => handleOptionSelection(option['key']),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: selectedOption == option['key'] ? option['color'].withOpacity(0.2) : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    option['icon'],  // Icon for Yes/No
+                    size: 40,
+                    color: selectedOption == option['key'] ? option['color'] : Colors.grey,
+                  ),
                 ),
-                child: Icon(
-                  option['icon'],  // Icon for Yes/No
-                  size: 40,
-                  color: selectedOption == option['key'] ? option['color'] : Colors.grey,
+                SizedBox(height: 5),
+                Text(
+                  option['label'],
+                  style: TextStyle(
+                    color: selectedOption == option['key'] ? option['color'] : Colors.grey,
+                  ),
                 ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                option['label'],
-                style: TextStyle(
-                  color: selectedOption == option['key'] ? option['color'] : Colors.black,
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 

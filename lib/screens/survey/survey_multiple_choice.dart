@@ -34,60 +34,68 @@ class _SurveyMultipleChoiceState extends BaseSurveyState<SurveyMultipleChoice> {
 
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.5),
+      resizeToAvoidBottomInset: true, // Ensures content is adjusted when the keyboard appears
       body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
-          ),
-          padding: EdgeInsets.all(20),
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: SingleChildScrollView(
-            child: Directionality(
-              textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 50),
-                      Text(
-                        AppLocalizations.of(context).translate('which_method_prefer'),
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 20),
-                      ..._buildOptions(),
-                      SizedBox(height: 20),
-                      Text(
-                        AppLocalizations.of(context).translate('other_suggestions'),
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: _suggestionController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: AppLocalizations.of(context).translate('type_answer'),
-                        ),
-                        maxLines: 3,
-                      ),
-                      SizedBox(height: 30),
-                      buildButtons(),
-                    ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: IntrinsicHeight(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
                   ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      icon: Icon(Icons.close, color: Colors.grey),
-                      onPressed: widget.onClose,
+                  padding: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Directionality(
+                    textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+                    child: Stack(
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(height: 50),
+                            Text(
+                              AppLocalizations.of(context).translate('which_method_prefer'),
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 20),
+                            ..._buildOptions(),
+                            SizedBox(height: 20),
+                            Text(
+                              AppLocalizations.of(context).translate('other_suggestions'),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 10),
+                            TextField(
+                              controller: _suggestionController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: AppLocalizations.of(context).translate('type_answer'),
+                              ),
+                              maxLines: 3,
+                              keyboardType: TextInputType.multiline,
+                            ),
+                            SizedBox(height: 30),
+                            buildButtons(),
+                          ],
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: Icon(Icons.close, color: Colors.grey),
+                            onPressed: widget.onClose,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
