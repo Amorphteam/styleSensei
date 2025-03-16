@@ -8,7 +8,7 @@ import '../models/ProductsModel.dart';
 import '../new_models/collection_item.dart';
 
 class CollectionRepository {
-  final String apiUrl = 'http://apiipa.stylesensei.net/api/v1';
+  final String apiUrl = 'https://stylesensei.net/api/v1';
 
   Future<CollectionModel> fetchCollectionModel(List<List<int>> collectionTags) async {
     String pathUrl = '$apiUrl/collection/list?limit=300&offset=0';

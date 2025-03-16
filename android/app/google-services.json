@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:177611763528:android:96ed3b4b49c567d73b0d7d",
         "android_client_info": {
-          "package_name": "com.amorphteam.stylesensei.style_sensei"
+          "package_name": "com.amorphteam.stylesensei"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "177611763528-3fqkh5r4n26gntm7h54d8g4f6gj1hakd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.amorphteam.stylesensei.style_sensei",
+            "package_name": "com.amorphteam.stylesensei",
             "certificate_hash": "6ae7d5ada9120abb5a8905f6da2e46b84a21648d"
           }
         },

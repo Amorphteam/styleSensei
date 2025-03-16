@@ -1,4 +1,4 @@
-package com.amorphteam.stylesensei.style_sensei
+package com.amorphteam.stylesensei
 
 import io.flutter.embedding.android.FlutterActivity
 
