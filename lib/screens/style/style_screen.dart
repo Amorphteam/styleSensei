@@ -176,7 +176,7 @@ class _StyleScreenState extends State<StyleScreen> {
   Future<void> _logSelectEvent(int styleTag) async {
     await _analytics.logEvent(
       name: 'select_favorite_style',
-      parameters: <String, dynamic>{
+      parameters: <String, Object>{
         'style_tag': styleTag,
       },
     );
@@ -186,7 +186,7 @@ class _StyleScreenState extends State<StyleScreen> {
   Future<void> _logFinalSelection(List<int> selectedStyles) async {
     await _analytics.logEvent(
       name: 'final_style_selection',
-      parameters: <String, dynamic>{
+      parameters: <String, Object>{
         'selected_styles': selectedStyles.join(','), // Send selected styles as a parameter
       },
     );

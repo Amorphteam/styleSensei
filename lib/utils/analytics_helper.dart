@@ -4,7 +4,7 @@ class AnalyticsHelper {
   static final FirebaseAnalytics _analytics = FirebaseAnalytics.instance; // Use .instance
 
   // Generic method to log events
-  static Future<void> logEvent(String eventName, Map<String, dynamic> parameters) async {
+  static Future<void> logEvent(String eventName, Map<String, Object> parameters) async {
     try {
       await _analytics.logEvent(
         name: eventName,
